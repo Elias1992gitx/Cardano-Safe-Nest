@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "545427401569",
+    "project_id": "safenest-e077e",
+    "storage_bucket": "safenest-e077e.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:545427401569:android:0f94f9debb96ac2a78b320",
+        "android_client_info": {
+          "package_name": "com.neuslabs.safenest"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyA_u32DVRntOCzU0YQr0mwclV1FOgTC1Bo"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
