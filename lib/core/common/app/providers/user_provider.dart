@@ -4,7 +4,6 @@ import 'dart:io';
 
 import 'package:flutter/foundation.dart';
 import 'package:http/http.dart' as https;
-import 'package:safenest/core/common/app/providers/user_session.dart';
 import 'package:safenest/core/common/network/custom_http_client.dart';
 import 'package:safenest/core/errors/exceptions.dart';
 import 'package:safenest/core/services/config.dart';
@@ -12,26 +11,29 @@ import 'package:safenest/core/utils/typedef.dart';
 import 'package:safenest/features/auth/data/models/user_model.dart';
 import 'package:safenest/features/auth/domain/repos/auth_repos.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 class UserProvider extends ChangeNotifier {
-  final AuthenticationRepository _authRepository;
 
-  UserProvider(this._authRepository, this._userSession) {
-    _loginStateSubscription = _userSession.isLoggedIn.listen((isLoggedIn) {
-      if (!isLoggedIn) {
-        _user = null;
-      } else {
-        loadUserData();
-        _user = user;
-      }
-      notifyListeners();
-    });
+  UserProvider() {
+    _init();
   }
 
   LocalUserModel? _user;
   LocalUserModel? get user => _user;
-  final UserSession _userSession;
-  StreamSubscription<bool>? _loginStateSubscription;
+  StreamSubscription<User?>? _authStateSubscription;
+
+  Future<void> _init() async {
+    _authStateSubscription = FirebaseAuth.instance.authStateChanges().listen((User? user) {
+      if (user == null) {
+        _user = null;
+      } else {
+        loadUserData();
+      }
+      notifyListeners();
+    });
+  }
 
   void initUser(LocalUserModel? user) {
     if (_user != user) {
@@ -44,42 +46,27 @@ class UserProvider extends ChangeNotifier {
     final prefs = await SharedPreferences.getInstance();
     final userId = prefs.getString('userId');
     if (userId != null) {
-      final userInfo = await getUserInfo();
-      initUser(userInfo);
-    } else {}
-  }
-
-  Stream<LocalUserModel> getUserProfileStream(String uid) {
-    return _authRepository.getUserProfileStream(uid);
-  }
-
-  Future<LocalUserModel> getUserInfo() async {
-    try {
-      final url = Uri.https(Config.apiUrl, Config.getCurrentUserUrl);
-
-      final newAccessToken = await _userSession.refreshToken();
-      final requestHeaders = <String, String>{
-        'Authorization': 'Bearer $newAccessToken',
-      };
-
-      final response = await https.get(
-        url,
-        headers: requestHeaders,
-      );
-
-      if (response.statusCode == 201) {
-        final user = LocalUserModel.fromMap(
-            json.decode(response.body)['user'] as DataMap);
-        return user;
-      } else if (response.statusCode == 400) {
-        throw ServerException(
-          message: (json.decode(response.body)['message']) as String,
-          statusCode: response.statusCode.toString(),
-        );
+      final userDataString = prefs.getString('userData');
+      if (userDataString != null) {
+        final userDataMap = jsonDecode(userDataString) as DataMap;
+        final userInfo = LocalUserModel.fromMap(userDataMap);
+        initUser(userInfo);
       } else {
-        throw ServerException(
-          message: 'Failed to fetch your data',
-          statusCode: response.statusCode.toString(),
+        final userInfo = await getUserInfo(userId);
+        initUser(userInfo);
+      }
+    }
+  }
+
+  Future<LocalUserModel> getUserInfo(String uid) async {
+    try {
+      final userDoc = await FirebaseFirestore.instance.collection('users').doc(uid).get();
+      if (userDoc.exists) {
+        return LocalUserModel.fromMap(userDoc.data()!);
+      } else {
+        throw const ServerException(
+          message: 'User not found',
+          statusCode: '404',
         );
       }
     } on SocketException {
@@ -90,14 +77,26 @@ class UserProvider extends ChangeNotifier {
       debugPrintStack(stackTrace: s);
       throw ServerException(
         message: e.toString(),
-        statusCode: 505,
+        statusCode: '505',
+      );
+    }
+  }
+
+  Future<void> updateUser(LocalUserModel updatedUser) async {
+    try {
+      await FirebaseFirestore.instance.collection('users').doc(updatedUser.uid).update(updatedUser.toMap());
+      initUser(updatedUser);
+    } catch (e) {
+      throw const ServerException(
+        message: 'Failed to update user',
+        statusCode: '500',
       );
     }
   }
 
   @override
   void dispose() {
-    _loginStateSubscription?.cancel();
+    _authStateSubscription?.cancel();
     super.dispose();
   }
 }

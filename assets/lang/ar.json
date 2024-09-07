@@ -1,0 +1,19 @@
+{
+     "select_language": "اختر اللغة",
+     "english": "الإنجليزية",
+     "amharic": "الأمهرية",
+     "arabic": "العربية",
+     "german": "الألمانية",
+     "settings": "الإعدادات",
+     "account_settings": "إعدادات الحساب",
+     "notification_settings": "إعدادات الإشعارات",
+     "set_up_2fa": "إعداد 2FA",
+     "preferred_language": "اللغة المفضلة",
+     "appearance_setting": "إعداد المظهر",
+     "continue": "استمر",
+     "next": "التالي",
+     "child_info": "معلومات الطفل",
+     "emergency_notification": "إشعار الطوارئ",
+     "home_address_location": "موقع عنوان المنزل",
+     "set_security": "إعداد الأمان"
+}

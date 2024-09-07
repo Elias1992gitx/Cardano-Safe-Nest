@@ -1,0 +1,19 @@
+{
+     "select_language": "ቋንቋ ይምረጡ",
+     "english": "እንግሊዝኛ",
+     "amharic": "አማርኛ",
+     "arabic": "ዓረብኛ",
+     "german": "ጀርመን",
+     "settings": "ቅንብሮች",
+     "account_settings": "የመለያ ቅንብሮች",
+     "notification_settings": "የማሳወቂያ ቅንብሮች",
+     "set_up_2fa": "2FA ያዘጋጁ",
+     "preferred_language": "ተመራጭ ቋንቋ",
+     "appearance_setting": "የቅርጸት ቅንብር",
+     "continue": "ቀጥል",
+     "next": "ቀጣይ",
+     "child_info": "የልጅ መረጃ",
+     "emergency_notification": "አስቸኳይ ማሳወቂያ",
+     "home_address_location": "የቤት አድራሻ አካባቢ",
+     "set_security": "ደህንነት ያዘጋጁ"
+}

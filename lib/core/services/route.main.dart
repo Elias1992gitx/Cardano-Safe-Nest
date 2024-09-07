@@ -21,17 +21,12 @@ final GoRouter router = GoRouter(
             uid: user.uid,
             phoneNumber: user.phoneNumber ?? '',
             email: user.email ?? '',
-            username: '',
+            username: user.displayName ?? '',
           );
+          context.userProvider.initUser(localUser);
           return _pageBuilder(
-            MultiProvider(
+            MultiBlocProvider(
               providers: [
-                ChangeNotifierProvider<UserSession>(
-                  create: (_) => UserSession(sl<SharedPreferences>()),
-                ),
-                ChangeNotifierProvider<UserProvider>(
-                  create: (context) => UserProvider(sl<AuthenticationRepository>(), context.read<UserSession>()),
-                ),
                 BlocProvider<AuthBloc>(
                   create: (_) => sl<AuthBloc>(),
                 ),
@@ -66,14 +61,8 @@ final GoRouter router = GoRouter(
           path: 'profile-screen',
           pageBuilder: (context, state) {
             return _pageBuilder(
-              MultiProvider(
+              MultiBlocProvider(
                 providers: [
-                  ChangeNotifierProvider<UserSession>(
-                    create: (_) => UserSession(sl<SharedPreferences>()),
-                  ),
-                  ChangeNotifierProvider<UserProvider>(
-                    create: (context) => UserProvider(sl<AuthenticationRepository>(), context.read<UserSession>()),
-                  ),
                   BlocProvider<AuthBloc>(
                     create: (_) => sl<AuthBloc>(),
                   ),
@@ -83,12 +72,61 @@ final GoRouter router = GoRouter(
               state,
             );
           },
+          routes: [
+            GoRoute(
+              path: 'parental-mode',
+              pageBuilder: (context, state) => _pageBuilder(
+                BlocProvider(
+                  create: (_) => sl<ParentalInfoBloc>(),
+                  child: const ManageParentalScreen(),
+                ),
+                state,
+              ),
+              routes: [
+                GoRoute(
+                  path: 'add-child',
+                  builder: (context, state) {
+                    final onChildAdded = state.extra as Function(Child);
+                    return BlocProvider(
+                      create: (_) => sl<ParentalInfoBloc>(),
+                      child: AddChildForm(onChildAdded: onChildAdded),
+                    );
+                  },
+                ),
+                GoRoute(
+                  path: 'create-profile',
+                  pageBuilder: (context, state) => _pageBuilder(
+                    BlocProvider(
+                      create: (_) => sl<ParentalInfoBloc>(),
+                      child: const CreateProfileFormBody(),
+                    ),
+                    state,
+                  ),
+                ),
+              ],
+            ),
+          ],
+        ),
+        GoRoute(
+          path: 'language-selection',
+          pageBuilder: (context, state) {
+            return _pageBuilder(
+              BlocProvider(
+                create: (_) => sl<LanguageBloc>(),
+                child: const LanguageSelectionPage(),
+              ),
+              state,
+            );
+          },
         ),
         GoRoute(
           path: 'account-setting',
           pageBuilder: (context, state) {
             return _pageBuilder(
-              const AccountSettingScreen(),
+              BlocProvider(
+                create: (_) => sl<AuthBloc>(),
+                child: const AccountSettingScreen(),
+              ),
               state,
             );
           },
@@ -123,9 +161,6 @@ final GoRouter router = GoRouter(
               MultiProvider(
                 providers: [
                   Provider<UserSession>.value(value: userSession),
-                  ChangeNotifierProvider<UserProvider>(
-                    create: (_) => UserProvider(sl<AuthenticationRepository>(), context.read<UserSession>()),
-                  ),
                   BlocProvider<AuthBloc>(
                     create: (_) => sl<AuthBloc>(),
                   ),
@@ -186,7 +221,11 @@ final GoRouter router = GoRouter(
     ),
   ],
   redirect: (_, state) {
-    // Add your redirect logic here if needed
+    final isLoggedIn = sl<FirebaseAuth>().currentUser != null;
+    if (!isLoggedIn && state.matchedLocation != '/') {
+      return '/';
+    }
+    return null;
   },
 );
 

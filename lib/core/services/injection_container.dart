@@ -17,6 +17,13 @@ import 'package:safenest/features/auth/domain/usecase/sign_up.dart';
 import 'package:safenest/features/auth/domain/usecase/update_user.dart';
 import 'package:safenest/features/auth/domain/usecase/verify_email.dart';
 import 'package:safenest/features/auth/presentation/bloc/auth_bloc.dart';
+import 'package:safenest/features/language/data/data_sources/language_local_data_source.dart';
+import 'package:safenest/features/language/data/repository/language_repo_impl.dart';
+import 'package:safenest/features/language/domain/repos/language_repository.dart';
+import 'package:safenest/features/language/domain/usecases/get_language.dart';
+import 'package:safenest/features/language/domain/usecases/set_language.dart';
+import 'package:safenest/features/language/presentation/bloc/language_bloc.dart';
+import 'package:safenest/features/profile/data/data_sources/parental_info_remote_data_source.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'package:safenest/features/on_boarding/data/datasources/on_boarding_local_datasource.dart';
@@ -26,6 +33,16 @@ import 'package:safenest/features/on_boarding/domain/usecases/cache_first_timer.
 import 'package:safenest/features/on_boarding/domain/usecases/check_if_user_first_timer.dart';
 import 'package:safenest/features/on_boarding/presentation/cubit/on_boarding_cubit.dart';
 
-import '../../features/auth/domain/usecase/sign_in_with_facebook.dart';
+import 'package:safenest/features/auth/domain/usecase/sign_in_with_facebook.dart';
+import 'package:safenest/features/profile/data/repositories/parental_info_repo_impl.dart';
+import 'package:safenest/features/profile/domain/repos/parental_info_repository.dart';
+import 'package:safenest/features/profile/domain/usecase/add_child_usecase.dart';
+import 'package:safenest/features/profile/domain/usecase/get_paternal_info.dart';
+import 'package:safenest/features/profile/domain/usecase/save_parental_info.dart';
+import 'package:safenest/features/profile/domain/usecase/update_child_usecase.dart';
+import 'package:safenest/features/profile/domain/usecase/remove_child_usecase.dart';
+import 'package:safenest/features/profile/domain/usecase/set_pin_usecase.dart';
+import 'package:safenest/features/profile/domain/usecase/update_paternal_info.dart';
+import 'package:safenest/features/profile/presentation/bloc/parental_info_bloc.dart';
 
 part 'injection_container.main.dart';

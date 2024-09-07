@@ -1,0 +1,19 @@
+{
+     "select_language": "Select Language",
+     "english": "English",
+     "amharic": "Amharic",
+     "arabic": "Arabic",
+     "german": "German",
+     "settings": "Settings",
+     "account_settings": "Account Settings",
+     "notification_settings": "Notification Settings",
+     "set_up_2fa": "Set up 2FA",
+     "preferred_language": "Preferred Language",
+     "appearance_setting": "Appearance Setting",
+     "continue": "Continue",
+     "next": "Next",
+     "child_info": "Child Information",
+     "emergency_notification": "Emergency Notification",
+     "home_address_location": "Home Address Location",
+     "set_security": "Set Security"
+}

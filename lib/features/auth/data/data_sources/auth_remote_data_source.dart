@@ -17,6 +17,7 @@ import 'package:safenest/core/services/config.dart';
 import 'package:safenest/core/utils/constants.dart';
 import 'package:safenest/core/utils/typedef.dart';
 import 'package:safenest/features/auth/data/models/user_model.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 abstract class AuthRemoteDataSource {
   const AuthRemoteDataSource();
@@ -118,14 +119,18 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
       if (user != null) {
         var userData = await _getUserData(user.uid);
         if (userData.exists) {
-          return LocalUserModel.fromMap(userData.data()!);
+          final localUser = LocalUserModel.fromMap(userData.data()!);
+          await _cacheUserData(localUser);
+          return localUser;
         }
         await _setUserData(
           user,
           email,
         );
         userData = await _getUserData(user.uid);
-        return LocalUserModel.fromMap(userData.data()!);
+        final localUser = LocalUserModel.fromMap(userData.data()!);
+        await _cacheUserData(localUser);
+        return localUser;
       } else {
         throw const ServerException(
           message: 'Failed to sign in',
@@ -319,11 +324,57 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
 
 
   @override
-  Future<void> updateUser(
-      {required UpdateUserAction action, required userData}) {
+  Future<void> updateUser({
+    required UpdateUserAction action,
+    required dynamic userData,
+  }) async {
+    try {
+      final user = _authClient.currentUser;
+      if (user == null) {
+        throw const ServerException(
+          message: 'No user signed in',
+          statusCode: 401,
+        );
+      }
 
-    throw UnimplementedError();
+      switch (action) {
+        case UpdateUserAction.displayName:
+          await user.updateDisplayName(userData as String);
+          break;
+        case UpdateUserAction.photoURL:
+          await user.updatePhotoURL(userData as String);
+          break;
+
+        case UpdateUserAction.password:
+          break;
+      }
+
+      final updatedUser = LocalUserModel(
+        uid: user.uid,
+        email: user.email!,
+        username: user.displayName ?? '',
+        profilePic: user.photoURL ?? '',
+        // Add other fields as needed
+      );
+
+      await _cloudStoreClient.collection('users').doc(user.uid).update(updatedUser.toMap());
+      await _cacheUserData(updatedUser);
+    } on FirebaseAuthException catch (e) {
+      throw ServerException(
+        message: e.message ?? 'Error Occurred',
+        statusCode: e.code,
+      );
+    } on ServerException {
+      rethrow;
+    } catch (e, s) {
+      debugPrintStack(stackTrace: s);
+      throw ServerException(
+        message: e.toString(),
+        statusCode: 505,
+      );
+    }
   }
+
 
   @override
   Future<void> forgotPassword({required String email}) {
@@ -362,40 +413,16 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
   Future<void> logout() async {
     try {
       await _authClient.signOut();
-      final newAccessToken = await _userSession.refreshToken();
 
-      final url = Uri.https(Config.apiUrl, Config.logoutUrl);
-
-      final requestHeaders = <String, String>{
-        'Authorization': 'Bearer $newAccessToken',
-      };
-
-      final response = await _httpClient.client.get(
-        url,
-        headers: requestHeaders,
-      );
-
-      if (response.statusCode == 201) {
-        try {
-          await _facebookAuthClient.logOut();
-        } catch (e, s) {
-          debugPrintStack(stackTrace: s);
-        }
-        try {
-          await _googleSignIn.signOut();
-        } catch (e, s) {
-          debugPrintStack(stackTrace: s);
-        }
-      } else if (response.statusCode == 400) {
-        throw ServerException(
-          message: (json.decode(response.body)['message']) as String,
-          statusCode: response.statusCode.toString(),
-        );
-      } else {
-        throw ServerException(
-          message: 'Failed to sign Out',
-          statusCode: response.statusCode.toString(),
-        );
+      try {
+        await _facebookAuthClient.logOut();
+      } catch (e, s) {
+        debugPrintStack(stackTrace: s);
+      }
+      try {
+        await _googleSignIn.signOut();
+      } catch (e, s) {
+        debugPrintStack(stackTrace: s);
       }
     } on ServerException {
       rethrow;
@@ -406,5 +433,11 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
         statusCode: 505,
       );
     }
+  }
+
+  Future<void> _cacheUserData(LocalUserModel user) async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setString('userId', user.uid);
+    await prefs.setString('userData', jsonEncode(user.toMap()));
   }
 }

@@ -28,6 +28,7 @@ class CustomTextFormField extends StatelessWidget {
     this.hintText,
     this.hintStyle,
     this.prefix,
+    this.readOnly,
     this.maxLines,
     this.autoValidateMode,
     this.isPassword = false,
@@ -44,6 +45,7 @@ class CustomTextFormField extends StatelessWidget {
   final EdgeInsetsDirectional? contentPadding;
   final String? hintText;
   final bool overrideValidator;
+  final bool? readOnly;
   final String? labelText;
   final TextStyle? style;
   final TextStyle? hintStyle;
@@ -92,6 +94,7 @@ class CustomTextFormField extends StatelessWidget {
           ),
       maxLines: maxLines,
       enabled: isEnabled,
+      readOnly:readOnly??false,
       textAlign: textAlign ?? TextAlign.start,
       initialValue: initialValue,
       obscureText: isPassword,

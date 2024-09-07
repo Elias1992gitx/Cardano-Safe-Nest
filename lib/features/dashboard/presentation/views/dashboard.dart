@@ -11,6 +11,7 @@ import 'package:safenest/core/extensions/context_extensions.dart';
 import 'package:safenest/core/utils/constants.dart';
 import 'package:safenest/features/dashboard/presentation/views/home_screen.dart';
 import 'package:provider/provider.dart';
+import 'package:safenest/features/notification/presentation/view/notification_page.dart';
 import 'package:shimmer/shimmer.dart';
 
 class Dashboard extends StatefulWidget {
@@ -25,16 +26,14 @@ class _DashboardState extends State<Dashboard> {
   List<Widget> pages = [
     HomeScreen(),
     Scaffold(),
-    Scaffold(),
-    Scaffold(),
+    NotificationScreen(),
     Scaffold(),
   ];
   List<String> titles = const [
     'Nexus Deep',
-    'Search',
-    'Spaces',
+    'Review',
     'Activity',
-    'Proposals',
+    'Location',
   ];
 
   int currentIndex = 0;
@@ -64,24 +63,31 @@ class _DashboardState extends State<Dashboard> {
         items: const [
           BottomNavigationBarItem(
             label: 'Home',
-            icon: Icon(IconlyBold.home,size: 27,),
-
+            icon: Icon(
+              IconlyLight.home,
+              size: 30,
+            ),
           ),
           BottomNavigationBarItem(
-            label: 'Search',
-            icon: Icon(IconlyLight.search,size: 27),
-          ),
-          BottomNavigationBarItem(
-            label: 'Spaces',
-            icon: Icon(FontAwesomeIcons.handshake),
+            label: 'Review',
+            icon: Icon(
+              IconlyLight.chart,
+              size: 30,
+            ),
           ),
           BottomNavigationBarItem(
             label: 'Activity',
-            icon: Icon(IconlyBold.notification,size: 27,),
+            icon: Icon(
+              IconlyLight.notification,
+              size: 30,
+            ),
           ),
           BottomNavigationBarItem(
-            label: 'Transaction',
-            icon: Icon(IconlyBold.wallet,size: 27,),
+            label: 'Location',
+            icon: Icon(
+              IconlyLight.location,
+              size: 30,
+            ),
           ),
         ],
       ),
@@ -101,9 +107,7 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
       centerTitle: true,
       toolbarHeight: 70,
       title: Row(
-        children: [
-
-        ],
+        children: [],
       ),
       actions: [
         Consumer<UserProvider>(

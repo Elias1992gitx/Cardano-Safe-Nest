@@ -6,11 +6,9 @@ class CreateProfilePageContent extends Equatable {
   const CreateProfilePageContent({required this.title, required this.description});
   const CreateProfilePageContent.first()
       : this(
-          title: 'Continue your Nexus Deep Story!',
-          description:
-              'You are just few steps away from potential investment. '
-                  "Complete your profile now and we'll help your business "
-                  'attract the right attention',
+          title: 'Continue your Safe Nest Story!',
+          description: 'You are just a few steps away from creating a safe digital environment for your child. '
+              "Complete your parental profile now to start monitoring and protecting them online.",
 
         );
   const CreateProfilePageContent.second()

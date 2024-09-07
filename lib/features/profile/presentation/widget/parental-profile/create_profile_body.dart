@@ -60,7 +60,7 @@ class CreateProfileBody extends StatelessWidget {
                 elevation: .2,
                 textStyle: GoogleFonts.montserrat(
                   fontSize: 16,
-                  color: Colors.white,
+
                 ),
                 borderSide: const BorderSide(
                   color: Colors.transparent,

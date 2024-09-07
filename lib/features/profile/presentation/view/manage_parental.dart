@@ -3,19 +3,19 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:safenest/core/common/widgets/custom_button.dart';
 import 'package:safenest/core/extensions/context_extensions.dart';
 import 'package:safenest/features/profile/domain/entity/create_profile_page_content.dart';
-import 'package:safenest/features/profile/presentation/widget/create-profile/create_profile_body.dart';
-import 'package:safenest/features/profile/presentation/widget/create-profile/create_profile_form.dart';
+import 'package:safenest/features/profile/presentation/widget/parental-profile/create_profile_body.dart';
+import 'package:safenest/features/profile/presentation/widget/parental-profile/create_profile_form.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 
-class CreateYourProfileScreen extends StatefulWidget {
-  const CreateYourProfileScreen({super.key});
+class ManageParentalScreen extends StatefulWidget {
+  const ManageParentalScreen({super.key});
 
   @override
-  State<CreateYourProfileScreen> createState() =>
-      _CreateYourProfileScreenState();
+  State<ManageParentalScreen> createState() =>
+      _ManageParentalScreenState();
 }
 
-class _CreateYourProfileScreenState extends State<CreateYourProfileScreen> {
+class _ManageParentalScreenState extends State<ManageParentalScreen> {
   final _pageController = PageController(
   );
   double currentPage = 0;
@@ -33,7 +33,7 @@ class _CreateYourProfileScreenState extends State<CreateYourProfileScreen> {
         centerTitle: true,
         toolbarHeight: 70,
         title: Text(
-          'Create Profile',
+          'Manage Parental Info',
           style: GoogleFonts.outfit(
             fontSize: 22,
             fontWeight: FontWeight.w500,
@@ -60,7 +60,7 @@ class _CreateYourProfileScreenState extends State<CreateYourProfileScreen> {
                         padding: const EdgeInsetsDirectional.symmetric(
                             horizontal: 15),
                         child: Text(
-                          'Continue your Nexus Deep Story!',
+                          'Continue your Safe Nest Story!',
                           style: GoogleFonts.montserrat(
                             textStyle: const TextStyle(
                               fontSize: 20,
@@ -74,11 +74,9 @@ class _CreateYourProfileScreenState extends State<CreateYourProfileScreen> {
                       alignment: AlignmentDirectional.topCenter,
                       child: Padding(
                         padding: const EdgeInsetsDirectional.symmetric(
-                            horizontal: 20, vertical: 10),
+                            horizontal: 20, vertical: 30),
                         child: Text(
-                          'You are just few steps away from potential investment. '
-                          "Complete your profile now and we'll help your business "
-                          'do the right investment',
+                          'You are just a few steps away from creating a safe digital environment for your child. '"Complete few questions now to start monitoring and protecting them online.",
                           textAlign: TextAlign.start,
                           style: GoogleFonts.montserrat(
                             fontSize: 15,

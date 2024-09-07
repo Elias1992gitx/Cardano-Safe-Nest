@@ -11,11 +11,12 @@ Future<void> init() async {
     ..registerLazySingleton(() => FirebaseAuth.instance)
     ..registerLazySingleton(() => UserSession(prefs))
     ..registerLazySingleton(
-      () =>
-          CustomHttpClient(sl.get<SharedPreferences>(), sl.get<UserSession>()),
+      () => CustomHttpClient(sl.get<SharedPreferences>(), sl.get<UserSession>()),
     );
   await _onBoardingInit();
+  await _languageInit();
   await _authInit();
+  await _parentalInfoInit();
 }
 
 Future<void> _onBoardingInit() async {
@@ -54,7 +55,7 @@ Future<void> _authInit() async {
     ..registerLazySingleton(() => VerifyEmail(sl()))
     ..registerLazySingleton(() => ForgotPassword(sl()))
     ..registerLazySingleton(() => UpdateUser(sl()))
-    ..registerLazySingleton(() => LogoutUseCase(sl()))
+    ..registerLazySingleton(() => LogoutUseCase(sl(), sl()))
     ..registerLazySingleton(() => SignInWithGoogle(sl()))
     ..registerLazySingleton(() => SignInWithFacebook(sl()))
     ..registerLazySingleton<AuthenticationRepository>(() => AuthRepoImpl(sl()))
@@ -71,4 +72,49 @@ Future<void> _authInit() async {
     )
     ..registerLazySingleton<GoogleSignIn>(GoogleSignIn.new)
     ..registerLazySingleton(() => FacebookAuth.instance);
+}
+
+Future<void> _languageInit() async {
+  sl
+    ..registerFactory(
+      () => LanguageBloc(
+        setLanguage: sl(),
+        getLanguage: sl(),
+      ),
+    )
+    ..registerLazySingleton(() => SetLanguage(sl()))
+    ..registerLazySingleton(() => GetLanguage(sl()))
+    ..registerLazySingleton<LanguageRepository>(() => LanguageRepositoryImpl(sl()))
+    ..registerLazySingleton<LanguageLocalDataSource>(
+      () => LanguageLocalDataSourceImpl(sl()),
+    );
+}
+
+Future<void> _parentalInfoInit() async {
+  sl
+    ..registerFactory(
+          () => ParentalInfoBloc(
+        saveParentalInfo: sl(),
+        getParentalInfo: sl(),
+        updateParentalInfo: sl(),
+        addChild: sl(),
+        updateChild: sl(),
+        removeChild: sl(),
+        setPin: sl(),
+      ),
+    )
+    ..registerLazySingleton(() => SaveParentalInfoUseCase(sl()))
+    ..registerLazySingleton(() => GetParentalInfoUseCase(sl()))
+    ..registerLazySingleton(() => UpdateParentalInfoUseCase(sl()))
+    ..registerLazySingleton(() => AddChildUseCase(sl()))
+    ..registerLazySingleton(() => UpdateChildUseCase(sl()))
+    ..registerLazySingleton(() => RemoveChildUseCase(sl()))
+    ..registerLazySingleton(() => SetPinUseCase(sl()))
+    ..registerLazySingleton<ParentalInfoRepository>(() => ParentalInfoRepoImpl(sl()))
+    ..registerLazySingleton<ParentalInfoRemoteDataSource>(
+          () => ParentalInfoRemoteDataSourceImpl(
+        firestore: sl(),
+        auth: sl(),
+      ),
+    );
 }

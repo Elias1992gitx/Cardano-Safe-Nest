@@ -1,0 +1,128 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:safenest/core/errors/exceptions.dart';
+import 'package:safenest/features/profile/data/models/parental_info_model.dart';
+import 'package:safenest/features/profile/data/models/child_model.dart';
+
+abstract class ParentalInfoRemoteDataSource {
+  Future<void> saveParentalInfo(ParentalInfoModel parentalInfo);
+  Future<ParentalInfoModel> getParentalInfo();
+  Future<void> updateParentalInfo(ParentalInfoModel parentalInfo);
+  Future<void> addChild(ChildModel child);
+  Future<void> updateChild(ChildModel child);
+  Future<void> removeChild(String childId);
+  Future<void> setPin(String pin);
+}
+
+class ParentalInfoRemoteDataSourceImpl implements ParentalInfoRemoteDataSource {
+  final FirebaseFirestore firestore;
+  final FirebaseAuth auth;
+
+  ParentalInfoRemoteDataSourceImpl({
+    required this.firestore,
+    required this.auth,
+  });
+
+  @override
+  Future<void> saveParentalInfo(ParentalInfoModel parentalInfo) async {
+    try {
+      final user = auth.currentUser;
+      if (user != null) {
+        await firestore.collection('parental_info').doc(user.uid).set(parentalInfo.toMap());
+      } else {
+        throw const ServerException(message: 'Server Error', statusCode: 501);
+      }
+    } catch (e) {
+      throw const ServerException(message: 'Server Error', statusCode: 501);
+    }
+  }
+
+  @override
+  Future<ParentalInfoModel> getParentalInfo() async {
+    try {
+      final user = auth.currentUser;
+      if (user != null) {
+        final doc = await firestore.collection('parental_info').doc(user.uid).get();
+        if (doc.exists) {
+          return ParentalInfoModel.fromMap(doc.data()!);
+        } else {
+          throw const ServerException(message: 'Server Error', statusCode: 501);
+        }
+      } else {
+        throw const ServerException(message: 'Server Error', statusCode: 501);
+      }
+    } catch (e) {
+      throw const ServerException(message: 'Server Error', statusCode: 501);
+    }
+  }
+
+  @override
+  Future<void> updateParentalInfo(ParentalInfoModel parentalInfo) async {
+    try {
+      final user = auth.currentUser;
+      if (user != null) {
+        await firestore.collection('parental_info').doc(user.uid).update(parentalInfo.toMap());
+      } else {
+        throw const ServerException(message: 'Server Error', statusCode: 501);
+      }
+    } catch (e) {
+      throw const ServerException(message: 'Server Error', statusCode: 501);
+    }
+  }
+
+  @override
+  Future<void> addChild(ChildModel child) async {
+    try {
+      final user = auth.currentUser;
+      if (user != null) {
+        await firestore.collection('parental_info').doc(user.uid).collection('children').doc(child.id).set(child.toMap());
+      } else {
+        throw const ServerException(message: 'Server Error', statusCode: 501);
+      }
+    } catch (e) {
+      throw const ServerException(message: 'Server Error', statusCode: 501);
+    }
+  }
+
+  @override
+  Future<void> updateChild(ChildModel child) async {
+    try {
+      final user = auth.currentUser;
+      if (user != null) {
+        await firestore.collection('parental_info').doc(user.uid).collection('children').doc(child.id).update(child.toMap());
+      } else {
+        throw const ServerException(message: 'Server Error', statusCode: 501);
+      }
+    } catch (e) {
+      throw const ServerException(message: 'Server Error', statusCode: 501);
+    }
+  }
+
+  @override
+  Future<void> removeChild(String childId) async {
+    try {
+      final user = auth.currentUser;
+      if (user != null) {
+        await firestore.collection('parental_info').doc(user.uid).collection('children').doc(childId).delete();
+      } else {
+        throw const ServerException(message: 'Server Error', statusCode: 501);
+      }
+    } catch (e) {
+      throw const ServerException(message: 'Server Error', statusCode: 501);
+    }
+  }
+
+  @override
+  Future<void> setPin(String pin) async {
+    try {
+      final user = auth.currentUser;
+      if (user != null) {
+        await firestore.collection('parental_info').doc(user.uid).update({'pin': pin});
+      } else {
+        throw const ServerException(message: 'Server Error', statusCode: 501);
+      }
+    } catch (e) {
+      throw const ServerException(message: 'Server Error', statusCode: 501);
+    }
+  }
+}

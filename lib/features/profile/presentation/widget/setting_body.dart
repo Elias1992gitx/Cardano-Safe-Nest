@@ -136,53 +136,8 @@ class _SettingBodyState extends State<SettingBody> {
                 alignment: AlignmentDirectional.bottomCenter,
                 child: InkWell(
                   onTap: () {
-
+                    context.go('/language-selection');
                   },
-                  child: SizedBox(
-                    width: double.infinity,
-                    height: 60,
-                    child: Padding(
-                      padding: const EdgeInsetsDirectional.fromSTEB(
-                          16, 0, 16, 0),
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Row(
-                            children: [
-                              const Align(
-                                alignment:
-                                AlignmentDirectional.centerStart,
-                                child: Icon(
-                                  IconlyLight.shield_done,
-                                  color: Colors.blueGrey,
-                                  size: 30,
-                                ),
-                              ),
-                              Padding(
-                                padding:
-                                const EdgeInsets.only(left: 20),
-                                child: Text(
-                                  'Set up 2FA',
-                                  style: GoogleFonts.montserrat(
-                                    textStyle: const TextStyle(
-                                      fontWeight: FontWeight.w500,
-                                      fontSize: 16,
-                                    ),
-                                  ),
-                                ),
-                              ),
-                            ],
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
-                ),
-              ),
-              Align(
-                alignment: AlignmentDirectional.bottomCenter,
-                child: InkWell(
-                  onTap: () {},
                   child: SizedBox(
                     width: double.infinity,
                     height: 60,

@@ -76,10 +76,8 @@ class UserSession extends ChangeNotifier {
 
   Future<void> logout() async {
     await FirebaseAuth.instance.signOut(); // Firebase sign out
-    await _prefs.remove('accessToken');
-    await _prefs.remove('refreshToken');
+    await _prefs.clear();
     _isLoggedIn.add(false);
-    await _prefs.setBool(kIsLoggedIn, false);
   }
 
   @override
