@@ -9,6 +9,8 @@ import 'package:iconly/iconly.dart';
 import 'package:safenest/core/common/app/providers/user_provider.dart';
 import 'package:safenest/core/common/widgets/custom_profile_pic.dart';
 import 'package:safenest/core/utils/constants.dart';
+import 'package:safenest/features/profile/presentation/bloc/parental_info_bloc.dart';
+import 'package:safenest/features/profile/presentation/widget/parental-profile/set_security.dart';
 import 'package:safenest/core/utils/core_utils.dart';
 import 'package:safenest/core/utils/custom_snackbar.dart';
 import 'package:safenest/features/auth/presentation/bloc/auth_bloc.dart';
@@ -28,70 +30,117 @@ class _UserProfileScreenState extends State<UserProfileScreen> with TickerProvid
   bool _isParentalModeEnabled = false;
 
   @override
+  void initState() {
+    super.initState();
+    _fetchParentalInfo();
+  }
+
+  void _fetchParentalInfo() {
+    final parentalInfoBloc = context.read<ParentalInfoBloc>();
+    parentalInfoBloc.add(GetParentalInfoEvent());
+  }
+
+  bool _parentalInfoExists() {
+    final parentalInfoBloc = context.read<ParentalInfoBloc>();
+    parentalInfoBloc.add(GetParentalInfoEvent());
+    return parentalInfoBloc.state is ParentalInfoLoaded;
+  }
+
+  @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: SingleChildScrollView(
-        child: Column(
-          children: [
-            const UserProfileCard(),
-            _buildCenteredCard(context),
-            const UserContents(),
-            const SettingBody(),
-            _buildFooter(context),
-          ],
+    return BlocListener<ParentalInfoBloc, ParentalInfoState>(
+      listener: (context, state) {
+        if (state is ParentalInfoLoaded) {
+          setState(() {
+            _isParentalModeEnabled = true;
+          });
+        } else if (state is ParentalInfoInitial) {
+          setState(() {
+            _isParentalModeEnabled = false;
+          });
+        }
+      },
+      child: Scaffold(
+        body: SingleChildScrollView(
+          child: Column(
+            children: [
+              const UserProfileCard(),
+              _buildCenteredCard(context),
+              const UserContents(),
+              const SettingBody(),
+              _buildFooter(context),
+            ],
+          ),
         ),
       ),
     );
   }
 
   Widget _buildCenteredCard(BuildContext context) {
-    return Stack(
-      children: [
-        Container(
-          height: 30.0,
-          decoration: BoxDecoration(
-            color: context.theme.colorScheme.onTertiary,
-          ),
-        ),
-        Container(
-          height: 30.0,
-        ),
-        Center(
-          child: Card(
-            elevation: 0,
-            color: context.theme.cardColor,
-            child: SizedBox(
-              height: 60.0,
-              width: MediaQuery.of(context).size.width * 0.9,
-              child: ListTile(
-                leading: const Icon(
-                  IconlyLight.shield_done,
-                ),
-                title: Text(
-                  "Parental Mode",
-                  style: GoogleFonts.plusJakartaSans(
-                    textStyle: const TextStyle(
-                      fontWeight: FontWeight.w500,
-                      fontSize: 16,
+    return BlocBuilder<ParentalInfoBloc, ParentalInfoState>(
+      builder: (context, state) {
+        return Stack(
+          children: [
+            Container(
+              height: 30.0,
+              decoration: BoxDecoration(
+                color: context.theme.colorScheme.onTertiary,
+              ),
+            ),
+            Container(
+              height: 30.0,
+            ),
+            Center(
+              child: Card(
+                elevation: 0,
+                color: context.theme.cardColor,
+                child: SizedBox(
+                  height: 60.0,
+                  width: MediaQuery.of(context).size.width * 0.9,
+                  child: ListTile(
+                    leading: const Icon(
+                      IconlyLight.shield_done,
+                    ),
+                    title: Text(
+                      "Parental Mode",
+                      style: GoogleFonts.plusJakartaSans(
+                        textStyle: const TextStyle(
+                          fontWeight: FontWeight.w500,
+                          fontSize: 16,
+                        ),
+                      ),
+                    ),
+                    trailing: Switch(
+                      value: _isParentalModeEnabled,
+                      onChanged: state is ParentalInfoLoaded
+                          ? (value) async {
+                        final pin = await Navigator.of(context).push<String>(
+                          MaterialPageRoute(
+                            builder: (context) => SetPinPage(
+                              onPinSet: (pin) {
+                                return pin;
+                              },
+                            ),
+                          ),
+                        );
+                        if (pin != null) {
+                          setState(() {
+                            _isParentalModeEnabled = value;
+                          });
+                          if (value) {
+                            context.go('/profile-screen/parental-mode');
+                          }
+                        }
+                      }
+                          : null,
                     ),
                   ),
                 ),
-                trailing: Switch(
-                  value: _isParentalModeEnabled,
-                  onChanged: (value) {
-                    setState(() {
-                      _isParentalModeEnabled = value;
-                    });
-                    if (value) {
-                      context.go('/profile-screen/parental-mode');
-                    }
-                  },
-                ),
               ),
             ),
-          ),
-        ),
-      ],
+          ],
+        );
+      },
     );
   }
 

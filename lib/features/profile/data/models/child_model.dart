@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:safenest/core/utils/typedef.dart';
+import 'package:safenest/features/location/domain/entity/safe_location.dart';
 import 'package:safenest/features/profile/domain/entity/child.dart';
 
 class ChildModel extends Child {
@@ -28,6 +29,7 @@ class ChildModel extends Child {
     super.behavioralReports,
     super.notificationPreferences,
     super.personalPreferences,
+    super.safeLocations
   });
 
   ChildModel.fromMap(DataMap map)
@@ -90,6 +92,7 @@ class ChildModel extends Child {
     GeoPoint? currentLocation,
     String? schoolName,
     String? schoolAddress,
+    List<SafeLocation>? safeLocations,
     List<String>? monitoredApps,
     Duration? screenTime,
     List<String>? activityLogs,
@@ -118,6 +121,7 @@ class ChildModel extends Child {
       schoolAddress: schoolAddress ?? this.schoolAddress,
       monitoredApps: monitoredApps ?? this.monitoredApps,
       screenTime: screenTime ?? this.screenTime,
+      safeLocations:safeLocations??this.safeLocations,
       activityLogs: activityLogs ?? this.activityLogs,
       parentalControls: parentalControls ?? this.parentalControls,
       geofencingAlerts: geofencingAlerts ?? this.geofencingAlerts,
@@ -151,6 +155,7 @@ class ChildModel extends Child {
           : null,
       'schoolName': schoolName,
       'schoolAddress': schoolAddress,
+      'safeLocations': safeLocations,
       'monitoredApps': monitoredApps,
       'screenTime': screenTime?.inSeconds,
       'activityLogs': activityLogs,
@@ -180,6 +185,7 @@ class ChildModel extends Child {
       currentLocation: entity.currentLocation,
       schoolName: entity.schoolName,
       schoolAddress: entity.schoolAddress,
+      safeLocations: entity.safeLocations,
       monitoredApps: entity.monitoredApps,
       screenTime: entity.screenTime,
       activityLogs: entity.activityLogs,

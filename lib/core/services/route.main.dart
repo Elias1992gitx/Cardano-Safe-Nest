@@ -66,6 +66,9 @@ final GoRouter router = GoRouter(
                   BlocProvider<AuthBloc>(
                     create: (_) => sl<AuthBloc>(),
                   ),
+                  BlocProvider<ParentalInfoBloc>(
+                    create: (_) => sl<ParentalInfoBloc>(),
+                  ),
                 ],
                 child: const UserProfileScreen(),
               ),

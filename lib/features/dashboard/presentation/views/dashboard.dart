@@ -1,4 +1,5 @@
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -11,6 +12,9 @@ import 'package:safenest/core/extensions/context_extensions.dart';
 import 'package:safenest/core/utils/constants.dart';
 import 'package:safenest/features/dashboard/presentation/views/home_screen.dart';
 import 'package:provider/provider.dart';
+import 'package:safenest/features/location/domain/entity/child_location.dart';
+import 'package:safenest/features/location/domain/entity/safe_location.dart';
+import 'package:safenest/features/location/presentation/views/location_page.dart';
 import 'package:safenest/features/notification/presentation/view/notification_page.dart';
 import 'package:shimmer/shimmer.dart';
 
@@ -27,7 +31,60 @@ class _DashboardState extends State<Dashboard> {
     HomeScreen(),
     Scaffold(),
     NotificationScreen(),
-    Scaffold(),
+    LocationDashboard(
+      safeLocations: [
+        SafeLocation(
+          id: '1',
+          name: 'Home',
+          location: GeoPoint(37.7749, -122.4194),
+          radius: 100,
+        ),
+        SafeLocation(
+          id: '2',
+          name: 'School',
+          location: GeoPoint(37.7739, -122.4312),
+          radius: 200,
+        ),
+        SafeLocation(
+          id: '3',
+          name: 'Park',
+          location: GeoPoint(37.7694, -122.4862),
+          radius: 150,
+        ),
+      ],
+      childLocations: [
+        ChildLocation(
+          childId: 'child1',
+          location: GeoPoint(37.7749, -122.4194),
+          timestamp: DateTime.now(),
+          isInSafeZone: true,
+          nearestSafeZone: SafeLocation(
+            id: '1',
+            name: 'Home',
+            location: GeoPoint(37.7749, -122.4194),
+            radius: 100,
+          ),
+        ),
+        ChildLocation(
+          childId: 'child2',
+          location: GeoPoint(37.7739, -122.4312),
+          timestamp: DateTime.now().subtract(Duration(minutes: 30)),
+          isInSafeZone: true,
+          nearestSafeZone: SafeLocation(
+            id: '2',
+            name: 'School',
+            location: GeoPoint(37.7739, -122.4312),
+            radius: 200,
+          ),
+        ),
+        ChildLocation(
+          childId: 'child3',
+          location: GeoPoint(37.7694, -122.4862),
+          timestamp: DateTime.now().subtract(Duration(hours: 1)),
+          isInSafeZone: false,
+        ),
+      ],
+    ),
   ];
   List<String> titles = const [
     'Nexus Deep',

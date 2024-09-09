@@ -170,7 +170,7 @@ class _CreateProfileFormBodyState extends State<CreateProfileFormBody> {
                   actions: [
                     TextButton(
                       onPressed: () {
-                        Navigator.of(context).pop();
+                        context.go("/");
                       },
                       child: const Text('OK'),
                     ),
@@ -256,21 +256,49 @@ class _CreateProfileFormBodyState extends State<CreateProfileFormBody> {
               fontWeight: FontWeight.w400,
             ),
           ),
-          SwipeCards(
-            matchEngine: matchEngine,
-            itemBuilder: (BuildContext context, int index) {
-              return swipeItems[index].content;
-            },
-            onStackFinished: () {
-              _navigateToSetPinPage();
-            },
-            itemChanged: (SwipeItem item, int index) {
-              print("item: ${item.content}, index: $index");
-            },
-            upSwipeAllowed: false,
-            fillSpace: true,
+          const SizedBox(height: 20),
+          Expanded(
+            child: SwipeCards(
+              matchEngine: matchEngine,
+              itemBuilder: (BuildContext context, int index) {
+                return swipeItems[index].content;
+              },
+              onStackFinished: () {
+                _navigateToSetPinPage();
+              },
+              itemChanged: (SwipeItem item, int index) {},
+              upSwipeAllowed: false,
+              fillSpace: true,
+            ),
           ),
-
+          Align(
+            alignment: const Alignment(0, .15),
+            child: Padding(
+              padding: const EdgeInsetsDirectional.only(top:20),
+              child: FFCustomButton(
+                text: 'Discard',
+                options: FFButtonOptions(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 20,
+                    vertical: 15,
+                  ),
+                  splashColor: context.theme.colorScheme.error.withOpacity(.1),
+                  width: context.width * .4,
+                  color: context.theme.cardColor,
+                  elevation: .2,
+                  textStyle: GoogleFonts.outfit(
+                    fontSize: 16,
+                    color: context.theme.colorScheme.error,
+                  ),
+                  borderSide: BorderSide(
+                    color: context.theme.colorScheme.error,
+                  ),
+                  borderRadius: BorderRadius.circular(0),
+                ),
+                onPressed: () {},
+              ),
+            ),
+          ),
         ],
       ),
     );
@@ -407,7 +435,7 @@ class _CreateProfileFormBodyState extends State<CreateProfileFormBody> {
             ),
           if (_pageController.hasClients && _pageController.page! == 0)
             Container(),
-          if (_pageController.hasClients && _pageController.page! != 5)
+          if (_pageController.hasClients && _pageController.page! != 3)
             Align(
               alignment: AlignmentDirectional.bottomEnd,
               child: GestureDetector(

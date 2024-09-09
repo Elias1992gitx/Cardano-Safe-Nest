@@ -1,5 +1,6 @@
 import 'package:equatable/equatable.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:safenest/features/location/domain/entity/safe_location.dart';
 
 class Child extends Equatable {
   const Child({
@@ -14,6 +15,7 @@ class Child extends Equatable {
     this.currentLocation,
     this.schoolName,
     this.schoolAddress,
+    this.safeLocations,
     this.monitoredApps,
     this.screenTime,
     this.activityLogs,
@@ -53,6 +55,7 @@ class Child extends Equatable {
   final List<String>? behavioralReports;
   final Map<String, bool>? notificationPreferences;
   final Map<String, dynamic>? personalPreferences;
+  final List<SafeLocation>? safeLocations;
 
   @override
   List<Object?> get props => [
@@ -67,6 +70,7 @@ class Child extends Equatable {
     currentLocation,
     schoolName,
     schoolAddress,
+    safeLocations,
     monitoredApps,
     screenTime,
     activityLogs,
