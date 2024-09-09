@@ -45,4 +45,16 @@ import 'package:safenest/features/profile/domain/usecase/set_pin_usecase.dart';
 import 'package:safenest/features/profile/domain/usecase/update_paternal_info.dart';
 import 'package:safenest/features/profile/presentation/bloc/parental_info_bloc.dart';
 
+// digital well being
+import 'package:safenest/features/digital_wellbeing/data/datasources/digital_wellbeing_remote_data_source.dart';
+import 'package:safenest/features/digital_wellbeing/data/repositories/digital_wellbeing_repo_impl.dart';
+import 'package:safenest/features/digital_wellbeing/domain/repositories/digital_wellbeing_repository.dart';
+import 'package:safenest/features/digital_wellbeing/domain/usecases/get_digital_wellbeing_use_case.dart';
+import 'package:safenest/features/digital_wellbeing/domain/usecases/update_digital_wellbeing_use_case.dart';
+import 'package:safenest/features/digital_wellbeing/domain/usecases/set_usage_limit_use_case.dart';
+import 'package:safenest/features/digital_wellbeing/domain/usecases/remove_usage_limit_use_case.dart';
+import 'package:safenest/features/digital_wellbeing/domain/usecases/get_digital_wellbeing_history_use_case.dart';
+import 'package:safenest/features/digital_wellbeing/presentation/bloc/digital_wellbeing_bloc.dart';
+
+
 part 'injection_container.main.dart';

@@ -118,3 +118,28 @@ Future<void> _parentalInfoInit() async {
       ),
     );
 }
+
+Future<void> _digitalWellbeingInit() async {
+  sl
+    ..registerFactory(
+          () => DigitalWellbeingBloc(
+        getDigitalWellbeing: sl(),
+        updateDigitalWellbeing: sl(),
+        setUsageLimit: sl(),
+        removeUsageLimit: sl(),
+        getDigitalWellbeingHistory: sl(),
+      ),
+    )
+    ..registerLazySingleton(() => GetDigitalWellbeingUseCase(sl()))
+    ..registerLazySingleton(() => UpdateDigitalWellbeingUseCase(sl()))
+    ..registerLazySingleton(() => SetUsageLimitUseCase(sl()))
+    ..registerLazySingleton(() => RemoveUsageLimitUseCase(sl()))
+    ..registerLazySingleton(() => GetDigitalWellbeingHistoryUseCase(sl()))
+    ..registerLazySingleton<DigitalWellbeingRepository>(() => DigitalWellbeingRepoImpl(sl()))
+    ..registerLazySingleton<DigitalWellbeingRemoteDataSource>(
+          () => DigitalWellbeingRemoteDataSourceImpl(
+        firestore: sl(),
+        auth: sl(),
+      ),
+    );
+}

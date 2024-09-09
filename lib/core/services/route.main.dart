@@ -30,6 +30,9 @@ final GoRouter router = GoRouter(
                 BlocProvider<AuthBloc>(
                   create: (_) => sl<AuthBloc>(),
                 ),
+                BlocProvider<DigitalWellbeingBloc>(
+                  create: (_) => sl<DigitalWellbeingBloc>(),
+                ),
               ],
               child: const Dashboard(),
             ),
