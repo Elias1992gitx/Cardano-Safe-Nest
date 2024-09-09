@@ -8,18 +8,13 @@ class RemoveUsageLimitUseCase extends UsecaseWithParams<void, RemoveUsageLimitPa
   final DigitalWellbeingRepository _repository;
 
   @override
-  ResultVoid call(RemoveUsageLimitParams params) async => _repository.removeUsageLimit(
-    params.childId,
-    params.packageName,
-  );
+  ResultVoid call(RemoveUsageLimitParams params) async =>
+      _repository.removeUsageLimit(params.childId, params.packageName);
 }
 
 class RemoveUsageLimitParams {
   final String childId;
   final String packageName;
 
-  RemoveUsageLimitParams({
-    required this.childId,
-    required this.packageName,
-  });
+  RemoveUsageLimitParams({required this.childId, required this.packageName});
 }

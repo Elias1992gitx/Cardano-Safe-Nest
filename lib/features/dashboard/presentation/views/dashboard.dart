@@ -12,6 +12,7 @@ import 'package:safenest/core/extensions/context_extensions.dart';
 import 'package:safenest/core/utils/constants.dart';
 import 'package:safenest/features/dashboard/presentation/views/home_screen.dart';
 import 'package:provider/provider.dart';
+import 'package:safenest/features/digital_wellbeing/presentation/views/analysis_page.dart';
 import 'package:safenest/features/location/domain/entity/child_location.dart';
 import 'package:safenest/features/location/domain/entity/safe_location.dart';
 import 'package:safenest/features/location/presentation/views/location_page.dart';
@@ -29,7 +30,9 @@ class _DashboardState extends State<Dashboard> {
   final scaffoldKey = GlobalKey<ScaffoldState>();
   List<Widget> pages = [
     HomeScreen(),
-    Scaffold(),
+    DigitalWellbeingAnalysisPage(
+      childId:'FWD8G3EA'
+    ),
     NotificationScreen(),
     LocationDashboard(
       safeLocations: [

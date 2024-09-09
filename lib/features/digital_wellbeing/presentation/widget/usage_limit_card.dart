@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:safenest/features/digital_wellbeing/domain/entity/digital_wellbeing.dart';
 
 class UsageLimitCard extends StatelessWidget {
-  final Map<String, Duration> usageLimits;
+  final Map<String, UsageLimit>? usageLimits;
   final Function(String, Duration) onSetLimit;
   final Function(String) onRemoveLimit;
 
@@ -31,15 +31,16 @@ class UsageLimitCard extends StatelessWidget {
             ListView.builder(
               shrinkWrap: true,
               physics: const NeverScrollableScrollPhysics(),
-              itemCount: usageLimits.length,
+              itemCount: usageLimits?.length ?? 0,
               itemBuilder: (context, index) {
-                final entry = usageLimits.entries.elementAt(index);
+                final packageName = usageLimits!.keys.elementAt(index);
+                final limit = usageLimits![packageName]!;
                 return ListTile(
-                  title: Text(entry.key),
-                  subtitle: Text('${entry.value.inHours}h ${entry.value.inMinutes.remainder(60)}m'),
+                  title: Text(packageName),
+                  subtitle: Text('Daily limit: ${limit.dailyLimit.inHours} hours'),
                   trailing: IconButton(
                     icon: const Icon(Icons.delete),
-                    onPressed: () => onRemoveLimit(entry.key),
+                    onPressed: () => onRemoveLimit(packageName),
                   ),
                 );
               },

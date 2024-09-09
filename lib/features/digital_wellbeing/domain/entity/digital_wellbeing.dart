@@ -6,6 +6,7 @@ class DigitalWellbeing extends Equatable {
     required this.appUsages,
     required this.totalScreenTime,
     required this.date,
+    required this.history,
     this.usageLimits,
   });
 
@@ -14,12 +15,14 @@ class DigitalWellbeing extends Equatable {
   final Duration totalScreenTime;
   final DateTime date;
   final Map<String, UsageLimit>? usageLimits;
+  final List<DigitalWellbeing> history;
 
   @override
   List<Object?> get props => [
     childId,
     appUsages,
     totalScreenTime,
+    history,
     date,
     usageLimits,
   ];

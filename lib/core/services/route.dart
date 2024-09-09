@@ -6,6 +6,7 @@ import 'package:safenest/core/extensions/context_extensions.dart';
 import 'package:safenest/core/services/injection_container.dart';
 import 'package:safenest/features/auth/domain/repos/auth_repos.dart';
 import 'package:safenest/features/dashboard/presentation/views/dashboard.dart';
+import 'package:safenest/features/digital_wellbeing/presentation/bloc/digital_wellbeing_bloc.dart';
 import 'package:safenest/features/language/presentation/bloc/language_bloc.dart';
 import 'package:safenest/features/language/presentation/view/language_setting.dart';
 import 'package:safenest/features/on_boarding/data/datasources/on_boarding_local_datasource.dart';

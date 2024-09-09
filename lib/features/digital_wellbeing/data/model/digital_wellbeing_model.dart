@@ -7,6 +7,7 @@ class DigitalWellbeingModel extends DigitalWellbeing {
     required super.appUsages,
     required super.totalScreenTime,
     required super.date,
+    required super.history,
     super.usageLimits,
   });
 
@@ -26,6 +27,7 @@ class DigitalWellbeingModel extends DigitalWellbeing {
     ),
     totalScreenTime: Duration(milliseconds: map['totalScreenTime'] as int),
     date: DateTime.parse(map['date'] as String),
+    history: (map['history'] as List<dynamic>?)?.map((item) => DigitalWellbeingModel.fromMap(item as DataMap)).toList() ?? [],
     usageLimits: map['usageLimits'] != null
         ? (map['usageLimits'] as Map<String, dynamic>).map(
           (key, value) => MapEntry(
@@ -54,6 +56,7 @@ class DigitalWellbeingModel extends DigitalWellbeing {
           },
         ),
       ),
+      'history': history.map((item) => (item as DigitalWellbeingModel).toMap()).toList(),
       'totalScreenTime': totalScreenTime.inMilliseconds,
       'date': date.toIso8601String(),
       'usageLimits': usageLimits?.map(
@@ -76,6 +79,7 @@ class DigitalWellbeingModel extends DigitalWellbeing {
       totalScreenTime: entity.totalScreenTime,
       date: entity.date,
       usageLimits: entity.usageLimits,
+      history: entity.history,
     );
   }
 }

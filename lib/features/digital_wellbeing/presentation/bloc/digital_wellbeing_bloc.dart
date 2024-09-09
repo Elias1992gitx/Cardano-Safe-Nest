@@ -65,19 +65,27 @@ class DigitalWellbeingBloc extends Bloc<DigitalWellbeingEvent, DigitalWellbeingS
       Emitter<DigitalWellbeingState> emit,
       ) async {
     emit(DigitalWellbeingLoading());
-    final result = await _setUsageLimit(event.childId, event.packageName, event.limit);
+    final result = await _setUsageLimit(SetUsageLimitParams(
+      childId: event.childId,
+      packageName: event.packageName,
+      limit: event.limit,
+    ));
     result.fold(
           (failure) => emit(DigitalWellbeingError(message: failure.message)),
           (_) => emit(UsageLimitSet()),
     );
   }
 
+
   Future<void> _removeUsageLimitHandler(
       RemoveUsageLimitEvent event,
       Emitter<DigitalWellbeingState> emit,
       ) async {
     emit(DigitalWellbeingLoading());
-    final result = await _removeUsageLimit(event.childId, event.packageName);
+    final result = await _removeUsageLimit(RemoveUsageLimitParams(
+      childId: event.childId,
+      packageName: event.packageName,
+    ));
     result.fold(
           (failure) => emit(DigitalWellbeingError(message: failure.message)),
           (_) => emit(UsageLimitRemoved()),
@@ -89,7 +97,11 @@ class DigitalWellbeingBloc extends Bloc<DigitalWellbeingEvent, DigitalWellbeingS
       Emitter<DigitalWellbeingState> emit,
       ) async {
     emit(DigitalWellbeingLoading());
-    final result = await _getDigitalWellbeingHistory(event.childId, event.startDate, event.endDate);
+    final result = await _getDigitalWellbeingHistory(GetDigitalWellbeingHistoryParams(
+      childId: event.childId,
+      startDate: event.startDate,
+      endDate: event.endDate,
+    ));
     result.fold(
           (failure) => emit(DigitalWellbeingError(message: failure.message)),
           (history) => emit(DigitalWellbeingHistoryLoaded(history: history)),

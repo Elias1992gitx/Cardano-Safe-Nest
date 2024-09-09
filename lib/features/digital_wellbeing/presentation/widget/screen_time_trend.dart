@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:fl_chart/fl_chart.dart';
+import 'dart:math' show pi;
 import 'package:safenest/features/digital_wellbeing/domain/entity/digital_wellbeing.dart';
 import 'package:intl/intl.dart';
 
@@ -26,38 +27,52 @@ class ScreenTimeTrend extends StatelessWidget {
             SizedBox(
               height: 200,
               child: LineChart(
-                LineChartData(
-                  gridData: FlGridData(show: false),
-                  titlesData: FlTitlesData(
-                    leftTitles: SideTitles(showTitles: false),
-                    bottomTitles: SideTitles(
-                      showTitles: true,
-                      getTitles: (value) {
-                        final index = value.toInt();
-                        if (index >= 0 && index < history.length) {
-                          return DateFormat('dd/MM').format(history[index].date);
-                        }
-                        return '';
-                      },
-                      rotateAngle: 45,
-                    ),
-                  ),
-                  borderData: FlBorderData(show: false),
-                  lineBarsData: [
-                    LineChartBarData(
-                      spots: _generateSpots(),
-                      isCurved: true,
-                      colors: [Theme.of(context).primaryColor],
-                      barWidth: 4,
-                      isStrokeCapRound: true,
-                      dotData: FlDotData(show: false),
-                      belowBarData: BarAreaData(
-                        show: true,
-                        colors: [Theme.of(context).primaryColor.withOpacity(0.2)],
+                  LineChartData(
+                    gridData: FlGridData(show: false),
+                    titlesData: FlTitlesData(
+                      leftTitles: AxisTitles(sideTitles: SideTitles(showTitles: false)),
+                      bottomTitles: AxisTitles(
+                        sideTitles: SideTitles(
+                          showTitles: true,
+                          getTitlesWidget: (value, meta) {
+                            final index = value.toInt();
+                            if (index >= 0 && index < history.length) {
+                              return Transform.rotate(
+                                angle: 45 * 3.1415926535 / 180,
+                                child: Text(DateFormat('dd/MM').format(history[index].date)),
+                              );
+                            }
+                            return const SizedBox();
+                          },
+                          reservedSize: 30,
+                        ),
                       ),
+                      topTitles: AxisTitles(sideTitles: SideTitles(showTitles: false)),
+                      rightTitles: AxisTitles(sideTitles: SideTitles(showTitles: false)),
                     ),
-                  ],
-                ),
+                    borderData: FlBorderData(show: false),
+                    lineBarsData: [
+                      LineChartBarData(
+                        spots: _generateSpots(),
+                        isCurved: true,
+                        color: Theme.of(context).primaryColor,
+                        barWidth: 4,
+                        isStrokeCapRound: true,
+                        dotData: const FlDotData(show: false),
+                        belowBarData: BarAreaData(
+                          show: true,
+                          gradient: LinearGradient(
+                            colors: [
+                              Theme.of(context).primaryColor.withOpacity(0.2),
+                              Theme.of(context).primaryColor.withOpacity(0.0),
+                            ],
+                            begin: Alignment.topCenter,
+                            end: Alignment.bottomCenter,
+                          ),
+                        ),
+                      ),
+                    ],
+                  )
               ),
             ),
             const SizedBox(height: 16),

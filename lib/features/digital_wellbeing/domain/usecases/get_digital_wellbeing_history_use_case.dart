@@ -4,14 +4,13 @@ import 'package:safenest/features/digital_wellbeing/domain/entity/digital_wellbe
 import 'package:safenest/features/digital_wellbeing/domain/repository/digital_wellbeing_repository.dart';
 
 class GetDigitalWellbeingHistoryUseCase extends UsecaseWithParams<List<DigitalWellbeing>, GetDigitalWellbeingHistoryParams> {
-  final DigitalWellbeingRepository _repository;
-
   const GetDigitalWellbeingHistoryUseCase(this._repository);
 
+  final DigitalWellbeingRepository _repository;
+
   @override
-  ResultFuture<List<DigitalWellbeing>> call(GetDigitalWellbeingHistoryParams params) async {
-    return _repository.getDigitalWellbeingHistory(params.childId, params.startDate, params.endDate);
-  }
+  ResultFuture<List<DigitalWellbeing>> call(GetDigitalWellbeingHistoryParams params) async =>
+      _repository.getDigitalWellbeingHistory(params.childId, params.startDate, params.endDate);
 }
 
 class GetDigitalWellbeingHistoryParams {

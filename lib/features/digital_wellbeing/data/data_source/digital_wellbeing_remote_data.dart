@@ -2,11 +2,12 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:safenest/core/errors/exceptions.dart';
 import 'package:safenest/features/digital_wellbeing/data/model/digital_wellbeing_model.dart';
+import 'package:safenest/features/digital_wellbeing/domain/entity/digital_wellbeing.dart';
 
 abstract class DigitalWellbeingRemoteDataSource {
   Future<DigitalWellbeingModel> getDigitalWellbeing(String childId);
   Future<void> updateDigitalWellbeing(DigitalWellbeingModel digitalWellbeing);
-  Future<void> setUsageLimit(String childId, String packageName, Duration limit);
+  Future<void> setUsageLimit(String childId, String packageName, UsageLimit limit);
   Future<void> removeUsageLimit(String childId, String packageName);
   Future<List<DigitalWellbeingModel>> getDigitalWellbeingHistory(String childId, DateTime startDate, DateTime endDate);
 }
@@ -54,12 +55,15 @@ class DigitalWellbeingRemoteDataSourceImpl implements DigitalWellbeingRemoteData
   }
 
   @override
-  Future<void> setUsageLimit(String childId, String packageName, Duration limit) async {
+  Future<void> setUsageLimit(String childId, String packageName, UsageLimit limit) async {
     try {
       final user = auth.currentUser;
       if (user != null) {
         await firestore.collection('digital_wellbeing').doc(childId).update({
-          'usageLimits.$packageName': limit.inSeconds,
+          'usageLimits.$packageName': {
+            'dailyLimit': limit.dailyLimit.inSeconds,
+            'isEnabled': limit.isEnabled,
+          },
         });
       } else {
         throw const ServerException(message: 'User not authenticated', statusCode: 401);

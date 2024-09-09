@@ -33,7 +33,7 @@ class DigitalWellbeingRepoImpl implements DigitalWellbeingRepository {
   }
 
   @override
-  ResultVoid setUsageLimit(String childId, String packageName, Duration limit) async {
+  ResultVoid setUsageLimit(String childId, String packageName, UsageLimit limit) async {
     try {
       await _remoteDataSource.setUsageLimit(childId, packageName, limit);
       return const Right(null);

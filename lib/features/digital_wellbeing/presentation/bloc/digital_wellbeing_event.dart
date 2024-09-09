@@ -28,7 +28,7 @@ class UpdateDigitalWellbeingEvent extends DigitalWellbeingEvent {
 class SetUsageLimitEvent extends DigitalWellbeingEvent {
   final String childId;
   final String packageName;
-  final Duration limit;
+  final UsageLimit limit;
 
   const SetUsageLimitEvent(this.childId, this.packageName, this.limit);
 
@@ -51,7 +51,11 @@ class GetDigitalWellbeingHistoryEvent extends DigitalWellbeingEvent {
   final DateTime startDate;
   final DateTime endDate;
 
-  const GetDigitalWellbeingHistoryEvent(this.childId, this.startDate, this.endDate);
+  const GetDigitalWellbeingHistoryEvent({
+    required this.childId,
+    required this.startDate,
+    required this.endDate,
+  });
 
   @override
   List<Object> get props => [childId, startDate, endDate];

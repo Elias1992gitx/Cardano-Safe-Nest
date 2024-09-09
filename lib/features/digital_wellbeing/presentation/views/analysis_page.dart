@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:safenest/core/common/app/views/loading_view.dart';
 import 'package:safenest/features/dashboard/presentation/views/dashboard.dart';
+import 'package:safenest/features/digital_wellbeing/domain/entity/digital_wellbeing.dart';
 import 'package:safenest/features/digital_wellbeing/presentation/bloc/digital_wellbeing_bloc.dart';
 import 'package:safenest/features/digital_wellbeing/presentation/widget/app_usage_chart.dart';
 import 'package:safenest/features/digital_wellbeing/presentation/widget/digital_wellbeing_chart.dart';
@@ -44,7 +45,11 @@ class DigitalWellbeingAnalysisPage extends StatelessWidget {
                         usageLimits: state.digitalWellbeing.usageLimits,
                         onSetLimit: (packageName, limit) {
                           context.read<DigitalWellbeingBloc>().add(
-                            SetUsageLimitEvent(childId, packageName, limit),
+                            SetUsageLimitEvent(childId, packageName, UsageLimit(
+                              packageName: packageName,
+                              dailyLimit: limit,
+                              isEnabled: true,
+                            )),
                           );
                         },
                         onRemoveLimit: (packageName) {
