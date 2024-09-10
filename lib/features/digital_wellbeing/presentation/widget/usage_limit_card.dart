@@ -25,7 +25,7 @@ class UsageLimitCard extends StatelessWidget {
           children: [
             Text(
               'App Usage Limits',
-              style: Theme.of(context).textTheme.headline6,
+
             ),
             const SizedBox(height: 16),
             ListView.builder(

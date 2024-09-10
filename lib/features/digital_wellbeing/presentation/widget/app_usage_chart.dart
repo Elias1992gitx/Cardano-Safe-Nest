@@ -19,7 +19,7 @@ class AppUsageChart extends StatelessWidget {
           children: [
             Text(
               'App Usage Distribution',
-              style: Theme.of(context).textTheme.headline6,
+
             ),
             const SizedBox(height: 16),
             SizedBox(

@@ -396,7 +396,7 @@ class _CreateProfileFormBodyState extends State<CreateProfileFormBody> {
         style: GoogleFonts.plusJakartaSans(
           textStyle: TextStyle(
             fontSize: 16,
-            color: context.theme.textTheme.bodyText1?.color,
+
           ),
         ),
       ),

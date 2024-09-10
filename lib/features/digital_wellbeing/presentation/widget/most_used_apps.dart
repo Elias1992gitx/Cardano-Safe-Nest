@@ -21,7 +21,6 @@ class MostUsedApps extends StatelessWidget {
           children: [
             Text(
               'Most Used Apps',
-              style: Theme.of(context).textTheme.headline6,
             ),
             const SizedBox(height: 16),
             ListView.builder(
@@ -38,7 +37,7 @@ class MostUsedApps extends StatelessWidget {
                   subtitle: Text('${app.value.usageTime.inHours}h ${app.value.usageTime.inMinutes.remainder(60)}m'),
                   trailing: Text(
                     '${(app.value.usageTime.inMinutes / appUsages.values.fold<int>(0, (sum, usage) => sum + usage.usageTime.inMinutes) * 100).toStringAsFixed(1)}%',
-                    style: Theme.of(context).textTheme.caption,
+
                   ),
                 );
               },

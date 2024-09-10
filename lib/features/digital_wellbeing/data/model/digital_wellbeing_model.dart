@@ -1,5 +1,9 @@
 import 'package:safenest/core/utils/typedef.dart';
 import 'package:safenest/features/digital_wellbeing/domain/entity/digital_wellbeing.dart';
+import 'package:safenest/features/notification/data/model/child_task_model.dart';
+import 'package:safenest/features/notification/data/model/notification_preference_model.dart';
+import 'package:safenest/features/notification/domain/entity/child_task.dart';
+import 'package:safenest/features/notification/domain/entity/notification_preference.dart';
 
 class DigitalWellbeingModel extends DigitalWellbeing {
   const DigitalWellbeingModel({
@@ -8,7 +12,7 @@ class DigitalWellbeingModel extends DigitalWellbeing {
     required super.totalScreenTime,
     required super.date,
     required super.history,
-    super.usageLimits,
+    super.usageLimits, required super.notificationPreferences, required super.childTasks,
   });
 
   DigitalWellbeingModel.fromMap(DataMap map)
@@ -40,6 +44,8 @@ class DigitalWellbeingModel extends DigitalWellbeing {
       ),
     )
         : null,
+    notificationPreferences: NotificationPreferencesModel.fromMap(map['notificationPreferences'] as DataMap),
+    childTasks: (map['childTasks'] as List<dynamic>).map((item) => ChildTaskModel.fromMap(item as DataMap)).toList(),
   );
 
   DataMap toMap() {
@@ -69,6 +75,8 @@ class DigitalWellbeingModel extends DigitalWellbeing {
           },
         ),
       ),
+      'notificationPreferences': notificationPreferences.toMap(),
+      'childTasks': childTasks.map((task) => task.toMap()).toList(),
     };
   }
 
@@ -80,6 +88,8 @@ class DigitalWellbeingModel extends DigitalWellbeing {
       date: entity.date,
       usageLimits: entity.usageLimits,
       history: entity.history,
+      notificationPreferences: entity.notificationPreferences,
+      childTasks: entity.childTasks,
     );
   }
 }

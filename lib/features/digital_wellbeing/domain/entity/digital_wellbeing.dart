@@ -1,4 +1,8 @@
 import 'package:equatable/equatable.dart';
+import 'package:safenest/features/notification/data/model/child_task_model.dart';
+import 'package:safenest/features/notification/data/model/notification_preference_model.dart';
+import 'package:safenest/features/notification/domain/entity/child_task.dart';
+import 'package:safenest/features/notification/domain/entity/notification_preference.dart';
 
 class DigitalWellbeing extends Equatable {
   const DigitalWellbeing({
@@ -8,6 +12,8 @@ class DigitalWellbeing extends Equatable {
     required this.date,
     required this.history,
     this.usageLimits,
+    required this.notificationPreferences,
+    required this.childTasks,
   });
 
   final String childId;
@@ -16,6 +22,8 @@ class DigitalWellbeing extends Equatable {
   final DateTime date;
   final Map<String, UsageLimit>? usageLimits;
   final List<DigitalWellbeing> history;
+  final NotificationPreferencesModel notificationPreferences;
+  final List<ChildTaskModel> childTasks;
 
   @override
   List<Object?> get props => [
@@ -25,6 +33,8 @@ class DigitalWellbeing extends Equatable {
     history,
     date,
     usageLimits,
+    notificationPreferences,
+    childTasks,
   ];
 }
 

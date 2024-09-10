@@ -18,7 +18,6 @@ class DigitalWellbeingSummary extends StatelessWidget {
           children: [
             Text(
               'Today\'s Summary',
-              style: Theme.of(context).textTheme.headline6,
             ),
             const SizedBox(height: 16),
             _buildSummaryItem(
@@ -46,9 +45,9 @@ class DigitalWellbeingSummary extends StatelessWidget {
         Icon(icon, color: Theme.of(context).primaryColor),
         const SizedBox(width: 8),
         Expanded(
-          child: Text(title, style: Theme.of(context).textTheme.subtitle1),
+          child: Text(title, ),
         ),
-        Text(value, style: Theme.of(context).textTheme.headline6),
+        Text(value,),
       ],
     );
   }

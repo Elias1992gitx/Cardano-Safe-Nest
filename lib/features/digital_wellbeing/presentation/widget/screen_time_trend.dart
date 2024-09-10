@@ -21,7 +21,6 @@ class ScreenTimeTrend extends StatelessWidget {
           children: [
             Text(
               'Screen Time Trend',
-              style: Theme.of(context).textTheme.headline6,
             ),
             const SizedBox(height: 16),
             SizedBox(
@@ -120,8 +119,8 @@ class ScreenTimeTrend extends StatelessWidget {
       children: [
         Icon(icon, color: color ?? Theme.of(context).primaryColor),
         const SizedBox(height: 4),
-        Text(title, style: Theme.of(context).textTheme.caption),
-        Text(value, style: Theme.of(context).textTheme.subtitle1?.copyWith(fontWeight: FontWeight.bold)),
+        Text(title,),
+        Text(value, ),
       ],
     );
   }
