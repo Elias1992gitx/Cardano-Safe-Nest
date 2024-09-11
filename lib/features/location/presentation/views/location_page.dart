@@ -64,10 +64,7 @@ class _LocationDashboardState extends State<LocationDashboard>
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('SafeNest Location Dashboard'),
-        backgroundColor: Colors.teal,
-      ),
+
       body: Stack(
         children: [
           GoogleMap(

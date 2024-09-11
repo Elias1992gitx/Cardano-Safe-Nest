@@ -11,4 +11,5 @@ abstract class ParentalInfoRepository {
   ResultVoid updateChild(Child child);
   ResultVoid removeChild(String childId);
   ResultVoid setPin(String pin);
+  ResultVoid linkChildToParent(String childId, String parentId);
 }

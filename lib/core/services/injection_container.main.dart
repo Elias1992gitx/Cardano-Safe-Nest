@@ -17,6 +17,7 @@ Future<void> init() async {
   await _languageInit();
   await _authInit();
   await _parentalInfoInit();
+  await _digitalWellbeingInit();
 }
 
 Future<void> _onBoardingInit() async {

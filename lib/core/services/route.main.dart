@@ -33,6 +33,9 @@ final GoRouter router = GoRouter(
                 BlocProvider<DigitalWellbeingBloc>(
                   create: (_) => sl<DigitalWellbeingBloc>(),
                 ),
+                BlocProvider<ParentalInfoBloc>(
+                  create: (_) => sl<ParentalInfoBloc>(),
+                ),
               ],
               child: const Dashboard(),
             ),

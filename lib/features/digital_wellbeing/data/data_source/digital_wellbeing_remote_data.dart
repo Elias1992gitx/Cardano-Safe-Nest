@@ -29,6 +29,8 @@ class DigitalWellbeingRemoteDataSourceImpl implements DigitalWellbeingRemoteData
     required this.auth,
   });
 
+  
+
   @override
   Future<DigitalWellbeingModel> getDigitalWellbeing(String childId) async {
     try {

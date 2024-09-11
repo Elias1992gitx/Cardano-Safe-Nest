@@ -106,7 +106,7 @@ class _DashboardState extends State<Dashboard> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: (currentIndex == 0) ? CustomAppBar(titles[currentIndex]) : null,
+      //appBar: (currentIndex == 0) ? CustomAppBar(titles[currentIndex]) : null,
       body: pages[currentIndex],
       bottomNavigationBar: BottomNavigationBar(
         onTap: onTap,

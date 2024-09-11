@@ -11,6 +11,7 @@ abstract class ParentalInfoRemoteDataSource {
   Future<void> addChild(ChildModel child);
   Future<void> updateChild(ChildModel child);
   Future<void> removeChild(String childId);
+  Future<void> linkChildToParent(String childId, String parentId);
   Future<void> setPin(String pin);
 }
 
@@ -75,7 +76,11 @@ class ParentalInfoRemoteDataSourceImpl implements ParentalInfoRemoteDataSource {
     try {
       final user = auth.currentUser;
       if (user != null) {
-        await firestore.collection('parental_info').doc(user.uid).collection('children').doc(child.id).set(child.toMap());
+        await firestore.collection('children').doc(child.id).set(child.toMap());
+
+        await firestore.collection('parental_info').doc(user.uid).update({
+          'children': FieldValue.arrayUnion([child.id])
+        });
       } else {
         throw const ServerException(message: 'Server Error', statusCode: 501);
       }
@@ -83,6 +88,27 @@ class ParentalInfoRemoteDataSourceImpl implements ParentalInfoRemoteDataSource {
       throw const ServerException(message: 'Server Error', statusCode: 501);
     }
   }
+
+  Future<void> linkChildToParent(String childId, String parentId) async {
+    try {
+      final childDoc = await firestore.collection('children').doc(childId).get();
+      if (childDoc.exists) {
+        await firestore.collection('children').doc(childId).update({
+          'parentId': parentId,
+          'linkedAt': FieldValue.serverTimestamp(),
+        });
+
+        await firestore.collection('parental_info').doc(parentId).update({
+          'children': FieldValue.arrayUnion([childId])
+        });
+      } else {
+        throw const ServerException(message: 'Child not found', statusCode: 404);
+      }
+    } catch (e) {
+      throw const ServerException(message: 'Server Error', statusCode: 500);
+    }
+  }
+
 
   @override
   Future<void> updateChild(ChildModel child) async {
