@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:go_router/go_router.dart';
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:safenest/core/common/widgets/swipeable_calendar_view.dart';
 
 import 'package:safenest/core/utils/constants.dart';
 import 'package:flutter_svg/svg.dart';
@@ -19,6 +20,7 @@ import 'package:safenest/core/extensions/context_extensions.dart';
 import 'package:percent_indicator/percent_indicator.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:safenest/core/common/widgets/qr_scanner_screen.dart';
+import 'package:safenest/features/profile/presentation/view/child_qr_code_screen.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -140,7 +142,11 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
                                     return FFCustomButton(
                                       text: 'Connect Me',
                                       onPressed: () {
-
+                                        Navigator.of(context).push(
+                                          MaterialPageRoute(
+                                            builder: (context) => ChildQRCodeScreen(),
+                                          ),
+                                        );
                                       },
                                       options: FFButtonOptions(
                                         width: 130,
@@ -166,7 +172,19 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
                           thickness: 1,
                           color: Color(0xFFE5E7EB),
                         ),
-
+                        SizedBox(
+                          height: 360,
+                          child: Expanded(
+                            child: SwipeableCalendarView(
+                              onDaySelected: (selectedDay, focusedDay) {
+                                setState(() {
+                                  // Update state if needed
+                                  print('Selected day: $selectedDay');
+                                });
+                              },
+                            ),
+                          ),
+                        ),
                       ],
                     ),
                   ),
@@ -257,5 +275,20 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
       },
     );
   }
+  Widget _buildCalendarContent(DateTime selectedDay, DateTime focusedDay) {
+    return Container(
+      padding: const EdgeInsets.all(16),
+      child: Text(
+        'Selected day: ${selectedDay.toString().split(' ')[0]}',
+        style: GoogleFonts.plusJakartaSans(
+          fontSize: 16,
+          fontWeight: FontWeight.w500,
+        ),
+      ),
+    );
+  }
+
+
+
 
 }

@@ -24,6 +24,7 @@ class _LocationDashboardState extends State<LocationDashboard>
   Set<Circle> _safeZones = {};
   Set<Marker> _childMarkers = {};
   late AnimationController _pulseController;
+  bool _mapReady = false;
 
   @override
   void initState() {
@@ -64,12 +65,15 @@ class _LocationDashboardState extends State<LocationDashboard>
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-
       body: Stack(
         children: [
           GoogleMap(
             onMapCreated: (controller) {
-              setState(() => _mapController = controller);
+              setState(() {
+                _mapController = controller;
+                _mapReady = true;
+              });
+              _focusOnAllLocations();
             },
             initialCameraPosition: CameraPosition(
               target: LatLng(
@@ -85,8 +89,13 @@ class _LocationDashboardState extends State<LocationDashboard>
             minMaxZoomPreference: const MinMaxZoomPreference(1, 20),
             myLocationEnabled: true,
             myLocationButtonEnabled: true,
+            onCameraMove: (_) {
+              if (_mapReady) {
+                setState(() {});
+              }
+            },
           ),
-          ..._buildPulsingCircles(),
+          if (_mapReady) ..._buildPulsingCircles(),
           Positioned(
             bottom: 16,
             right: 16,
@@ -101,25 +110,23 @@ class _LocationDashboardState extends State<LocationDashboard>
   }
 
   List<Widget> _buildPulsingCircles() {
-    if (_mapController == null) return [];
     return widget.safeLocations.map((safeLocation) {
-      return RepaintBoundary(
-        child: _PulsingCircleOverlay(
-          location: LatLng(
-            safeLocation.location.latitude,
-            safeLocation.location.longitude,
-          ),
-          pulseController: _pulseController,
-          mapController: _mapController!,
+      return _PulsingCircleOverlay(
+        key: ValueKey(safeLocation.id),
+        location: LatLng(
+          safeLocation.location.latitude,
+          safeLocation.location.longitude,
         ),
+        pulseController: _pulseController,
+        mapController: _mapController!,
       );
     }).toList();
   }
 
   void _focusOnAllLocations() {
-    if (widget.childLocations.isEmpty) return;
+    if (widget.childLocations.isEmpty || _mapController == null) return;
     final bounds = _calculateBounds();
-    _mapController?.animateCamera(CameraUpdate.newLatLngBounds(bounds, 50));
+    _mapController!.animateCamera(CameraUpdate.newLatLngBounds(bounds, 50));
   }
 
   LatLngBounds _calculateBounds() {
