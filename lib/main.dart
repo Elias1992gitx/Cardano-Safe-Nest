@@ -19,8 +19,8 @@ Future<void> main() async {
     options: DefaultFirebaseOptions.currentPlatform,
   );
   await init();
-
-  runApp(const MyApp());
+  FlutterNativeSplash.preserve(widgetsBinding: widgetsBinding);
+  runApp(MyApp());
 }
 
 class MyApp extends StatelessWidget {
