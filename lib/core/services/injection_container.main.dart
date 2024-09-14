@@ -9,10 +9,7 @@ Future<void> init() async {
     ..registerLazySingleton(() => FirebaseFirestore.instance)
     ..registerLazySingleton(() => FirebaseStorage.instance)
     ..registerLazySingleton(() => FirebaseAuth.instance)
-    ..registerLazySingleton(() => UserSession(prefs))
-    ..registerLazySingleton(
-      () => CustomHttpClient(sl.get<SharedPreferences>(), sl.get<UserSession>()),
-    );
+    ;
   await _onBoardingInit();
   await _languageInit();
   await _authInit();
@@ -56,7 +53,7 @@ Future<void> _authInit() async {
     ..registerLazySingleton(() => VerifyEmail(sl()))
     ..registerLazySingleton(() => ForgotPassword(sl()))
     ..registerLazySingleton(() => UpdateUser(sl()))
-    ..registerLazySingleton(() => LogoutUseCase(sl(), sl()))
+    ..registerLazySingleton(() => LogoutUseCase(sl()))
     ..registerLazySingleton(() => SignInWithGoogle(sl()))
     ..registerLazySingleton(() => SignInWithFacebook(sl()))
     ..registerLazySingleton<AuthenticationRepository>(() => AuthRepoImpl(sl()))
@@ -64,8 +61,7 @@ Future<void> _authInit() async {
       () => AuthRemoteDataSourceImpl(
         googleSignIn: sl(),
         facebookAuthClient: sl(),
-        httpClient: sl(),
-        userSession: sl(),
+
         authClient: sl(),
         cloudStoreClient: sl(),
         dbClient: sl(),

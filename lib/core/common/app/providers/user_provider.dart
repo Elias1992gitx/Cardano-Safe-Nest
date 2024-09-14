@@ -4,7 +4,6 @@ import 'dart:io';
 
 import 'package:flutter/foundation.dart';
 import 'package:http/http.dart' as https;
-import 'package:safenest/core/common/network/custom_http_client.dart';
 import 'package:safenest/core/errors/exceptions.dart';
 import 'package:safenest/core/services/config.dart';
 import 'package:safenest/core/utils/typedef.dart';

@@ -164,12 +164,10 @@ final GoRouter router = GoRouter(
             final email = state.pathParameters['email'];
             final extra = state.extra as Map<String, dynamic>?;
             final prefs = sl<SharedPreferences>();
-            final userSession = Get.put(UserSession(prefs));
 
             return _pageBuilder(
               MultiProvider(
                 providers: [
-                  Provider<UserSession>.value(value: userSession),
                   BlocProvider<AuthBloc>(
                     create: (_) => sl<AuthBloc>(),
                   ),

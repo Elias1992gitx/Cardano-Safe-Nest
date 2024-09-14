@@ -9,8 +9,6 @@ import 'package:rxdart/rxdart.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_facebook_auth/flutter_facebook_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
-import 'package:safenest/core/common/app/providers/user_session.dart';
-import 'package:safenest/core/common/network/custom_http_client.dart';
 import 'package:safenest/core/enum/user/update_user.dart';
 import 'package:safenest/core/errors/exceptions.dart';
 import 'package:safenest/core/services/config.dart';
@@ -62,25 +60,18 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
     required FirebaseAuth authClient,
     required FirebaseFirestore cloudStoreClient,
     required FirebaseStorage dbClient,
-    required CustomHttpClient httpClient,
-    required UserSession userSession,
+  
   })  : _facebookAuthClient = facebookAuthClient,
         _googleSignIn = googleSignIn,
         _authClient = authClient,
         _cloudStoreClient = cloudStoreClient,
-        _dbClient = dbClient,
-        _httpClient = httpClient,
-        _userSession = userSession;
+        _dbClient = dbClient;
 
   final FirebaseAuth _authClient;
   final FirebaseFirestore _cloudStoreClient;
   final FirebaseStorage _dbClient;
-  AccessToken? _accessToken;
-
-  final CustomHttpClient _httpClient;
 
   final FacebookAuth _facebookAuthClient;
-  final UserSession _userSession;
   final GoogleSignIn _googleSignIn;
 
 

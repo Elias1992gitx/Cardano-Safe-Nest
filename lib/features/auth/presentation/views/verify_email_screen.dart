@@ -7,7 +7,6 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:safenest/core/common/widgets/custom_button.dart';
 import 'package:safenest/core/utils/core_utils.dart';
 import 'package:safenest/core/utils/custom_snackbar.dart';
-import 'package:safenest/core/common/app/providers/user_session.dart';
 import 'package:safenest/core/common/app/providers/user_provider.dart';
 import 'package:safenest/features/auth/presentation/bloc/auth_bloc.dart';
 
@@ -35,55 +34,36 @@ class _VerifyEmailScreenState extends State<VerifyEmailScreen> {
   @override
   void initState() {
     super.initState();
-    _startEmailVerificationListener();
   }
 
-  Future<void> _handleLogout() async {
-    final userSession = context.read<UserSession>();
-    await userSession.logout();
-    context.go('/');
-  }
-
-
-  void _startEmailVerificationListener() {
-    final userSession = context.read<UserSession>();
-
-    _emailVerificationSubscription = userSession
-        .emailVerificationStatus()
-        .listen((isVerified) {
-      if (isVerified) {
-        _handleEmailVerified();
-      }
-    });
-  }
+ 
 
   Future<void> _handleEmailVerified() async {
     final userProvider = context.read<UserProvider>();
-    final userSession = context.read<UserSession>();
 
     // Sign in the user
-    final signInResult = await userSession.signIn(
-      email: widget.email!,
-      password: widget.password!,
-    );
+    // final signInResult = await userSession.signIn(
+    //   email: widget.email!,
+    //   password: widget.password!,
+    // );
 
-    if (signInResult) {
-      // Load user data and navigate to the next screen
-      await userProvider.loadUserData();
-      context.read<AuthBloc>().add(
-        VerifyEmailEvent(
-          email: widget.email!,
-          password: widget.password!,
-        ),
-      );
-    } else {
-      CoreUtils.showSnackBar(
-        context,
-        ContentType.failure,
-        'Failed to sign in after email verification',
-        'Auth Error',
-      );
-    }
+    // if (signInResult) {
+    //   // Load user data and navigate to the next screen
+    //   await userProvider.loadUserData();
+    //   context.read<AuthBloc>().add(
+    //     VerifyEmailEvent(
+    //       email: widget.email!,
+    //       password: widget.password!,
+    //     ),
+    //   );
+    // } else {
+    //   CoreUtils.showSnackBar(
+    //     context,
+    //     ContentType.failure,
+    //     'Failed to sign in after email verification',
+    //     'Auth Error',
+    //   );
+    // }
   }
 
   @override
@@ -181,7 +161,7 @@ class _VerifyEmailScreenState extends State<VerifyEmailScreen> {
                           height: 20,
                         ),
                         GestureDetector(
-                          onTap: _handleLogout,
+                          onTap: ()=>{},
                           child: Padding(
                             padding: const EdgeInsets.symmetric(
                               vertical: 8,

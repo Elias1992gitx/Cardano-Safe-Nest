@@ -28,11 +28,10 @@ class ChildQRCodeScreen extends StatelessWidget {
                     textAlign: TextAlign.center,
                   ),
                   SizedBox(height: 20),
-                  QrImage(
-                    data: state.parentalInfo.childUserId ?? '',
-                    version: QrVersions.auto,
-                    size: 200.0,
-                  ),
+                  // QrImage(
+                  //   data: state.parentalInfo.childUserId ?? '',
+                  //   size: 200.0,
+                  // ),
                 ],
               );
             } else {

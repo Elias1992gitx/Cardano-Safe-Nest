@@ -5,7 +5,6 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:safenest/core/common/app/animations/slide_fade_switcher.dart';
-import 'package:safenest/core/common/app/providers/user_session.dart';
 import 'package:safenest/core/common/widgets/custom_button.dart';
 import 'package:safenest/core/common/widgets/custom_form_field.dart';
 import 'package:safenest/core/extensions/context_extensions.dart';
@@ -28,8 +27,6 @@ class _SignupWithEmailScreenState extends State<SignupWithEmailScreen> {
   final formKey = GlobalKey<FormState>();
 
   Future<void> _handleLogout() async {
-    final userSession = context.read<UserSession>();
-    await userSession.logout();
     context.go('/');
   }
 

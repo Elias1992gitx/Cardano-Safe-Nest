@@ -23,7 +23,6 @@ import 'package:safenest/features/profile/presentation/widget/parental-profile/a
 import 'package:safenest/features/profile/presentation/widget/parental-profile/create_profile_form.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:safenest/core/common/app/providers/user_provider.dart';
-import 'package:safenest/core/common/app/providers/user_session.dart';
 import 'package:safenest/features/auth/presentation/views/verify_email_screen.dart';
 import 'package:safenest/features/auth/presentation/views/signin_screen.dart';
 import 'package:safenest/features/auth/presentation/views/signup_with_email_screen.dart';
