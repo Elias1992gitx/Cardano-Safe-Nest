@@ -69,6 +69,10 @@ class LightModeTheme extends CoreTheme {
   @override
   Color get profileHeader => const Color.fromRGBO(34, 40, 49, .9);
 
+  Color get cardGradientStart => primaryColor.withOpacity(0.05);
+  Color get cardGradientEnd => primaryColor.withOpacity(0.02);
+  Color get cardBorder => primaryColor.withOpacity(0.1);
+
   @override
   ThemeData get themeData => ThemeData(
         primaryColor: primaryColor,
@@ -87,6 +91,7 @@ class LightModeTheme extends CoreTheme {
           primaryContainer: helpColor,
           secondaryContainer: warningColor,
           onTertiary: profileHeader,
+
         ).copyWith(
           error: errorColor,
           tertiaryContainer: tFieldPrimary,
@@ -114,6 +119,10 @@ class DarkModeTheme extends CoreTheme {
   @override
   Color get profileHeader => const Color(0x00040d12);
 
+  Color get cardGradientStart => primaryColor.withOpacity(0.05);
+  Color get cardGradientEnd => primaryColor.withOpacity(0.02);
+  Color get cardBorder => primaryColor.withOpacity(0.1);
+
   @override
   ThemeData get themeData => ThemeData(
         brightness: Brightness.dark,
@@ -127,6 +136,9 @@ class DarkModeTheme extends CoreTheme {
             primaryContainer: helpColor,
             secondaryContainer: warningColor,
             onTertiary: profileHeader,
+            surface: cardGradientStart,
+            onSurface: cardGradientEnd,
+            outline: cardBorder,
             tertiaryContainer: tFieldPrimary),
       );
 }

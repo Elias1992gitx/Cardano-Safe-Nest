@@ -71,6 +71,7 @@ Future<void> _authInit() async {
     ..registerLazySingleton(() => FacebookAuth.instance);
 }
 
+
 Future<void> _languageInit() async {
   sl
     ..registerFactory(

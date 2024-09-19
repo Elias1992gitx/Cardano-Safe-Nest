@@ -32,7 +32,7 @@ class AuthRepoImpl implements AuthenticationRepository {
     try {
       final result = await _authRemoteDataSource.signIn(
         email: email,
-        password:password,
+        password: password,
       );
       return Right(result);
     } on ServerException catch (e) {
@@ -59,7 +59,7 @@ class AuthRepoImpl implements AuthenticationRepository {
   }
 
   @override
-  ResultFuture<void> verifyEmail() async{
+  ResultFuture<void> verifyEmail() async {
     try {
       await _authRemoteDataSource.verifyEmail();
       return const Right(null);
@@ -67,7 +67,6 @@ class AuthRepoImpl implements AuthenticationRepository {
       return Left(ServerFailure(message: e.message, statusCode: e.statusCode));
     }
   }
-
 
   @override
   ResultFuture<void> updateUser({
@@ -85,7 +84,6 @@ class AuthRepoImpl implements AuthenticationRepository {
     }
   }
 
-
   @override
   ResultFuture<void> logout() async {
     try {
@@ -97,17 +95,14 @@ class AuthRepoImpl implements AuthenticationRepository {
   }
 
   @override
-  ResultFuture<LocalUser> signInWithFacebook()
-    async {
-      try {
-        final result = await _authRemoteDataSource.signInWithFacebook();
-        return Right(result);
-      } on ServerException catch (e) {
-        return Left(ServerFailure(message: e.message, statusCode: e.statusCode));
-      }
+  ResultFuture<LocalUser> signInWithFacebook() async {
+    try {
+      final result = await _authRemoteDataSource.signInWithFacebook();
+      return Right(result);
+    } on ServerException catch (e) {
+      return Left(ServerFailure(message: e.message, statusCode: e.statusCode));
     }
-
-
+  }
 
   Stream<LocalUserModel> getUserProfileStream(String uid) {
     return _authRemoteDataSource.getUserProfileStream(uid);
@@ -122,5 +117,4 @@ class AuthRepoImpl implements AuthenticationRepository {
       return Left(ServerFailure(message: e.message, statusCode: e.statusCode));
     }
   }
-
 }

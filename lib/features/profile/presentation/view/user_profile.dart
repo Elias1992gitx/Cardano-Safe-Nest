@@ -1,3 +1,5 @@
+import 'dart:ui';
+import 'package:lottie/lottie.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -25,14 +27,26 @@ class UserProfileScreen extends StatefulWidget {
   State<UserProfileScreen> createState() => _UserProfileScreenState();
 }
 
-class _UserProfileScreenState extends State<UserProfileScreen> with TickerProviderStateMixin {
-
+class _UserProfileScreenState extends State<UserProfileScreen>
+    with TickerProviderStateMixin {
   bool _isParentalModeEnabled = false;
+  bool _isLoggingOut = false;
+  late AnimationController _animationController;
 
   @override
   void initState() {
     super.initState();
     _fetchParentalInfo();
+    _animationController = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 1000),
+    );
+  }
+
+  @override
+  void dispose() {
+    _animationController.dispose();
+    super.dispose();
   }
 
   void _fetchParentalInfo() {
@@ -60,18 +74,41 @@ class _UserProfileScreenState extends State<UserProfileScreen> with TickerProvid
           });
         }
       },
-      child: Scaffold(
-        body: SingleChildScrollView(
-          child: Column(
-            children: [
-              const UserProfileCard(),
-              _buildCenteredCard(context),
-              const UserContents(),
-              const SettingBody(),
-              _buildFooter(context),
-            ],
+      child: Stack(
+        children: [
+          Scaffold(
+            body: AnimatedOpacity(
+              opacity: _isLoggingOut ? 0.5 : 1.0,
+              duration: const Duration(milliseconds: 300),
+              child: SingleChildScrollView(
+                child: Column(
+                  children: [
+                    const UserProfileCard(),
+                    _buildCenteredCard(context),
+                    const UserContents(),
+                    const SettingBody(),
+                    _buildFooter(context),
+                  ],
+                ),
+              ),
+            ),
           ),
-        ),
+          if (_isLoggingOut)
+            BackdropFilter(
+              filter: ImageFilter.blur(sigmaX: 5, sigmaY: 5),
+              child: Container(
+                color: Colors.black.withOpacity(0.5),
+                child: Center(
+                  child: Lottie.asset(
+                    'assets/lottie/loading_animation.json',
+                    width: 200,
+                    height: 200,
+                    controller: _animationController,
+                  ),
+                ),
+              ),
+            ),
+        ],
       ),
     );
   }
@@ -114,24 +151,25 @@ class _UserProfileScreenState extends State<UserProfileScreen> with TickerProvid
                       value: _isParentalModeEnabled,
                       onChanged: state is ParentalInfoLoaded
                           ? (value) async {
-                        final pin = await Navigator.of(context).push<String>(
-                          MaterialPageRoute(
-                            builder: (context) => SetPinPage(
-                              onPinSet: (pin) {
-                                return pin;
-                              },
-                            ),
-                          ),
-                        );
-                        if (pin != null) {
-                          setState(() {
-                            _isParentalModeEnabled = value;
-                          });
-                          if (value) {
-                            context.go('/profile-screen/parental-mode');
-                          }
-                        }
-                      }
+                              final pin =
+                                  await Navigator.of(context).push<String>(
+                                MaterialPageRoute(
+                                  builder: (context) => SetPinPage(
+                                    onPinSet: (pin) {
+                                      return pin;
+                                    },
+                                  ),
+                                ),
+                              );
+                              if (pin != null) {
+                                setState(() {
+                                  _isParentalModeEnabled = value;
+                                });
+                                if (value) {
+                                  context.go('/profile-screen/parental-mode');
+                                }
+                              }
+                            }
                           : null,
                     ),
                   ),
@@ -144,19 +182,83 @@ class _UserProfileScreenState extends State<UserProfileScreen> with TickerProvid
     );
   }
 
+  Future<bool> _showLogoutConfirmationDialog(BuildContext context) async {
+    return await showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+          title: Text(
+            'Log Out',
+            style: GoogleFonts.montserrat(
+              fontWeight: FontWeight.bold,
+              fontSize: 20,
+            ),
+            textAlign: TextAlign.center,
+          ),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Text(
+                'Are you sure you want to log out?',
+                style: GoogleFonts.plusJakartaSans(fontSize: 16),
+                textAlign: TextAlign.center,
+              ),
+              const SizedBox(height: 16),
+              Text(
+                'Any unsaved data will remain on this device.',
+                style: GoogleFonts.plusJakartaSans(
+                  fontSize: 14,
+                  color: Colors.grey[600],
+                ),
+                textAlign: TextAlign.center,
+              ),
+            ],
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.of(context).pop(false),
+              child: Text(
+                'Cancel',
+                style: GoogleFonts.montserrat(
+                  color: Colors.grey[600],
+                  fontWeight: FontWeight.w500,
+                ),
+              ),
+            ),
+            TextButton(
+              onPressed: () => Navigator.of(context).pop(true),
+              child: Text(
+                'Log Out',
+                style: GoogleFonts.montserrat(
+                  color: Colors.red,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+
   Widget _buildFooter(BuildContext context) {
     return BlocConsumer<AuthBloc, AuthState>(
-      listener: (_, state) {
+      listener: (context, state) {
         if (state is AuthError) {
           const messageTitle = 'Auth Error';
           CoreUtils.showSnackBar(
-            context,
-            ContentType.failure,
-            state.message,
-            messageTitle,
-          );
+              context, ContentType.failure, state.message, messageTitle);
         } else if (state is LogoutState) {
-          context.go('/');
+          setState(() {
+            _isLoggingOut = true;
+          });
+          _animationController.forward().then((_) {
+            Future.delayed(const Duration(seconds: 2), () {
+              context.go('/');
+            });
+          });
         }
       },
       builder: (BuildContext context, state) {
@@ -182,44 +284,51 @@ class _UserProfileScreenState extends State<UserProfileScreen> with TickerProvid
               alignment: AlignmentDirectional.bottomCenter,
               child: InkWell(
                 onTap: () async {
-                  context.read<AuthBloc>().add(
-                    const LogoutEvent(),
-                  );
+                  if (!_isLoggingOut) {
+                    final shouldLogout = await _showLogoutConfirmationDialog(context);
+                    if (shouldLogout) {
+                      context.read<AuthBloc>().add(const LogoutEvent());
+                    }
+                  }
                 },
-                child: SizedBox(
-                  width: double.infinity,
-                  height: 60,
-                  child: Padding(
-                    padding: const EdgeInsetsDirectional.fromSTEB(16, 0, 16, 0),
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Row(
-                          children: [
-                            const Align(
-                              alignment: AlignmentDirectional.centerStart,
-                              child: Icon(
-                                IconlyLight.logout,
-                                color: Colors.red,
-                                size: 30,
+                child: AnimatedOpacity(
+                  opacity: _isLoggingOut ? 0.5 : 1.0,
+                  duration: const Duration(milliseconds: 300),
+                  child: SizedBox(
+                    width: double.infinity,
+                    height: 60,
+                    child: Padding(
+                      padding: const EdgeInsetsDirectional.fromSTEB(16, 0, 16, 0),
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Row(
+                            children: [
+                              const Align(
+                                alignment: AlignmentDirectional.centerStart,
+                                child: Icon(
+                                  IconlyLight.logout,
+                                  color: Colors.red,
+                                  size: 30,
+                                ),
                               ),
-                            ),
-                            Padding(
-                              padding: const EdgeInsets.only(left: 20),
-                              child: Text(
-                                'Log Out',
-                                style: GoogleFonts.montserrat(
-                                  textStyle: const TextStyle(
-                                    fontWeight: FontWeight.w500,
-                                    fontSize: 16,
-                                    color: Colors.red,
+                              Padding(
+                                padding: const EdgeInsets.only(left: 20),
+                                child: Text(
+                                  'Log Out',
+                                  style: GoogleFonts.montserrat(
+                                    textStyle: const TextStyle(
+                                      fontWeight: FontWeight.w500,
+                                      fontSize: 16,
+                                      color: Colors.red,
+                                    ),
                                   ),
                                 ),
                               ),
-                            ),
-                          ],
-                        ),
-                      ],
+                            ],
+                          ),
+                        ],
+                      ),
                     ),
                   ),
                 ),

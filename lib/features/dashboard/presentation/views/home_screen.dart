@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:go_router/go_router.dart';
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:lottie/lottie.dart';
 import 'package:safenest/core/common/widgets/swipeable_calendar_view.dart';
 
 import 'package:safenest/core/utils/constants.dart';
@@ -31,9 +32,9 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateMixin {
 
-
   late AnimationController _animationController;
   late Animation<double> _fadeAnimation;
+  bool _isPageReady = false;
 
   @override
   void initState() {
@@ -45,6 +46,12 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
     );
     _fadeAnimation = Tween<double>(begin: 0.0, end: 1.0).animate(_animationController);
     _animationController.forward();
+
+    Future.delayed(const Duration(seconds: 5), () {
+      setState(() {
+        _isPageReady = true;
+      });
+    });
   }
 
   @override
@@ -65,7 +72,7 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
             children: [
               _buildWelcomeText(),
               const SizedBox(height: 5),
-              Padding(
+              _isPageReady?Padding(
                 padding: const EdgeInsetsDirectional.fromSTEB(10, 40, 10, 10),
                 child: Container(
                   width: 500,
@@ -117,6 +124,7 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
                                   ),
                                 ),
                               ),
+
                               BlocBuilder<ParentalInfoBloc, ParentalInfoState>(
                                 builder: (context, state) {
                                   if (state is ParentalInfoLoaded) {
@@ -163,7 +171,7 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
                                     );
                                   }
                                 },
-                              ),
+                              )
                             ],
                           ),
                         ),
@@ -174,15 +182,13 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
                         ),
                         SizedBox(
                           height: 360,
-                          child: Expanded(
-                            child: SwipeableCalendarView(
-                              onDaySelected: (selectedDay, focusedDay) {
-                                setState(() {
-                                  // Update state if needed
-                                  print('Selected day: $selectedDay');
-                                });
-                              },
-                            ),
+                          child: SwipeableCalendarView(
+                            onDaySelected: (selectedDay, focusedDay) {
+                              setState(() {
+                                // Update state if needed
+                                print('Selected day: $selectedDay');
+                              });
+                            },
                           ),
                         ),
                       ],
@@ -190,6 +196,9 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
                   ),
                 ),
               )
+                  :Center(
+                child: _buildLoadingAnimation(),
+              ),
             ],
           ),
         ),
@@ -289,6 +298,17 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
   }
 
 
-
+  Widget _buildLoadingAnimation() {
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        Lottie.asset(
+          'assets/lottie/loading_animation.json',
+          width: 200,
+          height: 200,
+        ),
+      ],
+    );
+  }
 
 }

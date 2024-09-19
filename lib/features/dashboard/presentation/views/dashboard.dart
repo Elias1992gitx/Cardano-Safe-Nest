@@ -30,9 +30,7 @@ class _DashboardState extends State<Dashboard> {
   final scaffoldKey = GlobalKey<ScaffoldState>();
   List<Widget> pages = [
     HomeScreen(),
-    DigitalWellbeingAnalysisPage(
-      childId:'FWD8G3EA'
-    ),
+    DigitalWellbeingAnalysisPage(),
     NotificationScreen(),
     LocationDashboard(
       safeLocations: [

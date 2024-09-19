@@ -11,6 +11,7 @@ import 'package:flutter_facebook_auth/flutter_facebook_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:safenest/core/enum/user/update_user.dart';
 import 'package:safenest/core/errors/exceptions.dart';
+import 'package:safenest/core/errors/exceptions.dart';
 import 'package:safenest/core/services/config.dart';
 import 'package:safenest/core/utils/constants.dart';
 import 'package:safenest/core/utils/typedef.dart';
@@ -25,8 +26,6 @@ abstract class AuthRemoteDataSource {
     required String email,
     required String password,
   });
-
-
 
   Future<LocalUserModel> signInWithGoogle();
 
@@ -60,7 +59,6 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
     required FirebaseAuth authClient,
     required FirebaseFirestore cloudStoreClient,
     required FirebaseStorage dbClient,
-  
   })  : _facebookAuthClient = facebookAuthClient,
         _googleSignIn = googleSignIn,
         _authClient = authClient,
@@ -73,8 +71,6 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
 
   final FacebookAuth _facebookAuthClient;
   final GoogleSignIn _googleSignIn;
-
-
 
   Stream<bool> emailVerificationStatus() async* {
     final user = _authClient.currentUser;
@@ -93,7 +89,6 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
       yield false;
     }
   }
-
 
   @override
   Future<LocalUserModel> signIn({
@@ -152,8 +147,10 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
       );
 
       if (result.status == LoginStatus.success) {
-        final credential = FacebookAuthProvider.credential(result.accessToken!.tokenString);
-        final userCredential = await _authClient.signInWithCredential(credential);
+        final credential =
+            FacebookAuthProvider.credential(result.accessToken!.tokenString);
+        final userCredential =
+            await _authClient.signInWithCredential(credential);
         final user = userCredential.user;
 
         if (user != null) {
@@ -206,7 +203,8 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
           accessToken: googleAuth.accessToken,
           idToken: googleAuth.idToken,
         );
-        final userCredential = await _authClient.signInWithCredential(credential);
+        final userCredential =
+            await _authClient.signInWithCredential(credential);
         final user = userCredential.user;
 
         if (user != null) {
@@ -265,7 +263,6 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
         await user.updateDisplayName(name);
         await user.updatePhotoURL(kDefaultAvatar);
         await _setUserData(_authClient.currentUser!, user.email!);
-
       } else {
         throw const ServerException(
           message: 'Failed to sign up',
@@ -313,7 +310,6 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
     }
   }
 
-
   @override
   Future<void> updateUser({
     required UpdateUserAction action,
@@ -348,7 +344,10 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
         // Add other fields as needed
       );
 
-      await _cloudStoreClient.collection('users').doc(user.uid).update(updatedUser.toMap());
+      await _cloudStoreClient
+          .collection('users')
+          .doc(user.uid)
+          .update(updatedUser.toMap());
       await _cacheUserData(updatedUser);
     } on FirebaseAuthException catch (e) {
       throw ServerException(
@@ -366,10 +365,8 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
     }
   }
 
-
   @override
   Future<void> forgotPassword({required String email}) {
-    
     throw UnimplementedError();
   }
 
@@ -383,24 +380,24 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
   ) async {
     await _cloudStoreClient.collection('users').doc(user.uid).set(
           LocalUserModel(
-                  email: user.email ?? fallbackEmail,
-                  uid: user.uid,
-                  username: user.displayName ?? "",
-
-          )
-              .toMap(),
+            email: user.email ?? fallbackEmail,
+            uid: user.uid,
+            username: user.displayName ?? "",
+          ).toMap(),
         );
   }
 
-
   @override
   Stream<LocalUserModel> getUserProfileStream(String uid) {
-    return _cloudStoreClient.collection('users').doc(uid).snapshots().map((snapshot) {
+    return _cloudStoreClient
+        .collection('users')
+        .doc(uid)
+        .snapshots()
+        .map((snapshot) {
       return LocalUserModel.fromMap(snapshot.data()!);
     });
   }
 
-  @override
   Future<void> logout() async {
     try {
       await _authClient.signOut();
@@ -431,4 +428,8 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
     await prefs.setString('userId', user.uid);
     await prefs.setString('userData', jsonEncode(user.toMap()));
   }
+
+
 }
+
+

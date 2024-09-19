@@ -8,7 +8,7 @@ class LogoutUseCase extends UsecaseWithoutParams<void> {
   LogoutUseCase(this.repository);
 
   @override
-  ResultFuture call() async {
+  ResultFuture<void> call() async {
     return repository.logout();
   }
 }
