@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -5,9 +7,11 @@ import 'package:go_router/go_router.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:lottie/lottie.dart';
 import 'package:safenest/core/common/widgets/swipeable_calendar_view.dart';
-
+import 'package:app_usage/app_usage.dart';
+import 'package:app_settings/app_settings.dart';
 import 'package:safenest/core/utils/constants.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:permission_handler/permission_handler.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:provider/provider.dart';
 import 'package:safenest/core/common/widgets/custom_profile_pic.dart';
@@ -40,6 +44,7 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
   void initState() {
     super.initState();
     _fetchParentalInfo();
+    _checkAndRequestUsagePermission();
     _animationController = AnimationController(
       vsync: this,
       duration: const Duration(milliseconds: 1000),
@@ -53,6 +58,71 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
       });
     });
   }
+
+  Future<void> _checkAndRequestUsagePermission() async {
+    if (Platform.isAndroid) {
+      var status = await Permission.activityRecognition.status;
+      if (!status.isGranted) {
+        status = await Permission.activityRecognition.request();
+        if (!status.isGranted) {
+          _showSettingsDialog();
+        } else {
+          _handleGrantedPermission();
+        }
+      } else {
+        _handleGrantedPermission();
+      }
+    } else if (Platform.isIOS) {
+
+      _handleGrantedPermission();
+    }
+  }
+
+  void _showSettingsDialog() {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) => AlertDialog(
+        title: Text('Permission Required'),
+        content: Text('To access app usage data, please enable the "Physical Activity" permission in your device settings.'),
+        actions: [
+          TextButton(
+            child: Text('Cancel'),
+            onPressed: () => Navigator.of(context).pop(),
+          ),
+          TextButton(
+            child: Text('Open Settings'),
+            onPressed: () {
+              Navigator.of(context).pop();
+              AppSettings.openAppSettings();
+            },
+          ),
+        ],
+      ),
+    );
+  }
+
+  void _handleGrantedPermission() {
+    if (Platform.isAndroid) {
+      try {
+        final appUsage = AppUsage();
+        appUsage.getAppUsage(
+          DateTime.now().subtract(const Duration(days: 1)),
+          DateTime.now(),
+        ).then((usageList) {
+          print('App usage data: $usageList');
+          // Process the app usage data here
+        }).catchError((error) {
+          print('Error accessing app usage: $error');
+        });
+      } catch (e) {
+        print('Error initializing app usage: $e');
+      }
+    } else if (Platform.isIOS) {
+      // Implement iOS-specific app usage tracking here
+      print('App usage tracking not implemented for iOS');
+    }
+  }
+
 
   @override
   void dispose() {

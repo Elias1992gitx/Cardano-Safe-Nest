@@ -5,10 +5,20 @@ import 'package:safenest/core/extensions/context_extensions.dart';
 
 class EmergencyContactsAndNotifications extends StatefulWidget {
   final Function(String, String, bool, bool, String) onUpdate;
+  final String? initialName;
+  final String? initialPhone;
+  final bool initialEmailNotifications;
+  final bool initialSmsNotifications;
+  final String initialNotificationFrequency;
 
   const EmergencyContactsAndNotifications({
     Key? key,
     required this.onUpdate,
+    this.initialName,
+    this.initialPhone,
+    this.initialEmailNotifications = true,
+    this.initialSmsNotifications = false,
+    this.initialNotificationFrequency = 'Immediate',
   }) : super(key: key);
 
   @override
@@ -16,11 +26,21 @@ class EmergencyContactsAndNotifications extends StatefulWidget {
 }
 
 class _EmergencyContactsAndNotificationsState extends State<EmergencyContactsAndNotifications> {
-  final emergencyContactNameController = TextEditingController();
-  final emergencyContactPhoneController = TextEditingController();
-  bool emailNotifications = true;
-  bool smsNotifications = false;
-  String notificationFrequency = 'Immediate';
+  late final TextEditingController emergencyContactNameController;
+  late final TextEditingController emergencyContactPhoneController;
+  late bool emailNotifications;
+  late bool smsNotifications;
+  late String notificationFrequency;
+
+  @override
+  void initState() {
+    super.initState();
+    emergencyContactNameController = TextEditingController(text: widget.initialName);
+    emergencyContactPhoneController = TextEditingController(text: widget.initialPhone);
+    emailNotifications = widget.initialEmailNotifications;
+    smsNotifications = widget.initialSmsNotifications;
+    notificationFrequency = widget.initialNotificationFrequency;
+  }
 
   @override
   void dispose() {

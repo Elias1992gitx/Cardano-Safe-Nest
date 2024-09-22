@@ -1,5 +1,6 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:equatable/equatable.dart';
+import 'package:safenest/features/digital_wellbeing/data/data_source/digital_wellbeing_local_data.dart';
 import 'package:safenest/features/digital_wellbeing/domain/entity/digital_wellbeing.dart';
 import 'package:safenest/features/digital_wellbeing/domain/usecases/get_digital_wellbeing_use_case.dart';
 import 'package:safenest/features/digital_wellbeing/domain/usecases/update_digital_wellbeing_use_case.dart';
@@ -16,6 +17,7 @@ class DigitalWellbeingBloc extends Bloc<DigitalWellbeingEvent, DigitalWellbeingS
   final SetUsageLimitUseCase _setUsageLimit;
   final RemoveUsageLimitUseCase _removeUsageLimit;
   final GetDigitalWellbeingHistoryUseCase _getDigitalWellbeingHistory;
+  final DigitalWellbeingLocalDataSource _localDataSource;
 
   DigitalWellbeingBloc({
     required GetDigitalWellbeingUseCase getDigitalWellbeing,
@@ -23,18 +25,39 @@ class DigitalWellbeingBloc extends Bloc<DigitalWellbeingEvent, DigitalWellbeingS
     required SetUsageLimitUseCase setUsageLimit,
     required RemoveUsageLimitUseCase removeUsageLimit,
     required GetDigitalWellbeingHistoryUseCase getDigitalWellbeingHistory,
+    required DigitalWellbeingLocalDataSource localDataSource,
   }) : _getDigitalWellbeing = getDigitalWellbeing,
-        _updateDigitalWellbeing = updateDigitalWellbeing,
-        _setUsageLimit = setUsageLimit,
-        _removeUsageLimit = removeUsageLimit,
-        _getDigitalWellbeingHistory = getDigitalWellbeingHistory,
-        super(DigitalWellbeingInitial()) {
+       _updateDigitalWellbeing = updateDigitalWellbeing,
+       _setUsageLimit = setUsageLimit,
+       _removeUsageLimit = removeUsageLimit,
+       _getDigitalWellbeingHistory = getDigitalWellbeingHistory,
+       _localDataSource = localDataSource,
+       super(DigitalWellbeingInitial()) {
     on<GetDigitalWellbeingEvent>(_getDigitalWellbeingHandler);
     on<UpdateDigitalWellbeingEvent>(_updateDigitalWellbeingHandler);
     on<SetUsageLimitEvent>(_setUsageLimitHandler);
     on<RemoveUsageLimitEvent>(_removeUsageLimitHandler);
     on<GetDigitalWellbeingHistoryEvent>(_getDigitalWellbeingHistoryHandler);
+    on<GetCurrentUserDigitalWellbeingEvent>(_getCurrentUserDigitalWellbeingHandler);
   }
+
+  Future<void> _getCurrentUserDigitalWellbeingHandler(
+    GetCurrentUserDigitalWellbeingEvent event,
+    Emitter<DigitalWellbeingState> emit,
+  ) async {
+    emit(DigitalWellbeingLoading());
+    try {
+      final digitalWellbeing = await _localDataSource.getCurrentUserDigitalWellbeing();
+      emit(DigitalWellbeingLoaded(digitalWellbeing: digitalWellbeing));
+    } catch (e) {
+      emit(DigitalWellbeingError(message: e.toString()));
+    }
+  }
+
+
+  
+
+
 
   Future<void> _getDigitalWellbeingHandler(
       GetDigitalWellbeingEvent event,

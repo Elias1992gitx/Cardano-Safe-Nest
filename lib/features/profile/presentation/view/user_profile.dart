@@ -186,62 +186,109 @@ class _UserProfileScreenState extends State<UserProfileScreen>
     return await showDialog(
       context: context,
       builder: (BuildContext context) {
-        return AlertDialog(
+        return Dialog(
           shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
-          title: Text(
-            'Log Out',
-            style: GoogleFonts.montserrat(
-              fontWeight: FontWeight.bold,
-              fontSize: 20,
+          elevation: 0,
+          backgroundColor: Colors.transparent,
+          child: Container(
+            padding: const EdgeInsets.all(20),
+            decoration: BoxDecoration(
+              color: context.theme.cardColor,
+              shape: BoxShape.rectangle,
+              borderRadius: BorderRadius.circular(20),
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.black26,
+                  blurRadius: 10.0,
+                  offset: const Offset(0.0, 10.0),
+                ),
+              ],
             ),
-            textAlign: TextAlign.center,
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                CircleAvatar(
+                  backgroundColor: Colors.red.withOpacity(0.1),
+                  radius: 45,
+                  child: Icon(
+                    IconlyBold.logout,
+                    color: Colors.red,
+                    size: 40,
+                  ),
+                ),
+                const SizedBox(height: 20),
+                Text(
+                  'Log Out',
+                  style: GoogleFonts.plusJakartaSans(
+                    fontSize: 24,
+                    fontWeight: FontWeight.w600,
+                    color: context.theme.primaryColor,
+                  ),
+                ),
+                const SizedBox(height: 20),
+                Text(
+                  'Are you sure you want to log out?',
+                  style: GoogleFonts.plusJakartaSans(
+                    fontSize: 16,
+                    color: context.theme.hintColor,
+                  ),
+                  textAlign: TextAlign.center,
+                ),
+                const SizedBox(height: 10),
+                Text(
+                  'Any unsaved data will remain on this device.',
+                  style: GoogleFonts.plusJakartaSans(
+                    fontSize: 14,
+                    color: context.theme.hintColor.withOpacity(0.4),
+                  ),
+                  textAlign: TextAlign.center,
+                ),
+                const SizedBox(height: 10),
+                Divider(color: context.theme.dividerColor),
+                const SizedBox(height: 10),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: [
+                    Expanded(
+                      child: TextButton(
+                        onPressed: () => Navigator.of(context).pop(false),
+                        child: Text(
+                          'Cancel',
+                          style: GoogleFonts.plusJakartaSans(
+                            color: context.theme.hintColor,
+                            fontWeight: FontWeight.w500,
+                            fontSize: 16,
+                          ),
+                        ),
+                      ),
+                    ),
+                    Container(
+                      width: 1,
+                      height: 50,
+                      color: context.theme.dividerColor,
+                    ),
+                    Expanded(
+                      child: TextButton(
+                        onPressed: () => Navigator.of(context).pop(true),
+                        child: Text(
+                          'Log Out',
+                          style: GoogleFonts.plusJakartaSans(
+                            color: Colors.red,
+                            fontWeight: FontWeight.w500,
+                            fontSize: 16,
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ],
+            ),
           ),
-          content: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Text(
-                'Are you sure you want to log out?',
-                style: GoogleFonts.plusJakartaSans(fontSize: 16),
-                textAlign: TextAlign.center,
-              ),
-              const SizedBox(height: 16),
-              Text(
-                'Any unsaved data will remain on this device.',
-                style: GoogleFonts.plusJakartaSans(
-                  fontSize: 14,
-                  color: Colors.grey[600],
-                ),
-                textAlign: TextAlign.center,
-              ),
-            ],
-          ),
-          actions: [
-            TextButton(
-              onPressed: () => Navigator.of(context).pop(false),
-              child: Text(
-                'Cancel',
-                style: GoogleFonts.montserrat(
-                  color: Colors.grey[600],
-                  fontWeight: FontWeight.w500,
-                ),
-              ),
-            ),
-            TextButton(
-              onPressed: () => Navigator.of(context).pop(true),
-              child: Text(
-                'Log Out',
-                style: GoogleFonts.montserrat(
-                  color: Colors.red,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-            ),
-          ],
         );
       },
     );
   }
-
 
   Widget _buildFooter(BuildContext context) {
     return BlocConsumer<AuthBloc, AuthState>(
@@ -285,7 +332,8 @@ class _UserProfileScreenState extends State<UserProfileScreen>
               child: InkWell(
                 onTap: () async {
                   if (!_isLoggingOut) {
-                    final shouldLogout = await _showLogoutConfirmationDialog(context);
+                    final shouldLogout =
+                        await _showLogoutConfirmationDialog(context);
                     if (shouldLogout) {
                       context.read<AuthBloc>().add(const LogoutEvent());
                     }
@@ -298,7 +346,8 @@ class _UserProfileScreenState extends State<UserProfileScreen>
                     width: double.infinity,
                     height: 60,
                     child: Padding(
-                      padding: const EdgeInsetsDirectional.fromSTEB(16, 0, 16, 0),
+                      padding:
+                          const EdgeInsetsDirectional.fromSTEB(16, 0, 16, 0),
                       child: Column(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [

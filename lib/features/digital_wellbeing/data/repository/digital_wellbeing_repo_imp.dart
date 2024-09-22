@@ -2,6 +2,7 @@ import 'package:dartz/dartz.dart';
 import 'package:safenest/core/errors/exceptions.dart';
 import 'package:safenest/core/errors/failure.dart';
 import 'package:safenest/core/utils/typedef.dart';
+import 'package:safenest/features/digital_wellbeing/data/data_source/digital_wellbeing_local_data.dart';
 import 'package:safenest/features/digital_wellbeing/data/data_source/digital_wellbeing_remote_data.dart';
 import 'package:safenest/features/digital_wellbeing/data/model/digital_wellbeing_model.dart';
 import 'package:safenest/features/digital_wellbeing/domain/entity/digital_wellbeing.dart';
@@ -13,8 +14,13 @@ import 'package:safenest/features/notification/domain/entity/notification_prefer
 
 class DigitalWellbeingRepoImpl implements DigitalWellbeingRepository {
   final DigitalWellbeingRemoteDataSource _remoteDataSource;
+  final DigitalWellbeingLocalDataSource _localDataSource;
 
-  const DigitalWellbeingRepoImpl(this._remoteDataSource);
+  const DigitalWellbeingRepoImpl({
+    required DigitalWellbeingRemoteDataSource remoteDataSource,
+    required DigitalWellbeingLocalDataSource localDataSource,
+  })  : _remoteDataSource = remoteDataSource,
+        _localDataSource = localDataSource;
 
   @override
   ResultFuture<DigitalWellbeing> getDigitalWellbeing(String childId) async {

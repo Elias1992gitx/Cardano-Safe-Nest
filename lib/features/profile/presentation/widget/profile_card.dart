@@ -62,7 +62,7 @@ class _UserProfileCardState extends State<UserProfileCard> {
                                       textStyle: TextStyle(
                                           fontWeight: FontWeight.w500,
                                           fontSize: 24,
-                                          color: context.theme.cardColor),
+                                          color: Colors.white,),
                                     ),
                                   ),
                                 ),
@@ -79,7 +79,7 @@ class _UserProfileCardState extends State<UserProfileCard> {
                                         textStyle: TextStyle(
                                             fontWeight: FontWeight.w500,
                                             fontSize: 14,
-                                            color: context.theme.cardColor),
+                                            color: Colors.white,),
                                       ),
                                     ),
                                   ),

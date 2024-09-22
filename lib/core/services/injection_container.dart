@@ -53,6 +53,6 @@ import 'package:safenest/features/digital_wellbeing/domain/usecases/set_usage_li
 import 'package:safenest/features/digital_wellbeing/domain/usecases/remove_usage_limit_use_case.dart';
 import 'package:safenest/features/digital_wellbeing/domain/usecases/get_digital_wellbeing_history_use_case.dart';
 import 'package:safenest/features/digital_wellbeing/presentation/bloc/digital_wellbeing_bloc.dart';
-
+import 'package:safenest/features/digital_wellbeing/data/data_source/digital_wellbeing_local_data.dart';
 
 part 'injection_container.main.dart';

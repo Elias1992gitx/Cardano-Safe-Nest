@@ -5,16 +5,27 @@ import 'dart:ui';
 
 class SetPinPage extends StatefulWidget {
   final Function(String) onPinSet;
+  final String? initialPin;
 
-  const SetPinPage({Key? key, required this.onPinSet}) : super(key: key);
+  const SetPinPage({
+    Key? key,
+    required this.onPinSet,
+    this.initialPin,
+  }) : super(key: key);
 
   @override
   _SetPinPageState createState() => _SetPinPageState();
 }
 
 class _SetPinPageState extends State<SetPinPage> {
-  final TextEditingController _pinController = TextEditingController();
+  late final TextEditingController _pinController;
   final focusNode = FocusNode();
+
+  @override
+  void initState() {
+    super.initState();
+    _pinController = TextEditingController(text: widget.initialPin);
+  }
 
   @override
   void dispose() {

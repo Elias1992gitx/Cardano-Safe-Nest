@@ -8,8 +8,7 @@ Future<void> init() async {
     ..registerLazySingleton(() => prefs)
     ..registerLazySingleton(() => FirebaseFirestore.instance)
     ..registerLazySingleton(() => FirebaseStorage.instance)
-    ..registerLazySingleton(() => FirebaseAuth.instance)
-    ;
+    ..registerLazySingleton(() => FirebaseAuth.instance);
   await _onBoardingInit();
   await _languageInit();
   await _authInit();
@@ -61,7 +60,6 @@ Future<void> _authInit() async {
       () => AuthRemoteDataSourceImpl(
         googleSignIn: sl(),
         facebookAuthClient: sl(),
-
         authClient: sl(),
         cloudStoreClient: sl(),
         dbClient: sl(),
@@ -70,7 +68,6 @@ Future<void> _authInit() async {
     ..registerLazySingleton<GoogleSignIn>(GoogleSignIn.new)
     ..registerLazySingleton(() => FacebookAuth.instance);
 }
-
 
 Future<void> _languageInit() async {
   sl
@@ -82,7 +79,8 @@ Future<void> _languageInit() async {
     )
     ..registerLazySingleton(() => SetLanguage(sl()))
     ..registerLazySingleton(() => GetLanguage(sl()))
-    ..registerLazySingleton<LanguageRepository>(() => LanguageRepositoryImpl(sl()))
+    ..registerLazySingleton<LanguageRepository>(
+        () => LanguageRepositoryImpl(sl()))
     ..registerLazySingleton<LanguageLocalDataSource>(
       () => LanguageLocalDataSourceImpl(sl()),
     );
@@ -91,7 +89,7 @@ Future<void> _languageInit() async {
 Future<void> _parentalInfoInit() async {
   sl
     ..registerFactory(
-          () => ParentalInfoBloc(
+      () => ParentalInfoBloc(
         saveParentalInfo: sl(),
         getParentalInfo: sl(),
         updateParentalInfo: sl(),
@@ -108,9 +106,10 @@ Future<void> _parentalInfoInit() async {
     ..registerLazySingleton(() => UpdateChildUseCase(sl()))
     ..registerLazySingleton(() => RemoveChildUseCase(sl()))
     ..registerLazySingleton(() => SetPinUseCase(sl()))
-    ..registerLazySingleton<ParentalInfoRepository>(() => ParentalInfoRepoImpl(sl()))
+    ..registerLazySingleton<ParentalInfoRepository>(
+        () => ParentalInfoRepoImpl(sl()))
     ..registerLazySingleton<ParentalInfoRemoteDataSource>(
-          () => ParentalInfoRemoteDataSourceImpl(
+      () => ParentalInfoRemoteDataSourceImpl(
         firestore: sl(),
         auth: sl(),
       ),
@@ -120,24 +119,34 @@ Future<void> _parentalInfoInit() async {
 Future<void> _digitalWellbeingInit() async {
   sl
     ..registerFactory(
-          () => DigitalWellbeingBloc(
-        getDigitalWellbeing: sl(),
-        updateDigitalWellbeing: sl(),
-        setUsageLimit: sl(),
-        removeUsageLimit: sl(),
-        getDigitalWellbeingHistory: sl(),
-      ),
+      () => DigitalWellbeingBloc(
+          getDigitalWellbeing: sl(),
+          updateDigitalWellbeing: sl(),
+          setUsageLimit: sl(),
+          removeUsageLimit: sl(),
+          getDigitalWellbeingHistory: sl(),
+          localDataSource: sl()),
     )
     ..registerLazySingleton(() => GetDigitalWellbeingUseCase(sl()))
     ..registerLazySingleton(() => UpdateDigitalWellbeingUseCase(sl()))
     ..registerLazySingleton(() => SetUsageLimitUseCase(sl()))
     ..registerLazySingleton(() => RemoveUsageLimitUseCase(sl()))
     ..registerLazySingleton(() => GetDigitalWellbeingHistoryUseCase(sl()))
-    ..registerLazySingleton<DigitalWellbeingRepository>(() => DigitalWellbeingRepoImpl(sl()))
+    ..registerLazySingleton<DigitalWellbeingRepository>(
+      () => DigitalWellbeingRepoImpl(
+        remoteDataSource: sl(),
+        localDataSource: sl(),
+      ),
+    )
     ..registerLazySingleton<DigitalWellbeingRemoteDataSource>(
-          () => DigitalWellbeingRemoteDataSourceImpl(
-        firestore: sl(),
+      () => DigitalWellbeingRemoteDataSourceImpl(
+        database: sl(),
         auth: sl(),
+      ),
+    )
+    ..registerLazySingleton<DigitalWellbeingLocalDataSource>(
+      () => DigitalWellbeingLocalDataSourceImpl(
+        sharedPreferences: sl(),
       ),
     );
 }

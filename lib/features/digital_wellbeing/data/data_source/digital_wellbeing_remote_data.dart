@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_database/firebase_database.dart';
 import 'package:safenest/core/errors/exceptions.dart';
 import 'package:safenest/features/digital_wellbeing/data/model/digital_wellbeing_model.dart';
 import 'package:safenest/features/digital_wellbeing/domain/entity/digital_wellbeing.dart';
@@ -21,24 +22,24 @@ abstract class DigitalWellbeingRemoteDataSource {
 }
 
 class DigitalWellbeingRemoteDataSourceImpl implements DigitalWellbeingRemoteDataSource {
-  final FirebaseFirestore firestore;
+  final FirebaseDatabase database;
   final FirebaseAuth auth;
 
   DigitalWellbeingRemoteDataSourceImpl({
-    required this.firestore,
+    required this.database,
     required this.auth,
   });
 
-  
+
 
   @override
   Future<DigitalWellbeingModel> getDigitalWellbeing(String childId) async {
     try {
       final user = auth.currentUser;
       if (user != null) {
-        final doc = await firestore.collection('digital_wellbeing').doc(childId).get();
-        if (doc.exists) {
-          return DigitalWellbeingModel.fromMap(doc.data()!);
+        final snapshot = await database.ref().child('digital_wellbeing').child(childId).get();
+        if (snapshot.exists) {
+          return DigitalWellbeingModel.fromMap(Map<String, dynamic>.from(snapshot.value as Map));
         } else {
           throw const ServerException(message: 'Digital wellbeing data not found', statusCode: 404);
         }
@@ -46,21 +47,22 @@ class DigitalWellbeingRemoteDataSourceImpl implements DigitalWellbeingRemoteData
         throw const ServerException(message: 'User not authenticated', statusCode: 401);
       }
     } catch (e) {
-      throw const ServerException(message: 'Server Error', statusCode: 500);
+      throw ServerException(message: 'Server Error: $e', statusCode: 500);
     }
   }
+
 
   @override
   Future<void> updateDigitalWellbeing(DigitalWellbeingModel digitalWellbeing) async {
     try {
       final user = auth.currentUser;
       if (user != null) {
-        await firestore.collection('digital_wellbeing').doc(digitalWellbeing.childId).set(digitalWellbeing.toMap());
+        await database.ref().child('digital_wellbeing').child(digitalWellbeing.childId).set(digitalWellbeing.toMap());
       } else {
         throw const ServerException(message: 'User not authenticated', statusCode: 401);
       }
     } catch (e) {
-      throw const ServerException(message: 'Server Error', statusCode: 500);
+      throw ServerException(message: 'Server Error: $e', statusCode: 500);
     }
   }
 
@@ -69,17 +71,15 @@ class DigitalWellbeingRemoteDataSourceImpl implements DigitalWellbeingRemoteData
     try {
       final user = auth.currentUser;
       if (user != null) {
-        await firestore.collection('digital_wellbeing').doc(childId).update({
-          'usageLimits.$packageName': {
-            'dailyLimit': limit.dailyLimit.inSeconds,
-            'isEnabled': limit.isEnabled,
-          },
+        await database.ref().child('digital_wellbeing').child(childId).child('usageLimits').child(packageName).set({
+          'dailyLimit': limit.dailyLimit.inSeconds,
+          'isEnabled': limit.isEnabled,
         });
       } else {
         throw const ServerException(message: 'User not authenticated', statusCode: 401);
       }
     } catch (e) {
-      throw const ServerException(message: 'Server Error', statusCode: 500);
+      throw ServerException(message: 'Server Error: $e', statusCode: 500);
     }
   }
 
@@ -88,14 +88,12 @@ class DigitalWellbeingRemoteDataSourceImpl implements DigitalWellbeingRemoteData
     try {
       final user = auth.currentUser;
       if (user != null) {
-        await firestore.collection('digital_wellbeing').doc(childId).update({
-          'usageLimits.$packageName': FieldValue.delete(),
-        });
+        await database.ref().child('digital_wellbeing').child(childId).child('usageLimits').child(packageName).remove();
       } else {
         throw const ServerException(message: 'User not authenticated', statusCode: 401);
       }
     } catch (e) {
-      throw const ServerException(message: 'Server Error', statusCode: 500);
+      throw ServerException(message: 'Server Error: $e', statusCode: 500);
     }
   }
 
@@ -104,18 +102,28 @@ class DigitalWellbeingRemoteDataSourceImpl implements DigitalWellbeingRemoteData
     try {
       final user = auth.currentUser;
       if (user != null) {
-        final querySnapshot = await firestore.collection('digital_wellbeing')
-            .where('childId', isEqualTo: childId)
-            .where('date', isGreaterThanOrEqualTo: startDate)
-            .where('date', isLessThanOrEqualTo: endDate)
+        final snapshot = await database.ref()
+            .child('digital_wellbeing')
+            .child(childId)
+            .child('history')
+            .orderByChild('date')
+            .startAt(startDate.millisecondsSinceEpoch)
+            .endAt(endDate.millisecondsSinceEpoch)
             .get();
 
-        return querySnapshot.docs.map((doc) => DigitalWellbeingModel.fromMap(doc.data())).toList();
+        if (snapshot.exists) {
+          final Map<dynamic, dynamic> values = snapshot.value as Map<dynamic, dynamic>;
+          return values.entries
+              .map((entry) => DigitalWellbeingModel.fromMap(Map<String, dynamic>.from(entry.value as Map)))
+              .toList();
+        } else {
+          return [];
+        }
       } else {
         throw const ServerException(message: 'User not authenticated', statusCode: 401);
       }
     } catch (e) {
-      throw const ServerException(message: 'Server Error', statusCode: 500);
+      throw ServerException(message: 'Server Error: $e', statusCode: 500);
     }
   }
 
@@ -124,14 +132,12 @@ class DigitalWellbeingRemoteDataSourceImpl implements DigitalWellbeingRemoteData
     try {
       final user = auth.currentUser;
       if (user != null) {
-        await firestore.collection('digital_wellbeing').doc(childId).update({
-          'notificationPreferences': preferences.toMap(),
-        });
+        await database.ref().child('digital_wellbeing').child(childId).child('notificationPreferences').set(preferences.toMap());
       } else {
         throw const ServerException(message: 'User not authenticated', statusCode: 401);
       }
     } catch (e) {
-      throw const ServerException(message: 'Server Error', statusCode: 500);
+      throw ServerException(message: 'Server Error: $e', statusCode: 500);
     }
   }
 
@@ -140,12 +146,13 @@ class DigitalWellbeingRemoteDataSourceImpl implements DigitalWellbeingRemoteData
     try {
       final user = auth.currentUser;
       if (user != null) {
-        await firestore.collection('digital_wellbeing').doc(childId).collection('tasks').add(task.toMap());
+        final newTaskRef = database.ref().child('digital_wellbeing').child(childId).child('tasks').push();
+        await newTaskRef.set(task.toMap());
       } else {
         throw const ServerException(message: 'User not authenticated', statusCode: 401);
       }
     } catch (e) {
-      throw const ServerException(message: 'Server Error', statusCode: 500);
+      throw ServerException(message: 'Server Error: $e', statusCode: 500);
     }
   }
 
@@ -154,12 +161,12 @@ class DigitalWellbeingRemoteDataSourceImpl implements DigitalWellbeingRemoteData
     try {
       final user = auth.currentUser;
       if (user != null) {
-        await firestore.collection('digital_wellbeing').doc(childId).collection('tasks').doc(task.id).update(task.toMap());
+        await database.ref().child('digital_wellbeing').child(childId).child('tasks').child(task.id).update(task.toMap());
       } else {
         throw const ServerException(message: 'User not authenticated', statusCode: 401);
       }
     } catch (e) {
-      throw const ServerException(message: 'Server Error', statusCode: 500);
+      throw ServerException(message: 'Server Error: $e', statusCode: 500);
     }
   }
 
@@ -168,12 +175,14 @@ class DigitalWellbeingRemoteDataSourceImpl implements DigitalWellbeingRemoteData
     try {
       final user = auth.currentUser;
       if (user != null) {
-        await firestore.collection('digital_wellbeing').doc(childId).collection('tasks').doc(taskId).delete();
+        await database.ref().child('digital_wellbeing').child(childId).child('tasks').child(taskId).remove();
       } else {
         throw const ServerException(message: 'User not authenticated', statusCode: 401);
       }
     } catch (e) {
-      throw const ServerException(message: 'Server Error', statusCode: 500);
+      throw ServerException(message: 'Server Error: $e', statusCode: 500);
     }
   }
+
+
 }

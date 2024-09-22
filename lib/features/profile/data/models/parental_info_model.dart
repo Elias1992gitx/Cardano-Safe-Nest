@@ -1,5 +1,6 @@
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:safenest/core/utils/typedef.dart';
+import 'package:safenest/features/profile/domain/entity/child.dart';
 import 'package:safenest/features/profile/domain/entity/parental_info.dart';
 import 'package:safenest/features/profile/data/models/child_model.dart';
 
@@ -34,16 +35,17 @@ class ParentalInfoModel extends ParentalInfo {
     pin: map['pin'] as String,
   );
 
-  ParentalInfoModel copyWith({
-    List<ChildModel>? children,
+  @override
+  ParentalInfo copyWith({
+    List<Child>? children,
+    bool? emailNotifications,
     String? emergencyContactName,
     String? emergencyContactPhone,
-    bool? emailNotifications,
-    bool? smsNotifications,
-    String? notificationFrequency,
-    LatLng? homeLocation,
     String? homeAddress,
+    LatLng? homeLocation,
+    String? notificationFrequency,
     String? pin,
+    bool? smsNotifications,
   }) {
     return ParentalInfoModel(
       children: children ?? this.children.cast<ChildModel>(),

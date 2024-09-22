@@ -17,6 +17,16 @@ class NotificationPreferencesModel extends NotificationPreferences {
     screenTimeThresholdDuration: Duration(milliseconds: map['screenTimeThresholdDuration'] as int),
   );
 
+
+  factory NotificationPreferencesModel.empty() {
+    return NotificationPreferencesModel(
+      dailySummary: false,
+      usageLimitExceeded: false,
+      screenTimeThreshold: false,
+      screenTimeThresholdDuration: Duration.zero,
+    );
+  }
+  
   DataMap toMap() {
     return {
       'dailySummary': dailySummary,

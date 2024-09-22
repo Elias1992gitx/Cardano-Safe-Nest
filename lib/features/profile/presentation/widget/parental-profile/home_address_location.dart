@@ -7,15 +7,22 @@ import 'package:location/location.dart';
 
 class HomeAddressLocation extends StatefulWidget {
   final Function(LatLng, String) onLocationSelected;
+  final LatLng? initialLocation;
+  final String? initialAddress;
 
-  const HomeAddressLocation({Key? key, required this.onLocationSelected})
-      : super(key: key);
+  const HomeAddressLocation({
+    Key? key,
+    required this.onLocationSelected,
+    this.initialLocation,
+    this.initialAddress,
+  }) : super(key: key);
 
   @override
   _HomeAddressLocationState createState() => _HomeAddressLocationState();
 }
 
 class _HomeAddressLocationState extends State<HomeAddressLocation> {
+  late GoogleMapController _mapController;
   LatLng? _selectedLocation;
   String _selectedAddress = '';
   LatLng? _initialLocation;
@@ -23,6 +30,9 @@ class _HomeAddressLocationState extends State<HomeAddressLocation> {
   @override
   void initState() {
     super.initState();
+    _selectedLocation = widget.initialLocation;
+    _selectedAddress = widget.initialAddress ?? '';
+    _initialLocation = widget.initialLocation;
     WidgetsBinding.instance.addPostFrameCallback((_) {
       _showLocationConsentDialog();
     });
