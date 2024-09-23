@@ -1,5 +1,6 @@
 import 'dart:io';
 import 'package:app_usage/app_usage.dart' as app_usage_package;
+import 'package:installed_apps/installed_apps.dart';
 import 'package:safenest/features/digital_wellbeing/domain/entity/digital_wellbeing.dart';
 import 'package:safenest/features/digital_wellbeing/data/model/digital_wellbeing_model.dart';
 import 'package:safenest/features/digital_wellbeing/domain/entity/digital_wellbeing.dart';
@@ -30,22 +31,24 @@ class DigitalWellbeingLocalDataSourceImpl
         final endDate = DateTime.now();
         final startDate = endDate.subtract(const Duration(days: 1));
 
-        final usageStats =
-            await app_usage_package.AppUsage().getAppUsage(startDate, endDate);
+        final usageStats = await app_usage_package.AppUsage().getAppUsage(startDate, endDate);
 
         final appUsages = <String, AppUsage>{};
         for (var stat in usageStats) {
-          appUsages[stat.packageName] = AppUsage(
-            packageName: stat.packageName,
-            appName: stat.appName,
-            usageTime: stat.usage,
-            openCount: 0, // AppUsage package doesn't provide open count
-          );
+          if (stat.usage.inMinutes >= 1) {  // Ignore apps with less than 1 minute of usage
+            final appName = await _getAppName(stat.packageName);
+            appUsages[stat.packageName] = AppUsage(
+              packageName: stat.packageName,
+              appName: appName,
+              usageTime: stat.usage,
+              openCount: 0, // AppUsage package doesn't provide open count
+            );
+          }
         }
 
-        final totalScreenTime = usageStats.fold<Duration>(
+        final totalScreenTime = appUsages.values.fold<Duration>(
           Duration.zero,
-          (total, stat) => total + stat.usage,
+              (total, usage) => total + usage.usageTime,
         );
 
         final usageLimits = await getUsageLimits();
@@ -67,11 +70,17 @@ class DigitalWellbeingLocalDataSourceImpl
       } catch (e) {
         throw Exception('Failed to get app usage: $e');
       }
-    } else if (Platform.isIOS) {
-      // iOS implementation
-      throw UnimplementedError('iOS app usage tracking not implemented');
     } else {
       throw UnsupportedError('Platform not supported');
+    }
+  }
+
+  Future<String> _getAppName(String packageName) async {
+    try {
+      final app = await InstalledApps.getAppInfo(packageName);
+      return app?.name ?? packageName;
+    } catch (e) {
+      return packageName;
     }
   }
 

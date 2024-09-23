@@ -8,12 +8,15 @@ Future<void> init() async {
     ..registerLazySingleton(() => prefs)
     ..registerLazySingleton(() => FirebaseFirestore.instance)
     ..registerLazySingleton(() => FirebaseStorage.instance)
+    ..registerLazySingleton(() => FirebaseDatabase.instance)
     ..registerLazySingleton(() => FirebaseAuth.instance);
+    
   await _onBoardingInit();
   await _languageInit();
   await _authInit();
   await _parentalInfoInit();
   await _digitalWellbeingInit();
+
 }
 
 Future<void> _onBoardingInit() async {

@@ -61,7 +61,7 @@ class _DigitalWellbeingAnalysisPageState extends State<DigitalWellbeingAnalysisP
                 children: [
                   digital_wellbeing.DigitalWellbeingSummary(digitalWellbeing: digitalWellbeing),
                   const SizedBox(height: 24),
-                  AppUsageChart(appUsages: digitalWellbeing.appUsages),
+                  AppUsageChart(appUsages: digitalWellbeing.appUsages.map((key, value) => MapEntry(value.appName, value))),
                   const SizedBox(height: 24),
                   ScreenTimeTrend(history: digitalWellbeing.history),
                   const SizedBox(height: 24),
@@ -75,7 +75,7 @@ class _DigitalWellbeingAnalysisPageState extends State<DigitalWellbeingAnalysisP
                     },
                   ),
                   const SizedBox(height: 24),
-                  MostUsedApps(appUsages: digitalWellbeing.appUsages),
+                  MostUsedApps(appUsages: digitalWellbeing.appUsages.map((key, value) => MapEntry(value.appName, value))),
                 ],
               ),
             ),
