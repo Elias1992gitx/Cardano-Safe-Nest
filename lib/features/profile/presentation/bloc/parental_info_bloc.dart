@@ -1,8 +1,12 @@
+import 'dart:convert';
+import 'dart:io';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:equatable/equatable.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:safenest/features/profile/domain/entity/parental_info.dart';
 import 'package:safenest/features/profile/domain/entity/child.dart';
 import 'package:safenest/features/profile/domain/usecase/add_child_usecase.dart';
+import 'package:safenest/features/profile/data/models/parental_info_model.dart';
 import 'package:safenest/features/profile/domain/usecase/get_paternal_info.dart';
 import 'package:safenest/features/profile/domain/usecase/save_parental_info.dart';
 import 'package:safenest/features/profile/domain/usecase/update_child_usecase.dart';
@@ -46,6 +50,22 @@ class ParentalInfoBloc extends Bloc<ParentalInfoEvent, ParentalInfoState> {
     on<RemoveChildEvent>(_removeChildHandler);
     on<SetPinEvent>(_setPinHandler);
   }
+
+  Future<void> _cacheParentalInfo(ParentalInfoModel parentalInfo) async {
+    final prefs = await SharedPreferences.getInstance();
+    prefs.setString('parental_info', json.encode(parentalInfo.toMap()));
+  }
+
+  Future<ParentalInfoModel?> _getCachedParentalInfo() async {
+    final prefs = await SharedPreferences.getInstance();
+    final jsonString = prefs.getString('parental_info');
+    if (jsonString != null) {
+      return ParentalInfoModel.fromMap(json.decode(jsonString));
+    }
+    return null;
+  }
+
+
 
   Future<void> _saveParentalInfoHandler(
     SaveParentalInfoEvent event,
