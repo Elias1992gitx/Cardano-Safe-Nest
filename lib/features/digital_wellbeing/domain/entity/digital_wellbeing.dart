@@ -1,4 +1,5 @@
 import 'package:equatable/equatable.dart';
+import 'package:flutter/foundation.dart';
 import 'package:safenest/features/notification/data/model/child_task_model.dart';
 import 'package:safenest/features/notification/data/model/notification_preference_model.dart';
 import 'package:safenest/features/notification/domain/entity/child_task.dart';
@@ -43,12 +44,14 @@ class AppUsage {
   final String appName;
   final Duration usageTime;
   final int openCount;
+  final Uint8List? iconData;
 
   AppUsage({
     required this.packageName,
     required this.appName,
     required this.usageTime,
     required this.openCount,
+    this.iconData,
   });
 }
 

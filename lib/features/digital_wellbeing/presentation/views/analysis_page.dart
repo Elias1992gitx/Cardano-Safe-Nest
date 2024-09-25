@@ -62,8 +62,11 @@ class _DigitalWellbeingAnalysisPageState extends State<DigitalWellbeingAnalysisP
                   digital_wellbeing.DigitalWellbeingSummary(digitalWellbeing: digitalWellbeing),
                   const SizedBox(height: 24),
                   AppUsageChart(appUsages: digitalWellbeing.appUsages.map((key, value) => MapEntry(value.appName, value))),
+                  // const SizedBox(height: 24),
+                  // ScreenTimeTrend(history: digitalWellbeing.history),
+
                   const SizedBox(height: 24),
-                  ScreenTimeTrend(history: digitalWellbeing.history),
+                  MostUsedApps(appUsages: digitalWellbeing.appUsages.map((key, value) => MapEntry(value.appName, value))),
                   const SizedBox(height: 24),
                   UsageLimitCard(
                     usageLimits: digitalWellbeing.usageLimits,
@@ -74,8 +77,6 @@ class _DigitalWellbeingAnalysisPageState extends State<DigitalWellbeingAnalysisP
                       // Implement remove limit functionality
                     },
                   ),
-                  const SizedBox(height: 24),
-                  MostUsedApps(appUsages: digitalWellbeing.appUsages.map((key, value) => MapEntry(value.appName, value))),
                 ],
               ),
             ),

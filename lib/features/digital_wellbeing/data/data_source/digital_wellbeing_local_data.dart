@@ -14,9 +14,10 @@ abstract class DigitalWellbeingLocalDataSource {
       DigitalWellbeingModel digitalWellbeing);
   Future<List<DigitalWellbeingModel>> getDigitalWellbeingHistory(
       DateTime startDate, DateTime endDate);
-  Future<void> setUsageLimit(String packageName, UsageLimitModel limit);  Future<void> removeUsageLimit(String packageName);
+  Future<void> setUsageLimit(String packageName, UsageLimitModel limit);
+  Future<void> removeUsageLimit(String packageName);
   Future<Map<String, UsageLimitModel>> getUsageLimits();
-  }
+}
 
 class DigitalWellbeingLocalDataSourceImpl
     implements DigitalWellbeingLocalDataSource {
@@ -35,14 +36,21 @@ class DigitalWellbeingLocalDataSourceImpl
 
         final appUsages = <String, AppUsage>{};
         for (var stat in usageStats) {
-          if (stat.usage.inMinutes >= 1) {  // Ignore apps with less than 1 minute of usage
+          if (stat.usage.inMinutes >= 1) {
+            // Ignore apps with less than 1 minute of usage
             final appName = await _getAppName(stat.packageName);
-            appUsages[stat.packageName] = AppUsage(
-              packageName: stat.packageName,
-              appName: appName,
-              usageTime: stat.usage,
-              openCount: 0, // AppUsage package doesn't provide open count
-            );
+
+            // Ignore launcher and settings app
+            if (!_isSystemApp(stat.packageName, appName)) {
+              final appInfo = await InstalledApps.getAppInfo(stat.packageName);
+              appUsages[stat.packageName] = AppUsage(
+                packageName: stat.packageName,
+                appName: appName,
+                usageTime: stat.usage,
+                openCount: 0, // AppUsage package doesn't provide open count
+                iconData: appInfo?.icon,
+              );
+            }
           }
         }
 
@@ -73,6 +81,31 @@ class DigitalWellbeingLocalDataSourceImpl
     } else {
       throw UnsupportedError('Platform not supported');
     }
+  }
+
+  bool _isSystemApp(String packageName, String appName) {
+    // List of package names for common launchers and settings apps
+    final systemApps = [
+      'com.android.launcher',
+      'com.android.settings',
+      'com.google.android.apps.nexuslauncher',
+      'com.sec.android.app.launcher',
+      'com.miui.home',
+      // Add more launcher and settings package names as needed
+    ];
+
+    // Check if the package name is in the list of system apps
+    if (systemApps.contains(packageName)) {
+      return true;
+    }
+
+    // Check if the app name contains "launcher" or "settings" (case-insensitive)
+    if (appName.toLowerCase().contains('launcher') ||
+        appName.toLowerCase().contains('settings')) {
+      return true;
+    }
+
+    return false;
   }
 
   Future<String> _getAppName(String packageName) async {
