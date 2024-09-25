@@ -3,6 +3,7 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:get/get.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:safenest/core/common/app/providers/language_provider.dart';
+import 'package:safenest/core/common/app/providers/parental_info_provider.dart';
 import 'package:safenest/core/common/app/providers/theme_controller.dart';
 import 'package:safenest/core/common/app/providers/user_provider.dart';
 import 'package:safenest/core/localization/app_localization.dart';
@@ -33,6 +34,7 @@ class MyApp extends StatelessWidget {
     return MultiProvider(
       providers: [
         ChangeNotifierProvider(create: (_) => UserProvider()),
+        ChangeNotifierProvider(create: (_) => ParentalInfoProvider()),
         ChangeNotifierProvider(create: (_) => LanguageProvider()),
       ],
       child: Consumer<LanguageProvider>(

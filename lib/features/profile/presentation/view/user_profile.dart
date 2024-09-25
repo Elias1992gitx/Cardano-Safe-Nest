@@ -29,18 +29,18 @@ class UserProfileScreen extends StatefulWidget {
 
 class _UserProfileScreenState extends State<UserProfileScreen>
     with TickerProviderStateMixin {
-  bool _isParentalModeEnabled = false;
   bool _isLoggingOut = false;
+  bool _isParentalModeEnabled = false;
   late AnimationController _animationController;
 
   @override
   void initState() {
     super.initState();
-    _fetchParentalInfo();
     _animationController = AnimationController(
       vsync: this,
       duration: const Duration(milliseconds: 1000),
     );
+    _fetchParentalInfo();
   }
 
   @override
@@ -50,14 +50,7 @@ class _UserProfileScreenState extends State<UserProfileScreen>
   }
 
   void _fetchParentalInfo() {
-    final parentalInfoBloc = context.read<ParentalInfoBloc>();
-    parentalInfoBloc.add(GetParentalInfoEvent());
-  }
-
-  bool _parentalInfoExists() {
-    final parentalInfoBloc = context.read<ParentalInfoBloc>();
-    parentalInfoBloc.add(GetParentalInfoEvent());
-    return parentalInfoBloc.state is ParentalInfoLoaded;
+    context.read<ParentalInfoBloc>().add(GetParentalInfoEvent());
   }
 
   @override
@@ -68,7 +61,7 @@ class _UserProfileScreenState extends State<UserProfileScreen>
           setState(() {
             _isParentalModeEnabled = true;
           });
-        } else if (state is ParentalInfoInitial) {
+        } else if (state is ParentalInfoInitial || state is ParentalInfoError) {
           setState(() {
             _isParentalModeEnabled = false;
           });
@@ -86,7 +79,11 @@ class _UserProfileScreenState extends State<UserProfileScreen>
                     const UserProfileCard(),
                     _buildCenteredCard(context),
                     const UserContents(),
-                    const SettingBody(),
+                    BlocBuilder<ParentalInfoBloc, ParentalInfoState>(
+                      builder: (context, state) {
+                        return SettingBody(parentalInfoState: state);
+                      },
+                    ),
                     _buildFooter(context),
                   ],
                 ),
@@ -132,46 +129,51 @@ class _UserProfileScreenState extends State<UserProfileScreen>
                 elevation: 0,
                 color: context.theme.cardColor,
                 child: SizedBox(
-                  height: 60.0,
                   width: MediaQuery.of(context).size.width * 0.9,
-                  child: ListTile(
-                    leading: const Icon(
-                      IconlyLight.shield_done,
-                    ),
-                    title: Text(
-                      "Parental Mode",
-                      style: GoogleFonts.plusJakartaSans(
-                        textStyle: const TextStyle(
-                          fontWeight: FontWeight.w500,
-                          fontSize: 16,
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      ListTile(
+                        leading: const Icon(
+                          IconlyLight.shield_done,
+                        ),
+                        title: Text(
+                          "Parental Mode",
+                          style: GoogleFonts.plusJakartaSans(
+                            textStyle: const TextStyle(
+                              fontWeight: FontWeight.w500,
+                              fontSize: 16,
+                            ),
+                          ),
+                        ),
+                        trailing: Switch(
+                          value: _isParentalModeEnabled,
+                          onChanged: _isParentalModeEnabled
+                              ? null
+                              : (value) async {
+                                  if (value) {
+                                    final pin = await Navigator.of(context)
+                                        .push<String>(
+                                      MaterialPageRoute(
+                                        builder: (context) => SetPinPage(
+                                          onPinSet: (pin) {
+                                            return pin;
+                                          },
+                                        ),
+                                      ),
+                                    );
+                                    if (pin != null) {
+                                      setState(() {
+                                        _isParentalModeEnabled = true;
+                                      });
+                                      context
+                                          .go('/profile-screen/parental-mode');
+                                    }
+                                  }
+                                },
                         ),
                       ),
-                    ),
-                    trailing: Switch(
-                      value: _isParentalModeEnabled,
-                      onChanged: state is ParentalInfoLoaded
-                          ? (value) async {
-                              final pin =
-                                  await Navigator.of(context).push<String>(
-                                MaterialPageRoute(
-                                  builder: (context) => SetPinPage(
-                                    onPinSet: (pin) {
-                                      return pin;
-                                    },
-                                  ),
-                                ),
-                              );
-                              if (pin != null) {
-                                setState(() {
-                                  _isParentalModeEnabled = value;
-                                });
-                                if (value) {
-                                  context.go('/profile-screen/parental-mode');
-                                }
-                              }
-                            }
-                          : null,
-                    ),
+                    ],
                   ),
                 ),
               ),
@@ -187,7 +189,8 @@ class _UserProfileScreenState extends State<UserProfileScreen>
       context: context,
       builder: (BuildContext context) {
         return Dialog(
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+          shape:
+              RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
           elevation: 0,
           backgroundColor: Colors.transparent,
           child: Container(
@@ -388,5 +391,4 @@ class _UserProfileScreenState extends State<UserProfileScreen>
       },
     );
   }
-
 }

@@ -26,7 +26,6 @@ class ParentalInfo extends Equatable {
     required this.pin,
   });
 
-
   ParentalInfo copyWith({
     List<Child>? children,
     String? emergencyContactName,
@@ -41,28 +40,28 @@ class ParentalInfo extends Equatable {
     return ParentalInfo(
       children: children ?? this.children,
       emergencyContactName: emergencyContactName ?? this.emergencyContactName,
-      emergencyContactPhone: emergencyContactPhone ?? this.emergencyContactPhone,
+      emergencyContactPhone:
+          emergencyContactPhone ?? this.emergencyContactPhone,
       emailNotifications: emailNotifications ?? this.emailNotifications,
       smsNotifications: smsNotifications ?? this.smsNotifications,
-      notificationFrequency: notificationFrequency ?? this.notificationFrequency,
+      notificationFrequency:
+          notificationFrequency ?? this.notificationFrequency,
       homeLocation: homeLocation ?? this.homeLocation,
       homeAddress: homeAddress ?? this.homeAddress,
       pin: pin ?? this.pin,
     );
   }
 
-
-
   @override
   List<Object?> get props => [
-    children,
-    emergencyContactName,
-    emergencyContactPhone,
-    emailNotifications,
-    smsNotifications,
-    notificationFrequency,
-    homeLocation,
-    homeAddress,
-    pin,
-  ];
+        children,
+        emergencyContactName,
+        emergencyContactPhone,
+        emailNotifications,
+        smsNotifications,
+        notificationFrequency,
+        homeLocation,
+        homeAddress,
+        pin,
+      ];
 }

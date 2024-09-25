@@ -47,12 +47,12 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
     _checkAndRequestUsagePermission();
     _animationController = AnimationController(
       vsync: this,
-      duration: const Duration(milliseconds: 1000),
+      duration: const Duration(milliseconds: 10),
     );
     _fadeAnimation = Tween<double>(begin: 0.0, end: 1.0).animate(_animationController);
     _animationController.forward();
 
-    Future.delayed(const Duration(seconds: 5), () {
+    Future.delayed(const Duration(seconds: 1), () {
       setState(() {
         _isPageReady = true;
       });
@@ -82,15 +82,15 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
     showDialog(
       context: context,
       builder: (BuildContext context) => AlertDialog(
-        title: Text('Permission Required'),
-        content: Text('To access app usage data, please enable the "Physical Activity" permission in your device settings.'),
+        title: const Text('Permission Required'),
+        content: const Text('To access app usage data, please enable the "Physical Activity" permission in your device settings.'),
         actions: [
           TextButton(
-            child: Text('Cancel'),
+            child: const Text('Cancel'),
             onPressed: () => Navigator.of(context).pop(),
           ),
           TextButton(
-            child: Text('Open Settings'),
+            child: const Text('Open Settings'),
             onPressed: () {
               Navigator.of(context).pop();
               AppSettings.openAppSettings();
@@ -277,8 +277,7 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
   }
 
   void _fetchParentalInfo() {
-    final parentalInfoBloc = context.read<ParentalInfoBloc>();
-    parentalInfoBloc.add(GetParentalInfoEvent());
+    context.read<ParentalInfoBloc>().add(GetParentalInfoEvent());
   }
 
   Widget _buildWelcomeText() {

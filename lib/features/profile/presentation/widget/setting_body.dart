@@ -4,16 +4,67 @@ import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:iconly/iconly.dart';
 import 'package:safenest/core/extensions/context_extensions.dart';
-
+import 'package:safenest/features/profile/presentation/bloc/parental_info_bloc.dart';
 
 class SettingBody extends StatefulWidget {
-  const SettingBody({super.key});
+  final ParentalInfoState parentalInfoState;
+
+  const SettingBody({Key? key, required this.parentalInfoState}) : super(key: key);
 
   @override
-  State<SettingBody> createState() => _SettingBodyState();
+  _SettingBodyState createState() => _SettingBodyState();
 }
 
 class _SettingBodyState extends State<SettingBody> {
+  Widget _buildSettingItem({
+    required IconData icon,
+    required String title,
+    required VoidCallback onTap,
+  }) {
+    return Align(
+      alignment: AlignmentDirectional.bottomCenter,
+      child: InkWell(
+        onTap: onTap,
+        child: SizedBox(
+          width: double.infinity,
+          height: 60,
+          child: Padding(
+            padding: const EdgeInsetsDirectional.fromSTEB(16, 0, 16, 0),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Row(
+                  children: [
+                    Align(
+                      alignment: AlignmentDirectional.centerStart,
+                      child: Icon(
+                        icon,
+                        color: Colors.blueGrey,
+                        size: 30,
+                      ),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.only(left: 20),
+                      child: Text(
+                        title,
+                        style: GoogleFonts.montserrat(
+                          textStyle: const TextStyle(
+                            fontWeight: FontWeight.w500,
+                            fontSize: 16,
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Stack(
@@ -38,198 +89,35 @@ class _SettingBodyState extends State<SettingBody> {
                   ),
                 ),
               ),
-              Align(
-                alignment: AlignmentDirectional.bottomCenter,
-                child: InkWell(
-                  onTap: () {
-                    context.go('/account-setting');
-                  },
-                  child: SizedBox(
-                    width: double.infinity,
-                    height: 60,
-                    child: Padding(
-                      padding: const EdgeInsetsDirectional.fromSTEB(
-                          16, 0, 16, 0),
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Row(
-                            children: [
-                              const Align(
-                                alignment:
-                                AlignmentDirectional.centerStart,
-                                child: Icon(
-                                  IconlyLight.setting,
-                                  color: Colors.blueGrey,
-                                  size: 30,
-                                ),
-                              ),
-                              Padding(
-                                padding:
-                                const EdgeInsets.only(left: 20),
-                                child: Text(
-                                  'Account Settings',
-                                  style: GoogleFonts.montserrat(
-                                    textStyle: const TextStyle(
-                                      fontWeight: FontWeight.w500,
-                                      fontSize: 16,
-                                    ),
-                                  ),
-                                ),
-                              ),
-                            ],
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
-                ),
+              _buildSettingItem(
+                icon: IconlyLight.setting,
+                title: 'Account Settings',
+                onTap: () => context.go('/account-setting'),
               ),
-              Align(
-                alignment: AlignmentDirectional.bottomCenter,
-                child: InkWell(
-                  onTap: () {
-                    context.go('/notification-setting');
-                  },
-                  child: SizedBox(
-                    width: double.infinity,
-                    height: 60,
-                    child: Padding(
-                      padding: const EdgeInsetsDirectional.fromSTEB(
-                          16, 0, 16, 0),
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Row(
-                            children: [
-                              const Align(
-                                alignment:
-                                AlignmentDirectional.centerStart,
-                                child: Icon(
-                                  IconlyLight.notification,
-                                  color: Colors.blueGrey,
-                                  size: 30,
-                                ),
-                              ),
-                              Padding(
-                                padding:
-                                const EdgeInsets.only(left: 20),
-                                child: Text(
-                                  'Notification Settings',
-                                  style: GoogleFonts.montserrat(
-                                    textStyle: const TextStyle(
-                                      fontWeight: FontWeight.w500,
-                                      fontSize: 16,
-                                    ),
-                                  ),
-                                ),
-                              ),
-                            ],
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
-                ),
+              _buildSettingItem(
+                icon: IconlyLight.notification,
+                title: 'Notification Settings',
+                onTap: () => context.go('/notification-setting'),
               ),
-              Align(
-                alignment: AlignmentDirectional.bottomCenter,
-                child: InkWell(
-                  onTap: () {
-                    context.go('/language-selection');
-                  },
-                  child: SizedBox(
-                    width: double.infinity,
-                    height: 60,
-                    child: Padding(
-                      padding: const EdgeInsetsDirectional.fromSTEB(
-                          16, 0, 16, 0),
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Row(
-                            children: [
-                              const Align(
-                                alignment:
-                                AlignmentDirectional.centerStart,
-                                child: Icon(
-                                  Icons.language,
-                                  color: Colors.blueGrey,
-                                  size: 30,
-                                ),
-                              ),
-                              Padding(
-                                padding:
-                                const EdgeInsets.only(left: 20),
-                                child: Text(
-                                  'Preferred Language',
-                                  style: GoogleFonts.montserrat(
-                                    textStyle: const TextStyle(
-                                      fontWeight: FontWeight.w500,
-                                      fontSize: 16,
-                                    ),
-                                  ),
-                                ),
-                              ),
-                            ],
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
-                ),
+              _buildSettingItem(
+                icon: Icons.language,
+                title: 'Preferred Language',
+                onTap: () => context.go('/language-selection'),
               ),
-              Align(
-                alignment: AlignmentDirectional.bottomCenter,
-                child: InkWell(
-                  onTap: () {
-                    context.go('/appearance-setting');
-                  },
-                  child: SizedBox(
-                    width: double.infinity,
-                    height: 60,
-                    child: Padding(
-                      padding: const EdgeInsetsDirectional.fromSTEB(
-                          16, 0, 16, 0),
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Row(
-                            children: [
-                              const Align(
-                                alignment:
-                                AlignmentDirectional.centerStart,
-                                child: Icon(
-                                  Icons.dark_mode_outlined,
-                                  color: Colors.blueGrey,
-                                  size: 30,
-                                ),
-                              ),
-                              Padding(
-                                padding:
-                                const EdgeInsets.only(left: 20),
-                                child: Text(
-                                  'Appearance Setting',
-                                  style: GoogleFonts.montserrat(
-                                    textStyle: const TextStyle(
-                                      fontWeight: FontWeight.w500,
-                                      fontSize: 16,
-                                    ),
-                                  ),
-                                ),
-                              ),
-                            ],
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
-                ),
+              _buildSettingItem(
+                icon: Icons.dark_mode_outlined,
+                title: 'Appearance Setting',
+                onTap: () => context.go('/appearance-setting'),
               ),
+              if (widget.parentalInfoState is ParentalInfoLoaded)
+                _buildSettingItem(
+                  icon: IconlyLight.shield_done,
+                  title: 'Manage Parental Info',
+                  onTap: () => context.go('/manage-parental-info'),
+                ),
             ],
           ),
         ),
-
       ],
     );
   }

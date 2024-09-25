@@ -34,14 +34,14 @@ class ParentalInfoBloc extends Bloc<ParentalInfoEvent, ParentalInfoState> {
     required UpdateChildUseCase updateChild,
     required RemoveChildUseCase removeChild,
     required SetPinUseCase setPin,
-  }) : _saveParentalInfo = saveParentalInfo,
-       _getParentalInfo = getParentalInfo,
-       _updateParentalInfo = updateParentalInfo,
-       _addChild = addChild,
-       _updateChild = updateChild,
-       _removeChild = removeChild,
-       _setPin = setPin,
-       super(ParentalInfoInitial()) {
+  })  : _saveParentalInfo = saveParentalInfo,
+        _getParentalInfo = getParentalInfo,
+        _updateParentalInfo = updateParentalInfo,
+        _addChild = addChild,
+        _updateChild = updateChild,
+        _removeChild = removeChild,
+        _setPin = setPin,
+        super(ParentalInfoInitial()) {
     on<SaveParentalInfoEvent>(_saveParentalInfoHandler);
     on<GetParentalInfoEvent>(_getParentalInfoHandler);
     on<UpdateParentalInfoEvent>(_updateParentalInfoHandler);
@@ -51,21 +51,21 @@ class ParentalInfoBloc extends Bloc<ParentalInfoEvent, ParentalInfoState> {
     on<SetPinEvent>(_setPinHandler);
   }
 
-  Future<void> _cacheParentalInfo(ParentalInfoModel parentalInfo) async {
+  Future<void> _cacheParentalInfo(ParentalInfo info) async {
     final prefs = await SharedPreferences.getInstance();
-    prefs.setString('parental_info', json.encode(parentalInfo.toMap()));
+    final infoModel = ParentalInfoModel.fromEntity(info);
+    await prefs.setString('parental_info', jsonEncode(infoModel.toMap()));
   }
 
-  Future<ParentalInfoModel?> _getCachedParentalInfo() async {
+  Future<ParentalInfo?> _getCachedParentalInfo() async {
     final prefs = await SharedPreferences.getInstance();
     final jsonString = prefs.getString('parental_info');
     if (jsonString != null) {
-      return ParentalInfoModel.fromMap(json.decode(jsonString));
+      final map = json.decode(jsonString);
+      return ParentalInfoModel.fromMap(map);
     }
     return null;
   }
-
-
 
   Future<void> _saveParentalInfoHandler(
     SaveParentalInfoEvent event,
@@ -84,10 +84,22 @@ class ParentalInfoBloc extends Bloc<ParentalInfoEvent, ParentalInfoState> {
     Emitter<ParentalInfoState> emit,
   ) async {
     emit(ParentalInfoLoading());
+
+    // First, try to get cached parental info
+    final cachedInfo = await _getCachedParentalInfo();
+    if (cachedInfo != null) {
+      emit(ParentalInfoLoaded(cachedInfo));
+      return;
+    }
+
+    // If no cached info, proceed with the current way
     final result = await _getParentalInfo();
     result.fold(
       (failure) => emit(ParentalInfoError(failure.errorMessage)),
-      (parentalInfo) => emit(ParentalInfoLoaded(parentalInfo)),
+      (parentalInfo) {
+        _cacheParentalInfo(parentalInfo);
+        emit(ParentalInfoLoaded(parentalInfo));
+      },
     );
   }
 
@@ -97,6 +109,7 @@ class ParentalInfoBloc extends Bloc<ParentalInfoEvent, ParentalInfoState> {
   ) async {
     emit(ParentalInfoLoading());
     final result = await _updateParentalInfo(event.parentalInfo);
+
     result.fold(
       (failure) => emit(ParentalInfoError(failure.errorMessage)),
       (_) => emit(ParentalInfoUpdated()),
