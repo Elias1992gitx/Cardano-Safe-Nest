@@ -5,7 +5,7 @@ import 'package:safenest/features/digital_wellbeing/presentation/bloc/digital_we
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 class CurrentUserDigitalWellbeingChart extends StatelessWidget {
-  const CurrentUserDigitalWellbeingChart({Key? key}) : super(key: key);
+  const CurrentUserDigitalWellbeingChart({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -101,7 +101,7 @@ class DigitalWellbeingSummary extends StatelessWidget {
   Widget _buildSummaryItem(
       BuildContext context, String title, String value, IconData icon) {
     return Container(
-      padding: EdgeInsets.all(16),
+      padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
         color: Theme.of(context).colorScheme.surface,
         borderRadius: BorderRadius.circular(12),
@@ -109,14 +109,14 @@ class DigitalWellbeingSummary extends StatelessWidget {
           BoxShadow(
             color: Theme.of(context).shadowColor.withOpacity(0.1),
             blurRadius: 4,
-            offset: Offset(0, 2),
+            offset: const Offset(0, 2),
           ),
         ],
       ),
       child: Row(
         children: [
           Container(
-            padding: EdgeInsets.all(8),
+            padding: const EdgeInsets.all(8),
             decoration: BoxDecoration(
               color: Theme.of(context).colorScheme.primary.withOpacity(0.1),
               shape: BoxShape.circle,
@@ -181,7 +181,7 @@ class PatternPainter extends CustomPainter {
       ..strokeWidth = 1
       ..style = PaintingStyle.stroke;
 
-    final spacing = 20.0;
+    const spacing = 20.0;
     for (double i = 0; i < size.width + size.height; i += spacing) {
       canvas.drawLine(Offset(0, i), Offset(i, 0), paint);
     }

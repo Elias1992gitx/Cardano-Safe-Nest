@@ -2,10 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:safenest/core/common/widgets/custom_button.dart';
 import 'package:safenest/core/extensions/context_extensions.dart';
-import 'package:safenest/features/profile/domain/entity/create_profile_page_content.dart';
-import 'package:safenest/features/profile/presentation/widget/parental-profile/create_profile_body.dart';
 import 'package:safenest/features/profile/presentation/widget/parental-profile/create_profile_form.dart';
-import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 
 class ManageParentalScreen extends StatefulWidget {
   const ManageParentalScreen({super.key});
@@ -96,7 +93,7 @@ class _ManageParentalScreenState extends State<ManageParentalScreen> {
                             vertical: 22,
                           ),
                           width: context.width * .6,
-                          color: context.theme!.primaryColor,
+                          color: context.theme.primaryColor,
                           elevation: .2,
                           textStyle: GoogleFonts.montserrat(
                             fontSize: 16,

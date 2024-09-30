@@ -2,7 +2,6 @@ import 'dart:math';
 
 import 'package:flutter/services.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:uuid/uuid.dart';
 import 'package:lottie/lottie.dart';
 import 'package:location/location.dart';
 import 'package:cached_network_image/cached_network_image.dart';
@@ -20,7 +19,6 @@ import 'package:safenest/core/extensions/context_extensions.dart';
 import 'package:safenest/core/utils/constants.dart';
 import 'package:safenest/features/profile/domain/entity/child.dart';
 
-import 'package:safenest/features/location/presentation/views/custom_map_marker.dart';
 import 'package:safenest/features/location/presentation/views/location_selector_page.dart';
 import 'dart:io';
 
@@ -68,32 +66,32 @@ class _AddChildFormState extends State<AddChildForm> {
 
   Future<void> _selectLocation() async {
     Location location = Location();
-    bool _serviceEnabled;
-    PermissionStatus _permissionGranted;
-    LocationData _locationData;
+    bool serviceEnabled;
+    PermissionStatus permissionGranted;
+    LocationData locationData;
 
-    _serviceEnabled = await location.serviceEnabled();
-    if (!_serviceEnabled) {
-      _serviceEnabled = await location.requestService();
-      if (!_serviceEnabled) {
+    serviceEnabled = await location.serviceEnabled();
+    if (!serviceEnabled) {
+      serviceEnabled = await location.requestService();
+      if (!serviceEnabled) {
         return;
       }
     }
 
-    _permissionGranted = await location.hasPermission();
-    if (_permissionGranted == PermissionStatus.denied) {
-      _permissionGranted = await location.requestPermission();
-      if (_permissionGranted != PermissionStatus.granted) {
+    permissionGranted = await location.hasPermission();
+    if (permissionGranted == PermissionStatus.denied) {
+      permissionGranted = await location.requestPermission();
+      if (permissionGranted != PermissionStatus.granted) {
         return;
       }
     }
 
-    _locationData = await location.getLocation();
+    locationData = await location.getLocation();
 
     Navigator.of(context).push(
       MaterialPageRoute(
         builder: (context) => LocationSelectorPage(
-          initialLocation: LatLng(_locationData.latitude!, _locationData.longitude!),
+          initialLocation: LatLng(locationData.latitude!, locationData.longitude!),
           onLocationSelected: (latLng, placeName) {
             setState(() {
               schoolNameController.text = placeName;
@@ -348,7 +346,7 @@ class _AddChildFormState extends State<AddChildForm> {
                 maxLength: 50,
                 borderRadius: 10,
                 suffixIcon: IconButton(
-                  icon: Icon(IconlyLight.location),
+                  icon: const Icon(IconlyLight.location),
                   onPressed: _selectLocation,
                 ),
               ),

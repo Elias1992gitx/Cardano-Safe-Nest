@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
-import 'package:geocoding/geocoding.dart';
 import 'package:safenest/features/location/presentation/views/custom_map_marker.dart';
 
 class LocationSelectorPage extends StatelessWidget {
@@ -8,10 +7,10 @@ class LocationSelectorPage extends StatelessWidget {
   final Function(LatLng, String) onLocationSelected;
 
   const LocationSelectorPage({
-    Key? key,
+    super.key,
     required this.initialLocation,
     required this.onLocationSelected,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {

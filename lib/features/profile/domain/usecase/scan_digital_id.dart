@@ -1,7 +1,6 @@
 import 'dart:io';
 
 import 'package:equatable/equatable.dart';
-import 'package:safenest/core/errors/failure.dart';
 import 'package:safenest/core/usecase/usecase.dart';
 import 'package:safenest/core/utils/typedef.dart';
 import 'package:safenest/features/profile/domain/entity/scan_result.dart';

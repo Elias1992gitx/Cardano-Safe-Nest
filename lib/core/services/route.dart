@@ -1,10 +1,8 @@
 import 'package:provider/provider.dart';
-import 'package:get/get.dart';
 
 import 'package:safenest/core/common/app/views/no_connection_view.dart';
 import 'package:safenest/core/extensions/context_extensions.dart';
 import 'package:safenest/core/services/injection_container.dart';
-import 'package:safenest/features/auth/domain/repos/auth_repos.dart';
 import 'package:safenest/features/dashboard/presentation/views/dashboard.dart';
 import 'package:safenest/features/digital_wellbeing/presentation/bloc/digital_wellbeing_bloc.dart';
 import 'package:safenest/features/language/presentation/bloc/language_bloc.dart';
@@ -13,6 +11,7 @@ import 'package:safenest/features/on_boarding/data/datasources/on_boarding_local
 import 'package:safenest/features/on_boarding/presentation/cubit/on_boarding_cubit.dart';
 import 'package:safenest/features/on_boarding/presentation/views/on_boarding_screen.dart';
 import 'package:safenest/features/profile/domain/entity/child.dart';
+import 'package:safenest/features/profile/domain/entity/parental_info.dart';
 import 'package:safenest/features/profile/presentation/bloc/parental_info_bloc.dart';
 import 'package:safenest/features/profile/presentation/view/account_setting.dart';
 import 'package:safenest/features/profile/presentation/view/appearance_setting.dart';
@@ -21,8 +20,8 @@ import 'package:safenest/features/profile/presentation/view/notification_setting
 import 'package:safenest/features/profile/presentation/view/user_profile.dart';
 import 'package:safenest/features/profile/presentation/widget/parental-profile/add_child_form.dart';
 import 'package:safenest/features/profile/presentation/widget/parental-profile/create_profile_form.dart';
+import 'package:safenest/features/profile/presentation/widget/parental-profile/edit_parental_info.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:safenest/core/common/app/providers/user_provider.dart';
 import 'package:safenest/features/auth/presentation/views/verify_email_screen.dart';
 import 'package:safenest/features/auth/presentation/views/signin_screen.dart';
 import 'package:safenest/features/auth/presentation/views/signup_with_email_screen.dart';
@@ -30,8 +29,6 @@ import 'package:safenest/features/auth/presentation/views/forgot_password_screen
 import 'package:safenest/features/auth/presentation/views/signup_screen.dart';
 import 'package:safenest/features/auth/presentation/bloc/auth_bloc.dart';
 import 'package:safenest/features/auth/data/models/user_model.dart';
-import 'package:safenest/core/services/route.dart';
-import 'package:safenest/core/utils/constants.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';

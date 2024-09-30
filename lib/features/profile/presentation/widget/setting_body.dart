@@ -1,15 +1,13 @@
 import 'package:flutter/material.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:iconly/iconly.dart';
-import 'package:safenest/core/extensions/context_extensions.dart';
 import 'package:safenest/features/profile/presentation/bloc/parental_info_bloc.dart';
 
 class SettingBody extends StatefulWidget {
   final ParentalInfoState parentalInfoState;
 
-  const SettingBody({Key? key, required this.parentalInfoState}) : super(key: key);
+  const SettingBody({super.key, required this.parentalInfoState});
 
   @override
   _SettingBodyState createState() => _SettingBodyState();
@@ -113,7 +111,10 @@ class _SettingBodyState extends State<SettingBody> {
                 _buildSettingItem(
                   icon: IconlyLight.shield_done,
                   title: 'Manage Parental Info',
-                  onTap: () => context.go('/manage-parental-info'),
+                  onTap: () {
+                    final parentalInfo = (widget.parentalInfoState as ParentalInfoLoaded).parentalInfo;
+                    context.go('/profile-screen/edit-parental-info', extra: parentalInfo);
+                  },
                 ),
             ],
           ),

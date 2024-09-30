@@ -1,4 +1,3 @@
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -12,7 +11,6 @@ import 'package:safenest/core/res/media_res.dart';
 import 'package:safenest/core/utils/core_utils.dart';
 import 'package:safenest/core/utils/custom_snackbar.dart';
 import 'package:safenest/features/auth/presentation/bloc/auth_bloc.dart';
-import 'package:safenest/features/auth/presentation/views/signin_screen.dart';
 
 class SignupScreen extends StatefulWidget {
   const SignupScreen({super.key});
@@ -27,7 +25,7 @@ class _SignupScreenState extends State<SignupScreen> {
   Widget build(BuildContext context) {
     final topPadding = context.height * .25;
     return Scaffold(
-      backgroundColor: context.theme.colorScheme.background,
+      backgroundColor: context.theme.colorScheme.surface,
       resizeToAvoidBottomInset: false,
       body: BlocConsumer<AuthBloc, AuthState>(
         listener: (_, state) {
@@ -112,7 +110,7 @@ class _SignupScreenState extends State<SignupScreen> {
                                       ),
                                       width: context.width * .4,
                                       color: context
-                                          .theme.colorScheme.onBackground,
+                                          .theme.colorScheme.onSurface,
                                       elevation: .1,
                                       textStyle: GoogleFonts.montserrat(
                                         color:
@@ -151,7 +149,7 @@ class _SignupScreenState extends State<SignupScreen> {
                                       ),
                                       width: context.width * .4,
                                       color: context
-                                          .theme.colorScheme.onBackground,
+                                          .theme.colorScheme.onSurface,
                                       elevation: .1,
                                       textStyle: GoogleFonts.montserrat(
                                         color:
@@ -190,7 +188,7 @@ class _SignupScreenState extends State<SignupScreen> {
                                     vertical: 4,
                                   ),
                                   width: context.width * .9,
-                                  color: context.theme.colorScheme.onBackground,
+                                  color: context.theme.colorScheme.onSurface,
                                   elevation: .1,
                                   iconPadding: EdgeInsetsDirectional.zero,
                                   textStyle: GoogleFonts.montserrat(

@@ -1,4 +1,3 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:safenest/core/errors/exceptions.dart';
@@ -6,8 +5,6 @@ import 'package:safenest/features/digital_wellbeing/data/model/digital_wellbeing
 import 'package:safenest/features/digital_wellbeing/domain/entity/digital_wellbeing.dart';
 import 'package:safenest/features/notification/data/model/child_task_model.dart';
 import 'package:safenest/features/notification/data/model/notification_preference_model.dart';
-import 'package:safenest/features/notification/domain/entity/child_task.dart';
-import 'package:safenest/features/notification/domain/entity/notification_preference.dart';
 
 abstract class DigitalWellbeingRemoteDataSource {
   Future<DigitalWellbeingModel> getDigitalWellbeing(String childId);

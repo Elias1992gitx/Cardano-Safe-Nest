@@ -1,16 +1,11 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:iconly/iconly.dart';
 import 'package:provider/provider.dart';
 import 'package:safenest/core/common/app/providers/user_provider.dart';
 import 'package:safenest/core/common/widgets/custom_profile_pic.dart';
 import 'package:safenest/core/extensions/context_extensions.dart';
 import 'package:safenest/core/utils/constants.dart';
-import 'package:safenest/features/auth/data/models/user_model.dart';
-import 'package:shimmer/shimmer.dart';
 
 class UserProfileCard extends StatefulWidget {
   const UserProfileCard({super.key});
@@ -59,7 +54,7 @@ class _UserProfileCardState extends State<UserProfileCard> {
                                     user.username,
                                     textAlign: TextAlign.center,
                                     style: GoogleFonts.plusJakartaSans(
-                                      textStyle: TextStyle(
+                                      textStyle: const TextStyle(
                                           fontWeight: FontWeight.w500,
                                           fontSize: 24,
                                           color: Colors.white,),
@@ -76,7 +71,7 @@ class _UserProfileCardState extends State<UserProfileCard> {
                                     child: Text(
                                       user.email,
                                       style: GoogleFonts.raleway(
-                                        textStyle: TextStyle(
+                                        textStyle: const TextStyle(
                                             fontWeight: FontWeight.w500,
                                             fontSize: 14,
                                             color: Colors.white,),

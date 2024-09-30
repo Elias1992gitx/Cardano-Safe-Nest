@@ -1,7 +1,5 @@
 import 'dart:ui' as ui;
-import 'dart:typed_data';
 import 'package:flutter/material.dart';
-import 'package:flutter/gestures.dart';
 import 'package:flutter/foundation.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:iconly/iconly.dart';
@@ -9,7 +7,6 @@ import 'package:safenest/core/common/widgets/custom_icon_button.dart';
 import 'package:safenest/core/extensions/context_extensions.dart';
 import 'package:safenest/features/location/domain/entity/safe_location.dart';
 import 'package:safenest/features/location/domain/entity/child_location.dart';
-import 'package:lottie/lottie.dart' as lt;
 
 class LocationDashboard extends StatefulWidget {
   final List<SafeLocation> safeLocations;
@@ -84,19 +81,19 @@ class _LocationDashboardState extends State<LocationDashboard>
 
 
   Future<Uint8List> _createPulsingMarkerIcon() async {
-    final double size = 120;
+    const double size = 120;
     final recorder = ui.PictureRecorder();
-    final canvas = Canvas(recorder, Rect.fromPoints(Offset(0.0, 0.0), Offset(size, size)));
+    final canvas = Canvas(recorder, Rect.fromPoints(const Offset(0.0, 0.0), const Offset(size, size)));
 
     final paint = Paint()
       ..color = Colors.blue.withOpacity(0.5)
       ..style = PaintingStyle.fill;
 
     final animationProgress = _pulseController.value;
-    final maxRadius = size / 2;
+    const maxRadius = size / 2;
     final currentRadius = maxRadius * (0.5 + 0.5 * animationProgress);
 
-    canvas.drawCircle(Offset(size / 2, size / 2), currentRadius, paint);
+    canvas.drawCircle(const Offset(size / 2, size / 2), currentRadius, paint);
 
     final picture = recorder.endRecording();
     final img = await picture.toImage(size.toInt(), size.toInt());
@@ -277,11 +274,11 @@ class _PulsingCircleOverlay extends StatefulWidget {
   final GoogleMapController mapController;
 
   const _PulsingCircleOverlay({
-    Key? key,
+    super.key,
     required this.location,
     required this.pulseController,
     required this.mapController,
-  }) : super(key: key);
+  });
 
   @override
   _PulsingCircleOverlayState createState() => _PulsingCircleOverlayState();
@@ -327,11 +324,11 @@ class MapControlPanel extends StatefulWidget {
   final VoidCallback onFocusLocations;
 
   const MapControlPanel({
-    Key? key,
+    super.key,
     required this.onZoomIn,
     required this.onZoomOut,
     required this.onFocusLocations,
-  }) : super(key: key);
+  });
 
   @override
   _MapControlPanelState createState() => _MapControlPanelState();

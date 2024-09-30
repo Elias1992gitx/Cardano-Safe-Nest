@@ -1,7 +1,7 @@
 import 'dart:convert';
-import 'dart:io';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:equatable/equatable.dart';
+import 'package:safenest/features/profile/domain/usecase/link_child_to_parent.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:safenest/features/profile/domain/entity/parental_info.dart';
 import 'package:safenest/features/profile/domain/entity/child.dart';
@@ -25,6 +25,7 @@ class ParentalInfoBloc extends Bloc<ParentalInfoEvent, ParentalInfoState> {
   final UpdateChildUseCase _updateChild;
   final RemoveChildUseCase _removeChild;
   final SetPinUseCase _setPin;
+  final LinkChildToParent _linkChildToParent;
 
   ParentalInfoBloc({
     required SaveParentalInfoUseCase saveParentalInfo,
@@ -34,6 +35,7 @@ class ParentalInfoBloc extends Bloc<ParentalInfoEvent, ParentalInfoState> {
     required UpdateChildUseCase updateChild,
     required RemoveChildUseCase removeChild,
     required SetPinUseCase setPin,
+    required LinkChildToParent linkChildToParent,
   })  : _saveParentalInfo = saveParentalInfo,
         _getParentalInfo = getParentalInfo,
         _updateParentalInfo = updateParentalInfo,
@@ -41,6 +43,7 @@ class ParentalInfoBloc extends Bloc<ParentalInfoEvent, ParentalInfoState> {
         _updateChild = updateChild,
         _removeChild = removeChild,
         _setPin = setPin,
+        _linkChildToParent = linkChildToParent,
         super(ParentalInfoInitial()) {
     on<SaveParentalInfoEvent>(_saveParentalInfoHandler);
     on<GetParentalInfoEvent>(_getParentalInfoHandler);
@@ -49,6 +52,7 @@ class ParentalInfoBloc extends Bloc<ParentalInfoEvent, ParentalInfoState> {
     on<UpdateChildEvent>(_updateChildHandler);
     on<RemoveChildEvent>(_removeChildHandler);
     on<SetPinEvent>(_setPinHandler);
+    on<LinkChildToParentEvent>(_linkChildToParentHandler);
   }
 
   Future<void> _cacheParentalInfo(ParentalInfo info) async {
@@ -76,6 +80,22 @@ class ParentalInfoBloc extends Bloc<ParentalInfoEvent, ParentalInfoState> {
     result.fold(
       (failure) => emit(ParentalInfoError(failure.errorMessage)),
       (_) => emit(ParentalInfoSaved()),
+    );
+  }
+
+  Future<void> _linkChildToParentHandler(
+    LinkChildToParentEvent event,
+    Emitter<ParentalInfoState> emit,
+  ) async {
+    emit(ParentalInfoLoading());
+    final result = await _linkChildToParent(LinkChildToParentParams(
+      childId: event.childId,
+      parentId: event.parentId,
+    ));
+    result.fold(
+      (failure) => emit(ParentalInfoError(
+          'An unknown error occurred')),
+      (_) => emit(ChildLinked()),
     );
   }
 

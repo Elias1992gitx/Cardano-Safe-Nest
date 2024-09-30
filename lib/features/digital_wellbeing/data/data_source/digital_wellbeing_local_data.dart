@@ -3,7 +3,6 @@ import 'package:app_usage/app_usage.dart' as app_usage_package;
 import 'package:installed_apps/installed_apps.dart';
 import 'package:safenest/features/digital_wellbeing/domain/entity/digital_wellbeing.dart';
 import 'package:safenest/features/digital_wellbeing/data/model/digital_wellbeing_model.dart';
-import 'package:safenest/features/digital_wellbeing/domain/entity/digital_wellbeing.dart';
 import 'package:safenest/features/notification/data/model/notification_preference_model.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'dart:convert';
@@ -69,7 +68,7 @@ class DigitalWellbeingLocalDataSourceImpl
           usageLimits: usageLimits,
           history: await getDigitalWellbeingHistory(startDate, endDate),
           notificationPreferences: NotificationPreferencesModel.empty(),
-          childTasks: [],
+          childTasks: const [],
         );
 
         await saveCurrentUserDigitalWellbeing(digitalWellbeing);

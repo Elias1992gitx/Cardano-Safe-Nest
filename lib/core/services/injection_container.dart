@@ -44,6 +44,7 @@ import 'package:safenest/features/profile/domain/usecase/save_parental_info.dart
 import 'package:safenest/features/profile/domain/usecase/update_child_usecase.dart';
 import 'package:safenest/features/profile/domain/usecase/remove_child_usecase.dart';
 import 'package:safenest/features/profile/domain/usecase/set_pin_usecase.dart';
+import 'package:safenest/features/profile/domain/usecase/link_child_to_parent.dart';
 import 'package:safenest/features/profile/domain/usecase/update_paternal_info.dart';
 import 'package:safenest/features/profile/presentation/bloc/parental_info_bloc.dart';
 

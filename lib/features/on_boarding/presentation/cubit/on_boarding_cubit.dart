@@ -1,6 +1,5 @@
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
-import 'package:flutter/foundation.dart';
 import 'package:safenest/features/on_boarding/domain/usecases/cache_first_timer.dart';
 import 'package:safenest/features/on_boarding/domain/usecases/check_if_user_first_timer.dart';
 
@@ -14,8 +13,8 @@ class OnBoardingCubit extends Cubit<OnBoardingState> {
         _checkIfUserFirstTimer = checkIfUserFirstTimer,
         super(const OnBoardingInitial());
 
-  CheckIfUserFirstTimer _checkIfUserFirstTimer;
-  CacheFirstTimer _cacheFirstTimer;
+  final CheckIfUserFirstTimer _checkIfUserFirstTimer;
+  final CacheFirstTimer _cacheFirstTimer;
 
   Future<void> cacheFirstTimer() async {
     emit(const CachingFirstTimer());

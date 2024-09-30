@@ -1,17 +1,11 @@
-import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:safenest/core/common/app/views/loading_view.dart';
 
-import 'package:permission_handler/permission_handler.dart';
-import 'package:app_settings/app_settings.dart';
-import 'package:safenest/features/digital_wellbeing/data/model/digital_wellbeing_model.dart';
 
-import 'package:safenest/features/digital_wellbeing/presentation/widget/current_user_digital_wellbeing_chart.dart' as current_user;
 import 'package:safenest/features/digital_wellbeing/presentation/widget/digital_wellbeing_chart.dart' as digital_wellbeing;
-import 'package:safenest/features/dashboard/presentation/views/dashboard.dart';
 import 'package:safenest/features/digital_wellbeing/domain/entity/digital_wellbeing.dart';
 import 'package:safenest/features/digital_wellbeing/presentation/bloc/digital_wellbeing_bloc.dart';
 import 'package:safenest/features/digital_wellbeing/presentation/widget/app_usage_chart.dart';
@@ -22,7 +16,7 @@ import 'package:safenest/features/digital_wellbeing/presentation/widget/usage_li
 class DigitalWellbeingAnalysisPage extends StatefulWidget {
   final String? childId;
 
-  const DigitalWellbeingAnalysisPage({Key? key, this.childId}) : super(key: key);
+  const DigitalWellbeingAnalysisPage({super.key, this.childId});
 
   @override
   _DigitalWellbeingAnalysisPageState createState() => _DigitalWellbeingAnalysisPageState();
@@ -91,7 +85,7 @@ class _DigitalWellbeingAnalysisPageState extends State<DigitalWellbeingAnalysisP
   }
   Widget _buildChildDropdown(BuildContext context) {
     return Container(
-      padding: EdgeInsets.symmetric(horizontal: 12, vertical: 4),
+      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
       decoration: BoxDecoration(
         color: Colors.white.withOpacity(0.15),
         borderRadius: BorderRadius.circular(12),
@@ -106,13 +100,13 @@ class _DigitalWellbeingAnalysisPageState extends State<DigitalWellbeingAnalysisP
               fontWeight: FontWeight.w500,
             ),
           ),
-          icon: Icon(Icons.arrow_drop_down, color: Colors.white),
+          icon: const Icon(Icons.arrow_drop_down, color: Colors.white),
           style: GoogleFonts.plusJakartaSans(
             color: Colors.white,
             fontWeight: FontWeight.w500,
           ),
           dropdownColor: Theme.of(context).colorScheme.primary.withOpacity(0.9),
-          items: [
+          items: const [
             DropdownMenuItem(value: null, child: Text('All Children')),
             // Add more DropdownMenuItem widgets for each child
           ],
@@ -214,7 +208,7 @@ class _DigitalWellbeingAnalysisPageState extends State<DigitalWellbeingAnalysisP
                     color: Colors.white,
                   ),
                 ),
-                SizedBox(height: 4),
+                const SizedBox(height: 4),
                 _buildChildDropdown(context),
               ],
             ),

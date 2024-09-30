@@ -81,7 +81,7 @@ class ParentalInfoRepoImpl implements ParentalInfoRepository {
   @override
   ResultVoid linkChildToParent(String childId, String parentId) async {
     try {
-      await _remoteDataSource.linkChildToParent(childId, parentId);
+      await _remoteDataSource.linkChildToParentWithIsolate(childId, parentId);
       return const Right(null);
     } on ServerException catch (e) {
       return Left(ServerFailure(message: e.message, statusCode: e.statusCode));

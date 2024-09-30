@@ -55,6 +55,25 @@ class DigitalWellbeingBloc extends Bloc<DigitalWellbeingEvent, DigitalWellbeingS
   }
 
 
+  // @override
+  // Stream<DigitalWellbeingState> mapEventToState(DigitalWellbeingEvent event) async* {
+  //   // ... existing code ...
+  //
+  //   if (event is GetDigitalWellbeingForDateEvent) {
+  //     yield DigitalWellbeingLoading();
+  //     try {
+  //       final digitalWellbeing = await _getDigitalWellbeingForDate(event.date);
+  //       yield DigitalWellbeingLoaded(digitalWellbeing: digitalWellbeing);
+  //     } catch (e) {
+  //       yield DigitalWellbeingError(message: e.toString());
+  //     }
+  //   }
+  // }
+  //
+  // Future<DigitalWellbeing> _getDigitalWellbeingForDate(DateTime date) async {
+  //   // Implement this method to fetch digital wellbeing data for the given date
+  //   // You'll need to add this functionality to your repository and use case
+  // }
   
 
 

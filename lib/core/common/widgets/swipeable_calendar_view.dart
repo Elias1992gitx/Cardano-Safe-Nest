@@ -4,10 +4,12 @@ import 'package:safenest/core/extensions/context_extensions.dart';
 
 class SwipeableCalendarView extends StatefulWidget {
   final Function(DateTime, DateTime)? onDaySelected;
+  final Function(bool)? onExpansionChanged;
 
   const SwipeableCalendarView({
     super.key,
     this.onDaySelected,
+    this.onExpansionChanged,
   });
 
   @override
@@ -42,17 +44,19 @@ class _SwipeableCalendarViewState extends State<SwipeableCalendarView> with Sing
   }
 
   void _toggleExpansion() {
-    setState(() {
-      _isExpanded = !_isExpanded;
-      if (_isExpanded) {
-        _controller.forward();
-        _calendarFormat = CalendarFormat.month;
-      } else {
-        _controller.reverse();
-        _calendarFormat = CalendarFormat.week;
-      }
-    });
-  }
+  setState(() {
+    _isExpanded = !_isExpanded;
+    if (_isExpanded) {
+      _controller.forward();
+      _calendarFormat = CalendarFormat.month;
+    } else {
+      _controller.reverse();
+      _calendarFormat = CalendarFormat.week;
+    }
+    widget.onExpansionChanged?.call(_isExpanded);
+  });
+}
+
 
   @override
   Widget build(BuildContext context) {

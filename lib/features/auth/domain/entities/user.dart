@@ -1,5 +1,4 @@
 import 'package:equatable/equatable.dart';
-import 'package:safenest/core/enum/user/user_role.dart';
 
 class LocalUser extends Equatable {
   const LocalUser({

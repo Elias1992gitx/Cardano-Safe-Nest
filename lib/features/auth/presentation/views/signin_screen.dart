@@ -43,7 +43,7 @@ class _SignInScreenState extends State<SignInScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: context.theme.colorScheme.background,
+      backgroundColor: context.theme.colorScheme.surface,
       body: BlocConsumer<AuthBloc, AuthState>(
         listener: (_, state) {
           if (state is AuthError) {
@@ -182,7 +182,9 @@ class _SignInScreenState extends State<SignInScreen> {
           CustomTextFormField(
             textInputType: TextInputType.emailAddress,
             hintText: 'Email or username',
-            validator: (value) {},
+            validator: (value) {
+              return null;
+            },
             controller: emailController,
             maxLength: 32,
             borderRadius: 10,
@@ -283,7 +285,7 @@ class _SignInScreenState extends State<SignInScreen> {
           vertical: 4,
         ),
         width: context.width * .4,
-        color: context.theme.colorScheme.onBackground,
+        color: context.theme.colorScheme.onSurface,
         elevation: .1,
         textStyle: GoogleFonts.montserrat(
           color: context.theme.colorScheme.secondary,

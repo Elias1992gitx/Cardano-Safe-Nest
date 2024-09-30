@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:safenest/core/common/widgets/custom_form_field.dart';
-import 'package:safenest/core/extensions/context_extensions.dart';
 
 class EmergencyContactsAndNotifications extends StatefulWidget {
   final Function(String, String, bool, bool, String) onUpdate;
@@ -12,14 +11,14 @@ class EmergencyContactsAndNotifications extends StatefulWidget {
   final String initialNotificationFrequency;
 
   const EmergencyContactsAndNotifications({
-    Key? key,
+    super.key,
     required this.onUpdate,
     this.initialName,
     this.initialPhone,
     this.initialEmailNotifications = true,
     this.initialSmsNotifications = false,
     this.initialNotificationFrequency = 'Immediate',
-  }) : super(key: key);
+  });
 
   @override
   _EmergencyContactsAndNotificationsState createState() => _EmergencyContactsAndNotificationsState();
@@ -120,7 +119,7 @@ class _EmergencyContactsAndNotificationsState extends State<EmergencyContactsAnd
                 ),
                 const SizedBox(height: 10),
                 SwitchListTile(
-                  title: Text('Email Notifications'),
+                  title: const Text('Email Notifications'),
                   value: emailNotifications,
                   onChanged: (bool value) {
                     setState(() {
@@ -130,7 +129,7 @@ class _EmergencyContactsAndNotificationsState extends State<EmergencyContactsAnd
                   },
                 ),
                 SwitchListTile(
-                  title: Text('SMS Notifications'),
+                  title: const Text('SMS Notifications'),
                   value: smsNotifications,
                   onChanged: (bool value) {
                     setState(() {

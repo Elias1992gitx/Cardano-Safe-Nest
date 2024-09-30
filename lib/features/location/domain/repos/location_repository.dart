@@ -1,5 +1,3 @@
-import 'package:dartz/dartz.dart';
-import 'package:safenest/core/errors/failure.dart';
 import 'package:safenest/core/utils/typedef.dart';
 import 'package:safenest/features/location/domain/entity/child_location.dart';
 import 'package:safenest/features/location/domain/entity/safe_location.dart';

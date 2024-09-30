@@ -9,8 +9,6 @@ import 'package:safenest/features/digital_wellbeing/domain/entity/digital_wellbe
 import 'package:safenest/features/digital_wellbeing/domain/repository/digital_wellbeing_repository.dart';
 import 'package:safenest/features/notification/data/model/child_task_model.dart';
 import 'package:safenest/features/notification/data/model/notification_preference_model.dart';
-import 'package:safenest/features/notification/domain/entity/child_task.dart';
-import 'package:safenest/features/notification/domain/entity/notification_preference.dart';
 
 class DigitalWellbeingRepoImpl implements DigitalWellbeingRepository {
   final DigitalWellbeingRemoteDataSource _remoteDataSource;

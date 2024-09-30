@@ -100,6 +100,7 @@ Future<void> _parentalInfoInit() async {
         updateChild: sl(),
         removeChild: sl(),
         setPin: sl(),
+        linkChildToParent: sl()
       ),
     )
     ..registerLazySingleton(() => SaveParentalInfoUseCase(sl()))
@@ -109,6 +110,7 @@ Future<void> _parentalInfoInit() async {
     ..registerLazySingleton(() => UpdateChildUseCase(sl()))
     ..registerLazySingleton(() => RemoveChildUseCase(sl()))
     ..registerLazySingleton(() => SetPinUseCase(sl()))
+    ..registerLazySingleton(() => LinkChildToParent(sl()))
     ..registerLazySingleton<ParentalInfoRepository>(
         () => ParentalInfoRepoImpl(sl()))
     ..registerLazySingleton<ParentalInfoRemoteDataSource>(

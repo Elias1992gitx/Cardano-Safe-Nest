@@ -5,8 +5,7 @@ import 'package:safenest/features/digital_wellbeing/domain/entity/digital_wellbe
 class DigitalWellbeingSummary extends StatelessWidget {
   final DigitalWellbeing? digitalWellbeing;
 
-  const DigitalWellbeingSummary({Key? key, this.digitalWellbeing})
-      : super(key: key);
+  const DigitalWellbeingSummary({super.key, this.digitalWellbeing});
 
   @override
   Widget build(BuildContext context) {
@@ -105,7 +104,7 @@ class DigitalWellbeingSummary extends StatelessWidget {
       BuildContext context, String title, String value, IconData icon,
       {required bool isPlaceholder}) {
     return Container(
-      padding: EdgeInsets.all(16),
+      padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
         color: Theme.of(context).colorScheme.surface,
         borderRadius: BorderRadius.circular(12),
@@ -113,14 +112,14 @@ class DigitalWellbeingSummary extends StatelessWidget {
           BoxShadow(
             color: Theme.of(context).shadowColor.withOpacity(0.1),
             blurRadius: 4,
-            offset: Offset(0, 2),
+            offset: const Offset(0, 2),
           ),
         ],
       ),
       child: Row(
         children: [
           Container(
-            padding: EdgeInsets.all(8),
+            padding: const EdgeInsets.all(8),
             decoration: BoxDecoration(
               color: isPlaceholder
                   ? Colors.grey.withOpacity(0.1)
@@ -194,7 +193,7 @@ class PatternPainter extends CustomPainter {
       ..strokeWidth = 1
       ..style = PaintingStyle.stroke;
 
-    final spacing = 20.0;
+    const spacing = 20.0;
     for (double i = 0; i < size.width + size.height; i += spacing) {
       canvas.drawLine(Offset(0, i), Offset(i, 0), paint);
     }

@@ -16,6 +16,17 @@ class SaveParentalInfoEvent extends ParentalInfoEvent {
   List<Object> get props => [parentalInfo];
 }
 
+
+class LinkChildToParentEvent extends ParentalInfoEvent {
+  final String childId;
+  final String parentId;
+
+  const LinkChildToParentEvent({required this.childId, required this.parentId});
+
+  @override
+  List<Object> get props => [childId, parentId];
+}
+
 class GetParentalInfoEvent extends ParentalInfoEvent {}
 
 class UpdateParentalInfoEvent extends ParentalInfoEvent {

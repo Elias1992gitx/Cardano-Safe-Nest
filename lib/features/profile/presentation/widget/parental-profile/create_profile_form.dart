@@ -1,18 +1,12 @@
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_svg/svg.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
-import 'package:iconly/iconly.dart';
 import 'package:lottie/lottie.dart';
 import 'package:safenest/core/common/widgets/custom_button.dart';
 import 'package:safenest/core/common/widgets/pattern_painter.dart';
 import 'package:safenest/core/extensions/context_extensions.dart';
-import 'package:safenest/core/res/media_res.dart';
-import 'package:safenest/core/utils/constants.dart';
 import 'package:percent_indicator/linear_percent_indicator.dart';
 import 'package:safenest/features/profile/domain/entity/child.dart';
 import 'package:safenest/features/profile/domain/entity/parental_info.dart';
@@ -394,7 +388,7 @@ class _CreateProfileFormBodyState extends State<CreateProfileFormBody> {
       child: Text(
         text,
         style: GoogleFonts.plusJakartaSans(
-          textStyle: TextStyle(
+          textStyle: const TextStyle(
             fontSize: 16,
 
           ),

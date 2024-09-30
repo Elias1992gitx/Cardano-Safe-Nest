@@ -1,4 +1,3 @@
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -42,7 +41,7 @@ class _SignupWithEmailScreenState extends State<SignupWithEmailScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: context.theme.colorScheme.background,
+      backgroundColor: context.theme.colorScheme.surface,
       resizeToAvoidBottomInset: false,
       appBar: AppBar(
         title: Text(
@@ -90,7 +89,9 @@ context.go('/');
                             CustomTextFormField(
                               textInputType: TextInputType.name,
                               hintText: 'Full name',
-                              validator: (value) {},
+                              validator: (value) {
+                                return null;
+                              },
                               controller: fullNameController,
                               maxLength: 32,
                               borderRadius: 10,
@@ -101,7 +102,9 @@ context.go('/');
                             CustomTextFormField(
                               textInputType: TextInputType.emailAddress,
                               hintText: 'Email',
-                              validator: (value) {},
+                              validator: (value) {
+                                return null;
+                              },
                               controller: emailController,
                               maxLength: 32,
                               borderRadius: 10,

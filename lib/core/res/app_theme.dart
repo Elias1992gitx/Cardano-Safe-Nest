@@ -86,8 +86,8 @@ class LightModeTheme extends CoreTheme {
         colorScheme: ColorScheme.light(
           primary: Colors.green, // Example of defining a primary swatch
           secondary: secondaryColor,
-          background: backgroundColor,
-          onBackground: secondaryBackgroundColor,
+          surface: backgroundColor,
+          onSurface: secondaryBackgroundColor,
           primaryContainer: helpColor,
           secondaryContainer: warningColor,
           onTertiary: profileHeader,
@@ -130,8 +130,6 @@ class DarkModeTheme extends CoreTheme {
         colorScheme: ColorScheme.dark(
             primary: primaryColor,
             secondary: secondaryColor,
-            background: backgroundColor,
-            onBackground: secondaryBackgroundColor,
             error: errorColor,
             primaryContainer: helpColor,
             secondaryContainer: warningColor,

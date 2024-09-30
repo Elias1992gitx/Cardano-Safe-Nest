@@ -2,8 +2,6 @@ import 'package:equatable/equatable.dart';
 import 'package:flutter/foundation.dart';
 import 'package:safenest/features/notification/data/model/child_task_model.dart';
 import 'package:safenest/features/notification/data/model/notification_preference_model.dart';
-import 'package:safenest/features/notification/domain/entity/child_task.dart';
-import 'package:safenest/features/notification/domain/entity/notification_preference.dart';
 
 class DigitalWellbeing extends Equatable {
   const DigitalWellbeing({

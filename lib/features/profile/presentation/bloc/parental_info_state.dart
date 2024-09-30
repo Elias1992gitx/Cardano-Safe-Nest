@@ -10,6 +10,7 @@ abstract class ParentalInfoState extends Equatable {
 class ParentalInfoInitial extends ParentalInfoState {}
 
 class ParentalInfoLoading extends ParentalInfoState {}
+class ChildLinked extends ParentalInfoState {}
 
 class ParentalInfoLoaded extends ParentalInfoState {
   final ParentalInfo parentalInfo;

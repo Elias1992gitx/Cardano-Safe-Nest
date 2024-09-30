@@ -83,6 +83,18 @@ final GoRouter router = GoRouter(
           },
           routes: [
             GoRoute(
+              path: 'edit-parental-info',
+              pageBuilder: (context, state) => _pageBuilder(
+                BlocProvider(
+                  create: (_) => sl<ParentalInfoBloc>(),
+                  child: EditParentalInfoPage(
+                    initialParentalInfo: state.extra as ParentalInfo,
+                  ),
+                ),
+                state,
+              ),
+            ),
+            GoRoute(
               path: 'parental-mode',
               pageBuilder: (context, state) => _pageBuilder(
                 BlocProvider(
@@ -102,6 +114,7 @@ final GoRouter router = GoRouter(
                     );
                   },
                 ),
+
                 GoRoute(
                   path: 'create-profile',
                   pageBuilder: (context, state) => _pageBuilder(

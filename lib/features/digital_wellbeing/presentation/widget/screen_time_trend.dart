@@ -9,7 +9,7 @@ import 'package:safenest/features/digital_wellbeing/domain/entity/digital_wellbe
 class ScreenTimeTrend extends StatelessWidget {
   final List<DigitalWellbeing>? history;
 
-  const ScreenTimeTrend({Key? key, this.history}) : super(key: key);
+  const ScreenTimeTrend({super.key, this.history});
 
   @override
   Widget build(BuildContext context) {
@@ -55,14 +55,14 @@ class ScreenTimeTrend extends StatelessWidget {
                     children: [
                       Text(
                         'Screen Time Trend',
-                        style: Theme.of(context).textTheme.headline6?.copyWith(
+                        style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                           fontWeight: FontWeight.bold,
                           color: Theme.of(context).colorScheme.primary,
                         ),
                       ),
                       if (isPlaceholder)
                         Chip(
-                          label: Text('Placeholder'),
+                          label: const Text('Placeholder'),
                           backgroundColor: Theme.of(context).colorScheme.secondary.withOpacity(0.1),
                           labelStyle: TextStyle(color: Theme.of(context).colorScheme.secondary),
                         ),
@@ -111,9 +111,9 @@ class ScreenTimeTrend extends StatelessWidget {
   Widget _buildLineChart(BuildContext context) {
     return LineChart(
       LineChartData(
-        gridData: FlGridData(show: false),
+        gridData: const FlGridData(show: false),
         titlesData: FlTitlesData(
-          leftTitles: AxisTitles(sideTitles: SideTitles(showTitles: false)),
+          leftTitles: const AxisTitles(sideTitles: SideTitles(showTitles: false)),
           bottomTitles: AxisTitles(
             sideTitles: SideTitles(
               showTitles: true,
@@ -136,8 +136,8 @@ class ScreenTimeTrend extends StatelessWidget {
               reservedSize: 30,
             ),
           ),
-          topTitles: AxisTitles(sideTitles: SideTitles(showTitles: false)),
-          rightTitles: AxisTitles(sideTitles: SideTitles(showTitles: false)),
+          topTitles: const AxisTitles(sideTitles: SideTitles(showTitles: false)),
+          rightTitles: const AxisTitles(sideTitles: SideTitles(showTitles: false)),
         ),
         borderData: FlBorderData(show: false),
         lineBarsData: [
@@ -210,7 +210,7 @@ class ScreenTimeTrend extends StatelessWidget {
         bool isPlaceholder = false,
       }) {
     return Container(
-      padding: EdgeInsets.all(8),
+      padding: const EdgeInsets.all(8),
       decoration: BoxDecoration(
         color: Theme.of(context).colorScheme.surface,
         borderRadius: BorderRadius.circular(8),
@@ -218,7 +218,7 @@ class ScreenTimeTrend extends StatelessWidget {
           BoxShadow(
             color: Theme.of(context).shadowColor.withOpacity(0.1),
             blurRadius: 4,
-            offset: Offset(0, 2),
+            offset: const Offset(0, 2),
           ),
         ],
       ),
@@ -256,7 +256,7 @@ class ScreenTimeTrend extends StatelessWidget {
 
   List<FlSpot> _generateSpots() {
     if (history == null || history!.isEmpty) {
-      return [FlSpot(0, 0)];
+      return [const FlSpot(0, 0)];
     }
     return history!.asMap().entries.map((entry) {
       final index = entry.key.toDouble();
@@ -307,7 +307,7 @@ class PatternPainter extends CustomPainter {
       ..strokeWidth = 1
       ..style = PaintingStyle.stroke;
 
-    final spacing = 20.0;
+    const spacing = 20.0;
     for (double i = 0; i < size.width + size.height; i += spacing) {
       canvas.drawLine(Offset(0, i), Offset(i, 0), paint);
     }

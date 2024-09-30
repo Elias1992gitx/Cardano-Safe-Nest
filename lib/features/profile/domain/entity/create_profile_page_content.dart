@@ -1,6 +1,4 @@
 import 'package:equatable/equatable.dart';
-import 'package:safenest/core/res/media_res.dart';
-import 'package:safenest/core/utils/constants.dart';
 
 class CreateProfilePageContent extends Equatable {
   const CreateProfilePageContent({required this.title, required this.description});

@@ -1,10 +1,7 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/svg.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:go_router/go_router.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:iconly/iconly.dart';
 import 'package:safenest/core/common/app/providers/user_provider.dart';
 import 'package:safenest/core/common/widgets/custom_profile_pic.dart';
@@ -17,7 +14,6 @@ import 'package:safenest/features/location/domain/entity/child_location.dart';
 import 'package:safenest/features/location/domain/entity/safe_location.dart';
 import 'package:safenest/features/location/presentation/views/location_page.dart';
 import 'package:safenest/features/notification/presentation/view/notification_page.dart';
-import 'package:shimmer/shimmer.dart';
 
 class Dashboard extends StatefulWidget {
   const Dashboard({super.key});
@@ -29,11 +25,11 @@ class Dashboard extends StatefulWidget {
 class _DashboardState extends State<Dashboard> {
   final scaffoldKey = GlobalKey<ScaffoldState>();
   List<Widget> pages = [
-    HomeScreen(),
-    DigitalWellbeingAnalysisPage(),
-    NotificationScreen(),
+    const HomeScreen(),
+    const DigitalWellbeingAnalysisPage(),
+    const NotificationScreen(),
     LocationDashboard(
-      safeLocations: [
+      safeLocations: const [
         SafeLocation(
           id: '1',
           name: 'Home',
@@ -56,10 +52,10 @@ class _DashboardState extends State<Dashboard> {
       childLocations: [
         ChildLocation(
           childId: 'child1',
-          location: GeoPoint(37.7749, -122.4194),
+          location: const GeoPoint(37.7749, -122.4194),
           timestamp: DateTime.now(),
           isInSafeZone: true,
-          nearestSafeZone: SafeLocation(
+          nearestSafeZone: const SafeLocation(
             id: '1',
             name: 'Home',
             location: GeoPoint(37.7749, -122.4194),
@@ -68,10 +64,10 @@ class _DashboardState extends State<Dashboard> {
         ),
         ChildLocation(
           childId: 'child2',
-          location: GeoPoint(37.7739, -122.4312),
-          timestamp: DateTime.now().subtract(Duration(minutes: 30)),
+          location: const GeoPoint(37.7739, -122.4312),
+          timestamp: DateTime.now().subtract(const Duration(minutes: 30)),
           isInSafeZone: true,
-          nearestSafeZone: SafeLocation(
+          nearestSafeZone: const SafeLocation(
             id: '2',
             name: 'School',
             location: GeoPoint(37.7739, -122.4312),
@@ -80,8 +76,8 @@ class _DashboardState extends State<Dashboard> {
         ),
         ChildLocation(
           childId: 'child3',
-          location: GeoPoint(37.7694, -122.4862),
-          timestamp: DateTime.now().subtract(Duration(hours: 1)),
+          location: const GeoPoint(37.7694, -122.4862),
+          timestamp: DateTime.now().subtract(const Duration(hours: 1)),
           isInSafeZone: false,
         ),
       ],
@@ -111,7 +107,7 @@ class _DashboardState extends State<Dashboard> {
         type: BottomNavigationBarType.fixed,
         backgroundColor: context.theme.cardColor,
         currentIndex: currentIndex,
-        selectedItemColor: context.theme!.primaryColor.withOpacity(.8),
+        selectedItemColor: context.theme.primaryColor.withOpacity(.8),
         unselectedItemColor: Colors.grey.withOpacity(.6),
         showUnselectedLabels: false,
         showSelectedLabels: false,
@@ -164,7 +160,7 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
       backgroundColor: context.theme.cardColor,
       centerTitle: true,
       toolbarHeight: 70,
-      title: Row(
+      title: const Row(
         children: [],
       ),
       actions: [

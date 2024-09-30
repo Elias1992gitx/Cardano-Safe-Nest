@@ -16,6 +16,15 @@ class GetDigitalWellbeingEvent extends DigitalWellbeingEvent {
   List<Object> get props => [childId];
 }
 
+class GetDigitalWellbeingForDateEvent extends DigitalWellbeingEvent {
+  final DateTime date;
+
+  const GetDigitalWellbeingForDateEvent(this.date);
+
+  @override
+  List<Object> get props => [date];
+}
+
 class GetCurrentUserDigitalWellbeingEvent extends DigitalWellbeingEvent {
   const GetCurrentUserDigitalWellbeingEvent();
 

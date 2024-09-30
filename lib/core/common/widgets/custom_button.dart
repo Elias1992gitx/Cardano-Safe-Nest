@@ -94,41 +94,41 @@ class _FFCustomButtonState extends State<FFCustomButton> {
         : () => widget.onPressed();
 
     final style = ButtonStyle(
-      shape: MaterialStateProperty.all<OutlinedBorder>(
+      shape: WidgetStateProperty.all<OutlinedBorder>(
         RoundedRectangleBorder(
           borderRadius:
           widget.options.borderRadius ?? BorderRadius.circular(8),
           side: widget.options.borderSide ?? BorderSide.none,
         ),
       ),
-      foregroundColor: MaterialStateProperty.resolveWith<Color?>(
+      foregroundColor: WidgetStateProperty.resolveWith<Color?>(
             (states) {
-          if (states.contains(MaterialState.disabled)) {
+          if (states.contains(WidgetState.disabled)) {
             return widget.options.disabledTextColor;
           }
           return widget.options.textStyle!.color;
         },
       ),
-      backgroundColor: MaterialStateProperty.resolveWith<Color?>(
+      backgroundColor: WidgetStateProperty.resolveWith<Color?>(
             (states) {
-          if (states.contains(MaterialState.disabled)) {
+          if (states.contains(WidgetState.disabled)) {
             return widget.options.disabledColor;
           }
           return widget.options.color;
         },
       ),
-      overlayColor: MaterialStateProperty.resolveWith<Color?>((states) {
-        if (states.contains(MaterialState.pressed)) {
+      overlayColor: WidgetStateProperty.resolveWith<Color?>((states) {
+        if (states.contains(WidgetState.pressed)) {
           return widget.options.splashColor;
         }
         return null;
       }),
-      padding: MaterialStateProperty.all(
+      padding: WidgetStateProperty.all(
         widget.options.padding ??
             const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
       ),
       elevation:
-      MaterialStateProperty.all<double>(widget.options.elevation ?? 2.0),
+      WidgetStateProperty.all<double>(widget.options.elevation ?? 2.0),
     );
 
     if (widget.icon != null || widget.iconData != null) {

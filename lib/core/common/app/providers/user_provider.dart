@@ -3,12 +3,9 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:flutter/foundation.dart';
-import 'package:http/http.dart' as https;
 import 'package:safenest/core/errors/exceptions.dart';
-import 'package:safenest/core/services/config.dart';
 import 'package:safenest/core/utils/typedef.dart';
 import 'package:safenest/features/auth/data/models/user_model.dart';
-import 'package:safenest/features/auth/domain/repos/auth_repos.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';

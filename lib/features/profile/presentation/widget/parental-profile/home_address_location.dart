@@ -11,11 +11,11 @@ class HomeAddressLocation extends StatefulWidget {
   final String? initialAddress;
 
   const HomeAddressLocation({
-    Key? key,
+    super.key,
     required this.onLocationSelected,
     this.initialLocation,
     this.initialAddress,
-  }) : super(key: key);
+  });
 
   @override
   _HomeAddressLocationState createState() => _HomeAddressLocationState();
@@ -74,34 +74,34 @@ class _HomeAddressLocationState extends State<HomeAddressLocation> {
 
   Future<void> _getCurrentLocation() async {
     Location location = Location();
-    bool _serviceEnabled;
-    PermissionStatus _permissionGranted;
-    LocationData _locationData;
+    bool serviceEnabled;
+    PermissionStatus permissionGranted;
+    LocationData locationData;
 
-    _serviceEnabled = await location.serviceEnabled();
-    if (!_serviceEnabled) {
-      _serviceEnabled = await location.requestService();
-      if (!_serviceEnabled) {
+    serviceEnabled = await location.serviceEnabled();
+    if (!serviceEnabled) {
+      serviceEnabled = await location.requestService();
+      if (!serviceEnabled) {
         return;
       }
     }
 
-    _permissionGranted = await location.hasPermission();
-    if (_permissionGranted == PermissionStatus.denied) {
-      _permissionGranted = await location.requestPermission();
-      if (_permissionGranted != PermissionStatus.granted) {
+    permissionGranted = await location.hasPermission();
+    if (permissionGranted == PermissionStatus.denied) {
+      permissionGranted = await location.requestPermission();
+      if (permissionGranted != PermissionStatus.granted) {
         return;
       }
     }
 
-    _locationData = await location.getLocation();
+    locationData = await location.getLocation();
     setState(() {
-      _initialLocation = LatLng(_locationData.latitude!, _locationData.longitude!);
+      _initialLocation = LatLng(locationData.latitude!, locationData.longitude!);
       _selectedLocation = _initialLocation;
     });
 
     List<gc.Placemark> placemarks = await gc.placemarkFromCoordinates(
-        _locationData.latitude!, _locationData.longitude!);
+        locationData.latitude!, locationData.longitude!);
     setState(() {
       _selectedAddress = placemarks.isNotEmpty ? placemarks.first.name ?? '' : '';
     });

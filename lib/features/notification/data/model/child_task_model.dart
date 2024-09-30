@@ -21,6 +21,7 @@ class ChildTaskModel extends ChildTask {
     isCompleted: map['isCompleted'] as bool,
   );
 
+  @override
   DataMap toMap() {
     return {
       'id': id,

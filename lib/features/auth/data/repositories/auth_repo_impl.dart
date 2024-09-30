@@ -104,6 +104,7 @@ class AuthRepoImpl implements AuthenticationRepository {
     }
   }
 
+  @override
   Stream<LocalUserModel> getUserProfileStream(String uid) {
     return _authRemoteDataSource.getUserProfileStream(uid);
   }

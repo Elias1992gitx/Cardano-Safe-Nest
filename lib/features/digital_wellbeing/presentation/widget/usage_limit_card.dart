@@ -7,11 +7,11 @@ class UsageLimitCard extends StatelessWidget {
   final Function(String) onRemoveLimit;
 
   const UsageLimitCard({
-    Key? key,
+    super.key,
     required this.usageLimits,
     required this.onSetLimit,
     required this.onRemoveLimit,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -48,14 +48,14 @@ class UsageLimitCard extends StatelessWidget {
                 children: [
                   Text(
                     'App Usage Limits',
-                    style: Theme.of(context).textTheme.headline6?.copyWith(
+                    style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                           fontWeight: FontWeight.bold,
                           color: Theme.of(context).colorScheme.primary,
                         ),
                   ),
                   if (isPlaceholder)
                     Chip(
-                      label: Text('Placeholder'),
+                      label: const Text('Placeholder'),
                       backgroundColor: Theme.of(context).colorScheme.secondary.withOpacity(0.1),
                       labelStyle: TextStyle(color: Theme.of(context).colorScheme.secondary),
                     ),
@@ -81,9 +81,9 @@ class UsageLimitCard extends StatelessWidget {
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(30),
         ),
-        padding: EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+        padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
       ),
-      child: Row(
+      child: const Row(
         mainAxisSize: MainAxisSize.min,
         children: [
           Icon(Icons.add, size: 18),
@@ -99,7 +99,7 @@ class UsageLimitCard extends StatelessWidget {
       shrinkWrap: true,
       physics: const NeverScrollableScrollPhysics(),
       itemCount: usageLimits!.length,
-      separatorBuilder: (context, index) => Divider(height: 1),
+      separatorBuilder: (context, index) => const Divider(height: 1),
       itemBuilder: (context, index) {
         final packageName = usageLimits!.keys.elementAt(index);
         final limit = usageLimits![packageName]!;
@@ -110,18 +110,18 @@ class UsageLimitCard extends StatelessWidget {
 
   Widget _buildLimitTile(BuildContext context, String packageName, UsageLimit limit) {
     return ListTile(
-      contentPadding: EdgeInsets.symmetric(vertical: 8, horizontal: 0),
+      contentPadding: const EdgeInsets.symmetric(vertical: 8, horizontal: 0),
       leading: CircleAvatar(
         backgroundColor: Theme.of(context).colorScheme.primary.withOpacity(0.1),
         child: Icon(Icons.lock_clock, color: Theme.of(context).colorScheme.primary),
       ),
       title: Text(
         packageName,
-        style: TextStyle(fontWeight: FontWeight.bold),
+        style: const TextStyle(fontWeight: FontWeight.bold),
       ),
       subtitle: Text(
         'Daily limit: ${limit.dailyLimit.inHours}h ${limit.dailyLimit.inMinutes.remainder(60)}m',
-        style: TextStyle(color: Theme.of(context).colorScheme.onBackground.withOpacity(0.7)),
+        style: TextStyle(color: Theme.of(context).colorScheme.onSurface.withOpacity(0.7)),
       ),
       trailing: IconButton(
         icon: Icon(Icons.delete, color: Theme.of(context).colorScheme.error),
@@ -135,10 +135,10 @@ class UsageLimitCard extends StatelessWidget {
       shrinkWrap: true,
       physics: const NeverScrollableScrollPhysics(),
       itemCount: 3,
-      separatorBuilder: (context, index) => Divider(height: 1),
+      separatorBuilder: (context, index) => const Divider(height: 1),
       itemBuilder: (context, index) {
         return ListTile(
-          contentPadding: EdgeInsets.symmetric(vertical: 8, horizontal: 0),
+          contentPadding: const EdgeInsets.symmetric(vertical: 8, horizontal: 0),
           leading: CircleAvatar(
             backgroundColor: Colors.grey[200],
             child: Icon(Icons.lock_clock, color: Colors.grey[400]),
@@ -160,7 +160,7 @@ class UsageLimitCard extends StatelessWidget {
   void _showSetLimitDialog(BuildContext context) {
     if (usageLimits == null) {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Cannot set limits with placeholder data')),
+        const SnackBar(content: Text('Cannot set limits with placeholder data')),
       );
       return;
     }

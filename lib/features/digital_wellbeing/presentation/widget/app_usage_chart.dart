@@ -1,4 +1,3 @@
-import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:fl_chart/fl_chart.dart';
@@ -12,7 +11,7 @@ import 'package:flutter_animate/flutter_animate.dart';
 class AppUsageChart extends StatefulWidget {
   final Map<String, AppUsage>? appUsages;
 
-  const AppUsageChart({Key? key, this.appUsages}) : super(key: key);
+  const AppUsageChart({super.key, this.appUsages});
 
   @override
   _AppUsageChartState createState() => _AppUsageChartState();
@@ -93,7 +92,7 @@ class _AppUsageChartState extends State<AppUsageChart> {
 
   Widget _buildPieChart(BuildContext context) {
     return AnimatedContainer(
-      duration: Duration(milliseconds: 300),
+      duration: const Duration(milliseconds: 300),
       curve: Curves.easeInOut,
       child: PieChart(
         PieChartData(
@@ -157,8 +156,8 @@ class _AppUsageChartState extends State<AppUsageChart> {
           color: Colors.transparent,
           child: Center(
             child: Container(
-              constraints: BoxConstraints(maxWidth: 200),
-              padding: EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+              constraints: const BoxConstraints(maxWidth: 200),
+              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
               decoration: BoxDecoration(
                 color: Theme.of(context).colorScheme.surface,
                 borderRadius: BorderRadius.circular(20),
@@ -167,7 +166,7 @@ class _AppUsageChartState extends State<AppUsageChart> {
                     color: Colors.black.withOpacity(0.1),
                     blurRadius: 10,
                     spreadRadius: 2,
-                    offset: Offset(0, 4),
+                    offset: const Offset(0, 4),
                   ),
                 ],
               ),
@@ -179,7 +178,7 @@ class _AppUsageChartState extends State<AppUsageChart> {
                     size: 20,
                     color: Theme.of(context).colorScheme.primary,
                   ),
-                  SizedBox(width: 8),
+                  const SizedBox(width: 8),
                   Flexible(
                     child: Text(
                       appName,
@@ -207,7 +206,7 @@ class _AppUsageChartState extends State<AppUsageChart> {
 
     overlay.insert(entry);
 
-    Future.delayed(Duration(seconds: 2), () {
+    Future.delayed(const Duration(seconds: 2), () {
       entry?.remove();
     });
   }
@@ -327,7 +326,7 @@ class _AppUsageChartState extends State<AppUsageChart> {
 
   Widget _buildAppIcon(AppUsage app) {
     return Container(
-      padding: EdgeInsets.all(4),
+      padding: const EdgeInsets.all(4),
       decoration: BoxDecoration(
         color: Colors.white,
         shape: BoxShape.circle,
@@ -335,7 +334,7 @@ class _AppUsageChartState extends State<AppUsageChart> {
           BoxShadow(
             color: Colors.black.withOpacity(0.1),
             blurRadius: 4,
-            offset: Offset(0, 2),
+            offset: const Offset(0, 2),
           ),
         ],
       ),
@@ -387,8 +386,8 @@ class _AppUsageChartState extends State<AppUsageChart> {
           color: Colors.transparent,
           child: Center(
             child: Container(
-              constraints: BoxConstraints(maxWidth: 300, maxHeight: 400),
-              padding: EdgeInsets.all(16),
+              constraints: const BoxConstraints(maxWidth: 300, maxHeight: 400),
+              padding: const EdgeInsets.all(16),
               decoration: BoxDecoration(
                 color: Theme.of(context).colorScheme.surface,
                 borderRadius: BorderRadius.circular(20),
@@ -397,7 +396,7 @@ class _AppUsageChartState extends State<AppUsageChart> {
                     color: Colors.black.withOpacity(0.1),
                     blurRadius: 10,
                     spreadRadius: 2,
-                    offset: Offset(0, 4),
+                    offset: const Offset(0, 4),
                   ),
                 ],
               ),
@@ -417,13 +416,13 @@ class _AppUsageChartState extends State<AppUsageChart> {
                         ),
                       ),
                       IconButton(
-                        icon: Icon(Icons.close, size: 20),
+                        icon: const Icon(Icons.close, size: 20),
                         onPressed: () => entry?.remove(),
                         color: Theme.of(context).colorScheme.onSurface,
                       ),
                     ],
                   ),
-                  SizedBox(height: 8),
+                  const SizedBox(height: 8),
                   Flexible(
                     child: ListView(
                       shrinkWrap: true,
@@ -433,7 +432,7 @@ class _AppUsageChartState extends State<AppUsageChart> {
                           child: Row(
                             children: [
                               _buildAppIcon(entry.value),
-                              SizedBox(width: 12),
+                              const SizedBox(width: 12),
                               Expanded(
                                 child: Column(
                                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -484,7 +483,7 @@ class _AppUsageChartState extends State<AppUsageChart> {
 
     overlay.insert(entry);
 
-    Future.delayed(Duration(seconds: 5), () {
+    Future.delayed(const Duration(seconds: 5), () {
       entry?.remove();
     });
   }

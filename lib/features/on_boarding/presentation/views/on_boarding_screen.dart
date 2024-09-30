@@ -68,7 +68,7 @@ class _OnBoardingScreenState extends State<OnBoardingScreen> {
                       dotHeight: 10,
                       dotWidth: 10,
                       spacing: 40,
-                      activeDotColor: context.theme!.primaryColor,
+                      activeDotColor: context.theme.primaryColor,
                       dotColor: Colors.white,
                     ),
                   ),
@@ -83,7 +83,7 @@ class _OnBoardingScreenState extends State<OnBoardingScreen> {
                         vertical: 22,
                       ),
                       width: context.width * .6,
-                      color: context.theme!.primaryColor,
+                      color: context.theme.primaryColor,
                       elevation: .2,
                       textStyle: GoogleFonts.montserrat(
                         fontSize: 16,

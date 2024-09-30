@@ -13,21 +13,14 @@ typedef _LayoutCallback = void Function(
 
 class _TabLabelBarRenderer extends RenderFlex {
   _TabLabelBarRenderer({
-    required Axis direction,
-    required MainAxisSize mainAxisSize,
-    required MainAxisAlignment mainAxisAlignment,
-    required CrossAxisAlignment crossAxisAlignment,
-    required TextDirection textDirection,
-    required VerticalDirection verticalDirection,
+    required super.direction,
+    required super.mainAxisSize,
+    required super.mainAxisAlignment,
+    required super.crossAxisAlignment,
+    required TextDirection super.textDirection,
+    required super.verticalDirection,
     required this.onPerformLayout,
-  }) : super(
-    direction: direction,
-    mainAxisSize: mainAxisSize,
-    mainAxisAlignment: mainAxisAlignment,
-    crossAxisAlignment: crossAxisAlignment,
-    textDirection: textDirection,
-    verticalDirection: verticalDirection,
-  );
+  });
 
   _LayoutCallback onPerformLayout;
 
@@ -61,11 +54,10 @@ class _TabLabelBarRenderer extends RenderFlex {
 }
 
 class _TabLabelBar extends Flex {
-  _TabLabelBar({
-    required List<Widget> children,
+  const _TabLabelBar({
+    required super.children,
     required this.onPerformLayout,
   }) : super(
-    children: children,
     direction: Axis.horizontal,
     mainAxisSize: MainAxisSize.max,
     mainAxisAlignment: MainAxisAlignment.start,
@@ -219,7 +211,7 @@ class _TabBarScrollController extends ScrollController {
 class CustomButtonTabBar extends StatefulWidget
     implements PreferredSizeWidget {
   const CustomButtonTabBar({
-    Key? key,
+    super.key,
     required this.tabs,
     this.controller,
     this.isScrollable = false,
@@ -243,7 +235,7 @@ class CustomButtonTabBar extends StatefulWidget
     this.padding = EdgeInsets.zero,
     this.borderRadius = 8.0,
     this.elevation = 0,
-  }) : super(key: key);
+  });
 
   final List<Widget> tabs;
 
@@ -601,14 +593,14 @@ class _CustomButtonTabBarState extends State<CustomButtonTabBar>
       child: TextButton(
         onPressed: () => _handleTap(index),
         style: ButtonStyle(
-          elevation: MaterialStateProperty.all(
+          elevation: WidgetStateProperty.all(
               widget.useToggleButtonStyle ? 0 : widget.elevation),
-          minimumSize: MaterialStateProperty.all(const Size(10, 10)),
-          padding: MaterialStateProperty.all(EdgeInsets.zero),
-          textStyle: MaterialStateProperty.all(textStyle),
-          foregroundColor: MaterialStateProperty.all(textColor),
+          minimumSize: WidgetStateProperty.all(const Size(10, 10)),
+          padding: WidgetStateProperty.all(EdgeInsets.zero),
+          textStyle: WidgetStateProperty.all(textStyle),
+          foregroundColor: WidgetStateProperty.all(textColor),
           tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-          shape: MaterialStateProperty.all(
+          shape: WidgetStateProperty.all(
             widget.useToggleButtonStyle
                 ? const RoundedRectangleBorder(
 

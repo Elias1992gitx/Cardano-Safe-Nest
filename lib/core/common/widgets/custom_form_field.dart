@@ -4,7 +4,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:safenest/core/extensions/context_extensions.dart';
 
 
-typedef SubmitCallback(String value);
+typedef SubmitCallback = Function(String value);
 
 class CustomTextFormField extends StatelessWidget {
   CustomTextFormField({

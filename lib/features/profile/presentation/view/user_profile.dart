@@ -1,16 +1,11 @@
 import 'dart:ui';
 import 'package:lottie/lottie.dart';
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:provider/provider.dart';
 import 'package:safenest/core/extensions/context_extensions.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:iconly/iconly.dart';
-import 'package:safenest/core/common/app/providers/user_provider.dart';
-import 'package:safenest/core/common/widgets/custom_profile_pic.dart';
-import 'package:safenest/core/utils/constants.dart';
 import 'package:safenest/features/profile/presentation/bloc/parental_info_bloc.dart';
 import 'package:safenest/features/profile/presentation/widget/parental-profile/set_security.dart';
 import 'package:safenest/core/utils/core_utils.dart';
@@ -199,11 +194,11 @@ class _UserProfileScreenState extends State<UserProfileScreen>
               color: context.theme.cardColor,
               shape: BoxShape.rectangle,
               borderRadius: BorderRadius.circular(20),
-              boxShadow: [
+              boxShadow: const [
                 BoxShadow(
                   color: Colors.black26,
                   blurRadius: 10.0,
-                  offset: const Offset(0.0, 10.0),
+                  offset: Offset(0.0, 10.0),
                 ),
               ],
             ),
@@ -213,7 +208,7 @@ class _UserProfileScreenState extends State<UserProfileScreen>
                 CircleAvatar(
                   backgroundColor: Colors.red.withOpacity(0.1),
                   radius: 45,
-                  child: Icon(
+                  child: const Icon(
                     IconlyBold.logout,
                     color: Colors.red,
                     size: 40,

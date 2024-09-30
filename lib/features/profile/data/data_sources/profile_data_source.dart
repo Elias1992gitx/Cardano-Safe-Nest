@@ -21,7 +21,7 @@ class ProfileRemoteDataSourceImpl implements ProfileRemoteDataSource {
         front: front,
         back: back,
       );
-    } catch (e, s) {
+    } catch (e) {
       throw ScanDataException(
         message: 'Invalid Digital ID scanned try again',
         statusCode: 505,
@@ -33,7 +33,7 @@ class ProfileRemoteDataSourceImpl implements ProfileRemoteDataSource {
   Future<ScanModel> scanPassport({required File firstPage}) async {
     try {
       return ScanModel(firstPage: firstPage);
-    } catch (e, s) {
+    } catch (e) {
       throw ScanDataException(
         message: 'Invalid Passport scanned try again',
         statusCode: 404,

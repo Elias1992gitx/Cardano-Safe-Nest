@@ -178,10 +178,10 @@ class _NotificationScreenState extends State<NotificationScreen>
                                                 ],
                                               ),
                                             ),
-                                            Expanded(
+                                            const Expanded(
                                               child: Padding(
                                                 padding:
-                                                const EdgeInsetsDirectional.all(
+                                                EdgeInsetsDirectional.all(
                                                   16,
                                                 ),
                                                 child: Column(

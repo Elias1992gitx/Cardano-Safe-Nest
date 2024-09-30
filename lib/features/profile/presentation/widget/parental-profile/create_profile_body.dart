@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:safenest/core/common/widgets/custom_button.dart';
 import 'package:safenest/core/extensions/context_extensions.dart';
@@ -56,7 +55,7 @@ class CreateProfileBody extends StatelessWidget {
                   vertical: 22,
                 ),
                 width: context.width * .6,
-                color: context.theme!.primaryColor,
+                color: context.theme.primaryColor,
                 elevation: .2,
                 textStyle: GoogleFonts.montserrat(
                   fontSize: 16,

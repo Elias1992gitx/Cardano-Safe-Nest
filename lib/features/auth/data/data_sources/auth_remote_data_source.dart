@@ -4,15 +4,12 @@ import 'dart:io';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
-import 'package:rxdart/rxdart.dart';
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter_facebook_auth/flutter_facebook_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:safenest/core/enum/user/update_user.dart';
 import 'package:safenest/core/errors/exceptions.dart';
-import 'package:safenest/core/errors/exceptions.dart';
-import 'package:safenest/core/services/config.dart';
 import 'package:safenest/core/utils/constants.dart';
 import 'package:safenest/core/utils/typedef.dart';
 import 'package:safenest/features/auth/data/models/user_model.dart';
@@ -398,6 +395,7 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
     });
   }
 
+  @override
   Future<void> logout() async {
     try {
       await _authClient.signOut();

@@ -5,7 +5,7 @@ import 'package:safenest/features/digital_wellbeing/domain/entity/digital_wellbe
 class MostUsedApps extends StatelessWidget {
   final Map<String, AppUsage>? appUsages;
 
-  const MostUsedApps({Key? key, this.appUsages}) : super(key: key);
+  const MostUsedApps({super.key, this.appUsages});
 
   @override
   Widget build(BuildContext context) {
@@ -105,8 +105,8 @@ class MostUsedApps extends StatelessWidget {
         return _buildListTile(
           context,
           leading: CircleAvatar(
-            child: Icon(Icons.apps, color: Colors.grey[400]),
             backgroundColor: Colors.grey[200],
+            child: Icon(Icons.apps, color: Colors.grey[400]),
           ),
           title: 'App ${index + 1}',
           subtitle: 'No usage data',
@@ -154,7 +154,7 @@ class MostUsedApps extends StatelessWidget {
           BoxShadow(
             color: Colors.black.withOpacity(0.1),
             blurRadius: 4,
-            offset: Offset(0, 2),
+            offset: const Offset(0, 2),
           ),
         ],
       ),
@@ -188,12 +188,12 @@ class MostUsedApps extends StatelessWidget {
     bool isPlaceholder = false,
   }) {
     return Container(
-      margin: EdgeInsets.symmetric(vertical: 8),
+      margin: const EdgeInsets.symmetric(vertical: 8),
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(12),
         color: isPlaceholder
             ? Colors.grey[100]
-            : Theme.of(context).colorScheme.background.withOpacity(0.3),
+            : Theme.of(context).colorScheme.surface.withOpacity(0.3),
       ),
       child: ListTile(
         leading: leading,
@@ -204,7 +204,7 @@ class MostUsedApps extends StatelessWidget {
             fontSize: 14,
             color: isPlaceholder
                 ? Colors.grey[600]
-                : Theme.of(context).colorScheme.onBackground,
+                : Theme.of(context).colorScheme.onSurface,
           ),
         ),
         subtitle: Text(
@@ -214,7 +214,7 @@ class MostUsedApps extends StatelessWidget {
                   ? Colors.grey[400]
                   : Theme.of(context)
                       .colorScheme
-                      .onBackground
+                      .onSurface
                       .withOpacity(0.7)),
         ),
         trailing: Text(

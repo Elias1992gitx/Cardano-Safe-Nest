@@ -19,7 +19,7 @@ class NotificationPreferencesModel extends NotificationPreferences {
 
 
   factory NotificationPreferencesModel.empty() {
-    return NotificationPreferencesModel(
+    return const NotificationPreferencesModel(
       dailySummary: false,
       usageLimitExceeded: false,
       screenTimeThreshold: false,

@@ -8,10 +8,10 @@ class SetPinPage extends StatefulWidget {
   final String? initialPin;
 
   const SetPinPage({
-    Key? key,
+    super.key,
     required this.onPinSet,
     this.initialPin,
-  }) : super(key: key);
+  });
 
   @override
   _SetPinPageState createState() => _SetPinPageState();
@@ -69,7 +69,7 @@ class _SetPinPageState extends State<SetPinPage> {
           BackdropFilter(
             filter: ImageFilter.blur(sigmaX: 5, sigmaY: 5),
             child: Container(
-              color: theme.colorScheme.background.withOpacity(0.5),
+              color: theme.colorScheme.surface.withOpacity(0.5),
             ),
           ),
           Center(

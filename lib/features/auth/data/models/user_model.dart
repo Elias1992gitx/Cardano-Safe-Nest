@@ -1,5 +1,4 @@
 import 'package:safenest/core/enum/user/user_role.dart';
-import 'package:safenest/core/extensions/context_extensions.dart';
 import 'package:safenest/core/utils/typedef.dart';
 import 'package:safenest/features/auth/domain/entities/user.dart';
 

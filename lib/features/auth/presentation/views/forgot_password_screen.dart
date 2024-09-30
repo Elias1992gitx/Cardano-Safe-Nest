@@ -83,7 +83,9 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
                         CustomTextFormField(
                           textInputType: TextInputType.emailAddress,
                           hintText: 'Email address',
-                          validator: (value) {},
+                          validator: (value) {
+                            return null;
+                          },
                           controller: emailController,
                           maxLength: 35,
                           borderRadius: 10,

@@ -62,7 +62,7 @@ class _ChildInfoState extends State<ChildInfo> {
               padding: const EdgeInsets.all(20.0),
               child: GridView.builder(
                 shrinkWrap: true,
-                physics: NeverScrollableScrollPhysics(),
+                physics: const NeverScrollableScrollPhysics(),
                 gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
                   crossAxisCount: 3,
                   childAspectRatio: 1,
