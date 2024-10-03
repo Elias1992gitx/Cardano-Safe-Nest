@@ -16,14 +16,7 @@ class DailyDigitalWellbeingSummary extends StatelessWidget {
       child: Container(
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(16),
-          gradient: LinearGradient(
-            begin: Alignment.topLeft,
-            end: Alignment.bottomRight,
-            colors: [
-              context.theme.primaryColor.withOpacity(0.1),
-              context.theme.primaryColor.withOpacity(0.05),
-            ],
-          ),
+
         ),
         child: Padding(
           padding: const EdgeInsets.all(16),

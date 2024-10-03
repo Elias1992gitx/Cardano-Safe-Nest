@@ -19,8 +19,8 @@ class MediaRes{
   static const bubbles = '$_baseIcons/bubbles.svg';
 
   static const onBoardingImg1 = '$_baseVector/m-p.svg';
-  static const onBoardingImg2 = '$_baseVector/m-f.svg';
-  static const onBoardingImg3 = '$_baseVector/m-s.svg';
+  static const onBoardingImg2 = '$_baseVector/m-s.svg';
+  static const onBoardingImg3 = '$_baseVector/m-f.svg';
   static const scanId = '$_baseVector/scan-id.svg';
   static const noNotificationSVG = '$_baseVector/group33731.svg';
 

@@ -288,18 +288,31 @@ class _AddChildFormState extends State<AddChildForm> {
                   ),
                   const SizedBox(width: 16),
                   Expanded(
-                    child: CustomTextFormField(
-                      textInputType: TextInputType.text,
-                      hintText: 'Gender',
+                    child: DropdownButtonFormField<String>(
+                      decoration: InputDecoration(
+                        hintText: 'Gender',
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(10),
+                        ),
+                        contentPadding: const EdgeInsets.symmetric(horizontal: 10, vertical: 15),
+                      ),
+                      items: ['Male', 'Female'].map((String value) {
+                        return DropdownMenuItem<String>(
+                          value: value,
+                          child: Text(value),
+                        );
+                      }).toList(),
+                      onChanged: (String? newValue) {
+                        setState(() {
+                          genderController.text = newValue ?? '';
+                        });
+                      },
                       validator: (value) {
                         if (value == null || value.isEmpty) {
-                          return 'Please enter the gender';
+                          return 'Please select a gender';
                         }
                         return null;
                       },
-                      controller: genderController,
-                      maxLength: 10,
-                      borderRadius: 10,
                     ),
                   ),
                 ],

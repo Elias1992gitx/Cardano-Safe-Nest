@@ -16,14 +16,6 @@ final GoRouter router = GoRouter(
             state,
           );
         } else if (sl<FirebaseAuth>().currentUser != null) {
-          final user = sl<FirebaseAuth>().currentUser!;
-          final localUser = LocalUserModel(
-            uid: user.uid,
-            phoneNumber: user.phoneNumber ?? '',
-            email: user.email ?? '',
-            username: user.displayName ?? '',
-          );
-          context.userProvider.initUser(localUser);
           return _pageBuilder(
             MultiBlocProvider(
               providers: [
@@ -114,7 +106,6 @@ final GoRouter router = GoRouter(
                     );
                   },
                 ),
-
                 GoRoute(
                   path: 'create-profile',
                   pageBuilder: (context, state) => _pageBuilder(
@@ -240,13 +231,7 @@ final GoRouter router = GoRouter(
       ],
     ),
   ],
-  redirect: (_, state) {
-    final isLoggedIn = sl<FirebaseAuth>().currentUser != null;
-    if (!isLoggedIn && state.matchedLocation != '/') {
-      return '/';
-    }
-    return null;
-  },
+  redirect: (_, state) {},
 );
 
 CustomTransitionPage<dynamic> _pageBuilder(Widget page, GoRouterState state) {

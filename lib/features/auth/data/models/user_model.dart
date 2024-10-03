@@ -21,18 +21,24 @@ class LocalUserModel extends LocalUser {
   });
 
   LocalUserModel.fromMap(DataMap map)
-      : super(
-    uid: map['_id'] as String,
-    username: map['name'] as String,
-    email: map['email'] as String,
-    monitoredApps: (map['monitoredApps'] as List<dynamic>?)
-        ?.map((e) => e.toString())
-        .toList() ??
-        [],
-    isTwoFactorEnabled: map['isTwoFactorEnabled'] as bool,
-    updatedAt: DateTime.parse(map['updatedAt'] as String),
-    createdAt: DateTime.parse(map['createdAt'] as String),
-  );
+    : super(
+        uid: map['uid'] as String? ?? '',
+        username: map['username'] as String? ?? '',
+        email: map['email'] as String? ?? '',
+        monitoredApps: (map['monitoredApps'] as List<dynamic>?)
+            ?.map((e) => e.toString())
+            .toList() ??
+            [],
+        isTwoFactorEnabled: map['isTwoFactorEnabled'] as bool? ?? false,
+        updatedAt: map['updatedAt'] != null ? DateTime.parse(map['updatedAt'] as String) : null,
+        createdAt: map['createdAt'] != null ? DateTime.parse(map['createdAt'] as String) : null,
+        phoneNumber: map['phoneNumber'] as String?,
+        profilePic: map['profilePic'] as String?,
+        address: map['address'] as String?,
+        country: map['country'] as String?,
+        city: map['city'] as String?,
+        emailVerified: map['emailVerified'] != null ? DateTime.parse(map['emailVerified'] as String) : null,
+      );
 
   LocalUserModel copyWith({
     String? uid,

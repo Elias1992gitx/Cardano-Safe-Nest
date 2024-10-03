@@ -25,9 +25,7 @@ class _SignupWithEmailScreenState extends State<SignupWithEmailScreen> {
   final fullNameController = TextEditingController();
   final formKey = GlobalKey<FormState>();
 
-  Future<void> _handleLogout() async {
-    context.go('/');
-  }
+  
 
 
   @override

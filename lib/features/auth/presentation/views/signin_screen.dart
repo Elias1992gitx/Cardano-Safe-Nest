@@ -56,10 +56,10 @@ class _SignInScreenState extends State<SignInScreen> {
             );
           } else if (state is SignedInState) {
             context.userProvider.initUser(state.user as LocalUserModel);
-            context.go('/');
+            context.go('/profile-screen');
           } else if (state is SocialSignedInState) {
             context.userProvider.initUser(state.user as LocalUserModel);
-            context.go('/');
+            context.go('/profile-screen');
           }
         },
         builder: (BuildContext context, state) {
@@ -67,7 +67,8 @@ class _SignInScreenState extends State<SignInScreen> {
             child: SingleChildScrollView(
               child: ConstrainedBox(
                 constraints: BoxConstraints(
-                  minHeight: context.height - MediaQuery.of(context).padding.top,
+                  minHeight:
+                      context.height - MediaQuery.of(context).padding.top,
                 ),
                 child: IntrinsicHeight(
                   child: Padding(
@@ -115,7 +116,8 @@ class _SignInScreenState extends State<SignInScreen> {
                         Padding(
                           padding: const EdgeInsets.only(bottom: 20),
                           child: GestureDetector(
-                            onTap: () => context.go("/${SignupScreen.routeName}"),
+                            onTap: () =>
+                                context.go("/${SignupScreen.routeName}"),
                             child: SlideFadeSwitcher(
                               child: Text(
                                 "Don't have account? Sign Up",
@@ -225,11 +227,11 @@ class _SignInScreenState extends State<SignInScreen> {
             onPressed: () {
               if (formKey.currentState!.validate()) {
                 context.read<AuthBloc>().add(
-                  SignInEvent(
-                    email: emailController.value.text.trim(),
-                    password: passwordController.value.text.trim(),
-                  ),
-                );
+                      SignInEvent(
+                        email: emailController.value.text.trim(),
+                        password: passwordController.value.text.trim(),
+                      ),
+                    );
               }
             },
           ),
@@ -263,11 +265,11 @@ class _SignInScreenState extends State<SignInScreen> {
   }
 
   Widget _buildSocialButton(
-      BuildContext context,
-      String text,
-      String iconAsset,
-      AuthEvent event,
-      ) {
+    BuildContext context,
+    String text,
+    String iconAsset,
+    AuthEvent event,
+  ) {
     return FFCustomButton(
       text: text,
       icon: IconButton(

@@ -48,7 +48,7 @@ class _SignupScreenState extends State<SignupScreen> {
                 Column(
                   children: [
                     Padding(
-                      padding: const EdgeInsets.fromLTRB(30, 180, 30, 0),
+                      padding: const EdgeInsets.fromLTRB(30, 80, 30, 0),
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
@@ -56,9 +56,7 @@ class _SignupScreenState extends State<SignupScreen> {
                             MediaRes.ndLightVector,
                             width: 80,
                           ),
-                          const SizedBox(
-                            height: 20,
-                          ),
+                          const SizedBox(height: 100),
                           Text(
                             'Join Safe Nest',
                             textAlign: TextAlign.start,
@@ -68,7 +66,7 @@ class _SignupScreenState extends State<SignupScreen> {
                             ),
                           ),
                           Text(
-                            'Ensure Your Child’s Safety Online – Sign Up Now!',
+                            "Ensure Your Child's Safety Online – Sign Up Now!",
                             textAlign: TextAlign.start,
                             style: GoogleFonts.montserrat(
                               fontSize: 16,
@@ -109,8 +107,8 @@ class _SignupScreenState extends State<SignupScreen> {
                                         vertical: 4,
                                       ),
                                       width: context.width * .4,
-                                      color: context
-                                          .theme.colorScheme.onSurface,
+                                      color:
+                                          context.theme.colorScheme.onSurface,
                                       elevation: .1,
                                       textStyle: GoogleFonts.montserrat(
                                         color:
@@ -148,8 +146,8 @@ class _SignupScreenState extends State<SignupScreen> {
                                         vertical: 4,
                                       ),
                                       width: context.width * .4,
-                                      color: context
-                                          .theme.colorScheme.onSurface,
+                                      color:
+                                          context.theme.colorScheme.onSurface,
                                       elevation: .1,
                                       textStyle: GoogleFonts.montserrat(
                                         color:
@@ -255,7 +253,7 @@ class _SignupScreenState extends State<SignupScreen> {
                         ),
                       ),
                     ),
-                  ), 
+                  ),
                 ),
               ],
             ),

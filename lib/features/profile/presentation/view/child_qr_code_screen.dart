@@ -4,6 +4,7 @@ import 'package:provider/provider.dart';
 import 'package:safenest/core/common/app/providers/user_provider.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:lottie/lottie.dart';
+import 'package:safenest/core/extensions/context_extensions.dart';
 
 class ChildQRCodeScreen extends StatelessWidget {
   const ChildQRCodeScreen({super.key});
@@ -14,6 +15,7 @@ class ChildQRCodeScreen extends StatelessWidget {
     final userId = userProvider.user?.uid ?? '';
 
     return Scaffold(
+      backgroundColor: context.theme.colorScheme.surface,
       appBar: AppBar(
         title: Text(
           'Connect to Parent',

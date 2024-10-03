@@ -52,7 +52,6 @@ class _LocationDashboardState extends State<LocationDashboard>
     }).toSet();
   }
 
-
   Future<void> _createSafeZones() async {
     _safeZones = widget.safeLocations.map((safeLocation) {
       return Circle(
@@ -78,12 +77,11 @@ class _LocationDashboardState extends State<LocationDashboard>
     }));
   }
 
-
-
   Future<Uint8List> _createPulsingMarkerIcon() async {
-    const double size = 120;
+    const double size = 200; // Increased from 120
     final recorder = ui.PictureRecorder();
-    final canvas = Canvas(recorder, Rect.fromPoints(const Offset(0.0, 0.0), const Offset(size, size)));
+    final canvas = Canvas(recorder,
+        Rect.fromPoints(const Offset(0.0, 0.0), const Offset(size, size)));
 
     final paint = Paint()
       ..color = Colors.blue.withOpacity(0.5)
@@ -91,7 +89,8 @@ class _LocationDashboardState extends State<LocationDashboard>
 
     final animationProgress = _pulseController.value;
     const maxRadius = size / 2;
-    final currentRadius = maxRadius * (0.5 + 0.5 * animationProgress);
+    final currentRadius = maxRadius *
+        (0.6 + 0.4 * animationProgress); // Adjusted for larger pulsing effect
 
     canvas.drawCircle(const Offset(size / 2, size / 2), currentRadius, paint);
 
@@ -105,6 +104,7 @@ class _LocationDashboardState extends State<LocationDashboard>
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: context.theme.colorScheme.surface,
       body: AnimatedBuilder(
         animation: _pulseController,
         builder: (context, child) {
@@ -317,7 +317,6 @@ class _CirclePainter extends CustomPainter {
   }
 }
 
-
 class MapControlPanel extends StatefulWidget {
   final VoidCallback onZoomIn;
   final VoidCallback onZoomOut;
@@ -334,7 +333,8 @@ class MapControlPanel extends StatefulWidget {
   _MapControlPanelState createState() => _MapControlPanelState();
 }
 
-class _MapControlPanelState extends State<MapControlPanel> with SingleTickerProviderStateMixin {
+class _MapControlPanelState extends State<MapControlPanel>
+    with SingleTickerProviderStateMixin {
   late AnimationController _controller;
   late Animation<double> _animation;
   bool _isExpanded = false;
@@ -402,7 +402,8 @@ class _MapControlPanelState extends State<MapControlPanel> with SingleTickerProv
                     children: [
                       _buildControlButton(IconlyLight.plus, widget.onZoomIn),
                       _buildControlButton(Icons.remove, widget.onZoomOut),
-                      _buildControlButton(Icons.center_focus_strong, widget.onFocusLocations),
+                      _buildControlButton(
+                          Icons.center_focus_strong, widget.onFocusLocations),
                     ],
                   ),
                 ),
@@ -414,14 +415,17 @@ class _MapControlPanelState extends State<MapControlPanel> with SingleTickerProv
     );
   }
 
-  Widget _buildControlButton(IconData icon, VoidCallback onPressed, {bool isMainButton = false}) {
+  Widget _buildControlButton(IconData icon, VoidCallback onPressed,
+      {bool isMainButton = false}) {
     return CustomIconButton(
       icon: Padding(
         padding: const EdgeInsets.all(2.0),
         child: Stack(
           alignment: Alignment.center,
           children: [
-            Icon(icon, color: context.theme.primaryColor, size: isMainButton ? 38 : 30),
+            Icon(icon,
+                color: context.theme.primaryColor,
+                size: isMainButton ? 38 : 30),
           ],
         ),
       ),
@@ -433,14 +437,14 @@ class _MapControlPanelState extends State<MapControlPanel> with SingleTickerProv
       borderRadius: BorderRadius.circular(30),
       gradient: isMainButton
           ? LinearGradient(
-        colors: [context.theme.primaryColor.withOpacity(0.1), context.theme.primaryColor.withOpacity(0.3)],
-        begin: Alignment.topCenter,
-        end: Alignment.bottomRight,
-      )
+              colors: [
+                context.theme.primaryColor.withOpacity(0.1),
+                context.theme.primaryColor.withOpacity(0.3)
+              ],
+              begin: Alignment.topCenter,
+              end: Alignment.bottomRight,
+            )
           : null, // Add padding to ensure the icon is centered
     );
   }
 }
-
-
-

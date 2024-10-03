@@ -100,7 +100,8 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
       final user = result.user;
 
       if (user != null) {
-        var userData = await _getUserData(user.uid);
+        var userData = await _getUserData(user.uid);  
+        print(userData.data());
         if (userData.exists) {
           final localUser = LocalUserModel.fromMap(userData.data()!);
           await _cacheUserData(localUser);
@@ -372,17 +373,23 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
   }
 
   Future<void> _setUserData(
-    User user,
-    String fallbackEmail,
-  ) async {
-    await _cloudStoreClient.collection('users').doc(user.uid).set(
-          LocalUserModel(
-            email: user.email ?? fallbackEmail,
-            uid: user.uid,
-            username: user.displayName ?? "",
-          ).toMap(),
-        );
-  }
+  User user,
+  String fallbackEmail,
+) async {
+  await _cloudStoreClient.collection('users').doc(user.uid).set(
+        LocalUserModel(
+          email: user.email ?? fallbackEmail,
+          uid: user.uid,
+          username: user.displayName ?? "",
+          phoneNumber: user.phoneNumber,
+          profilePic: user.photoURL,
+          createdAt: DateTime.now(),
+          updatedAt: DateTime.now(),
+          isTwoFactorEnabled: false,
+          monitoredApps: [],
+        ).toMap(),
+      );
+}
 
   @override
   Stream<LocalUserModel> getUserProfileStream(String uid) {

@@ -1,5 +1,5 @@
+import 'dart:async';
 import 'dart:io';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
@@ -21,9 +21,12 @@ import 'package:safenest/core/extensions/context_extensions.dart';
 import 'package:safenest/core/common/widgets/qr_scanner_screen.dart';
 import 'package:safenest/features/profile/presentation/view/child_qr_code_screen.dart';
 import 'package:safenest/features/digital_wellbeing/presentation/bloc/digital_wellbeing_bloc.dart';
-import 'package:safenest/features/digital_wellbeing/domain/entity/digital_wellbeing.dart'
-    as lc;
 import 'package:safenest/features/dashboard/presentation/widgets/daily_digital_wellbeing_summary.dart';
+import 'package:safenest/features/dashboard/presentation/widgets/achievement_score_section.dart';
+import 'package:safenest/features/dashboard/presentation/widgets/task_statistics_section.dart';
+import 'package:safenest/features/dashboard/presentation/widgets/focus_statistics_section.dart';
+import 'package:safenest/features/dashboard/presentation/widgets/weekly_habit_status_section.dart';
+import 'package:safenest/features/dashboard/presentation/widgets/particle_background.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -46,18 +49,18 @@ class _HomeScreenState extends State<HomeScreen>
     _checkAndRequestUsagePermission();
     _animationController = AnimationController(
       vsync: this,
-      duration: const Duration(milliseconds: 10),
+      duration: const Duration(milliseconds: 500),
     );
-    _fadeAnimation =
-        Tween<double>(begin: 0.0, end: 1.0).animate(_animationController);
+    _fadeAnimation = Tween<double>(begin: 0.0, end: 1.0).animate(_animationController);
     _animationController.forward();
 
-    Future.delayed(const Duration(milliseconds: 10), () {
+    Future.delayed(const Duration(milliseconds: 100), () {
       setState(() {
         _isPageReady = true;
       });
     });
   }
+
 
   Future<void> _checkAndRequestUsagePermission() async {
     if (Platform.isAndroid) {
@@ -134,7 +137,7 @@ class _HomeScreenState extends State<HomeScreen>
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: context.theme.cardColor,
+      backgroundColor: context.theme.colorScheme.surface,
       body: SafeArea(
         child: SingleChildScrollView(
           child: Column(
@@ -146,10 +149,8 @@ class _HomeScreenState extends State<HomeScreen>
                       padding:
                           const EdgeInsetsDirectional.fromSTEB(10, 40, 10, 10),
                       child: Container(
-                        width: 500,
-                        constraints: const BoxConstraints(
-                          maxWidth: 570,
-                        ),
+
+
                         child: Padding(
                           padding: const EdgeInsets.all(4),
                           child: Column(
@@ -263,72 +264,16 @@ class _HomeScreenState extends State<HomeScreen>
                                 thickness: 1,
                                 color: Color(0xFFE5E7EB),
                               ),
-                              SizedBox(
-                                height: 500, // Adjust this height as needed
-                                child: Stack(
-                                  children: [
-                                    Column(
-                                      children: [
-                                        SizedBox(
-                                          height: 360,
-                                          child: SwipeableCalendarView(
-                                            onDaySelected:
-                                                (selectedDay, focusedDay) {
-                                              setState(() {
-                                                context
-                                                    .read<
-                                                        DigitalWellbeingBloc>()
-                                                    .add(
-                                                      GetDigitalWellbeingForDateEvent(
-                                                          selectedDay),
-                                                    );
-                                              });
-                                            },
-                                            onExpansionChanged: (isExpanded) {
-                                              setState(() {
-                                                _isCalendarExpanded =
-                                                    isExpanded;
-                                              });
-                                            },
-                                          ),
-                                        ),
-                                        const SizedBox(height: 20),
-                                      ],
-                                    ),
-                                    Positioned(
-                                      top: _isCalendarExpanded ? 380 : 300,
-                                      left: 0,
-                                      right: 0,
-                                      child: AnimatedContainer(
-                                        duration:
-                                            const Duration(milliseconds: 300),
-                                        curve: Curves.easeInOut,
-                                        child: BlocBuilder<DigitalWellbeingBloc,
-                                            DigitalWellbeingState>(
-                                          builder: (context, state) {
-                                            if (state
-                                                is DigitalWellbeingLoading) {
-                                              return const CircularProgressIndicator();
-                                            } else if (state
-                                                is DigitalWellbeingLoaded) {
-                                              return DailyDigitalWellbeingSummary(
-                                                digitalWellbeing:
-                                                    state.digitalWellbeing,
-                                              );
-                                            } else if (state
-                                                is DigitalWellbeingError) {
-                                              return Text(
-                                                  'Error: ${state.message}');
-                                            } else {
-                                              return const Text(
-                                                  'No data available');
-                                            }
-                                          },
-                                        ),
-                                      ),
-                                    ),
-                                  ],
-                                ),
+                              Column(
+                                children: [
+                                  const FocusStatisticsSection(),
+                                  const SizedBox(height: 20),
+                                  const TaskStatisticsSection(),
+                                  const SizedBox(height: 20),
+
+                                  const WeeklyHabitStatusSection(),
+                                  const SizedBox(height: 20),
+                                ],
                               ),
                             ],
                           ),
@@ -409,7 +354,7 @@ class _HomeScreenState extends State<HomeScreen>
                   imageBuilder: (context, imageProvider) {
                     return CustomProfilePic(
                       imageProvider: imageProvider,
-                      onClicked: () => context.go('/profile-screen'),
+                      onClicked: () => Future.microtask(() => context.go('/profile-screen')),
                       radius: 45,
                     );
                   },

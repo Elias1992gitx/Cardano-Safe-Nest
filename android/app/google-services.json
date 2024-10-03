@@ -1,6 +1,7 @@
 {
   "project_info": {
     "project_number": "545427401569",
+    "firebase_url": "https://safenest-e077e-default-rtdb.firebaseio.com",
     "project_id": "safenest-e077e",
     "storage_bucket": "safenest-e077e.appspot.com"
   },
@@ -12,7 +13,12 @@
           "package_name": "com.neuslabs.safenest"
         }
       },
-      "oauth_client": [],
+      "oauth_client": [
+        {
+          "client_id": "545427401569-0d8hjocs7t0rists5nabjqa9kas4vlf1.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
       "api_key": [
         {
           "current_key": "AIzaSyA_u32DVRntOCzU0YQr0mwclV1FOgTC1Bo"
@@ -20,7 +26,19 @@
       ],
       "services": {
         "appinvite_service": {
-          "other_platform_oauth_client": []
+          "other_platform_oauth_client": [
+            {
+              "client_id": "545427401569-0d8hjocs7t0rists5nabjqa9kas4vlf1.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "545427401569-ahulkb4le74prmab5m4733usfgjrfmt8.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.neuslabs.safenest"
+              }
+            }
+          ]
         }
       }
     }

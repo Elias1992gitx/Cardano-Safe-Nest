@@ -56,7 +56,7 @@ class LightModeTheme extends CoreTheme {
   @override
   Color get backgroundColor => const Color(0xFFFFFFFF);
   @override
-  Color get secondaryBackgroundColor => const Color(0xFFF7F7F7);
+  Color get secondaryBackgroundColor => const Color(0xFFFFFFFF);
   @override
   Color get errorColor => const Color.fromRGBO(216, 0, 50, 1);
   @override
@@ -101,7 +101,7 @@ class LightModeTheme extends CoreTheme {
 
 class DarkModeTheme extends CoreTheme {
   @override
-  Color get primaryColor => const Color(0xFF4CAF50);
+  Color get primaryColor => Color.fromRGBO(79, 61, 86, 1);
   @override
   Color get secondaryColor => const Color.fromRGBO(4, 13, 18, 1);
   @override

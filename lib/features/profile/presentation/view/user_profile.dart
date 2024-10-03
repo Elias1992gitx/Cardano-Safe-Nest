@@ -65,6 +65,7 @@ class _UserProfileScreenState extends State<UserProfileScreen>
       child: Stack(
         children: [
           Scaffold(
+            backgroundColor: context.theme.colorScheme.surface,
             body: AnimatedOpacity(
               opacity: _isLoggingOut ? 0.5 : 1.0,
               duration: const Duration(milliseconds: 300),

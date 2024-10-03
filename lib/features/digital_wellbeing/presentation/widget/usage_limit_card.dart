@@ -23,7 +23,7 @@ class UsageLimitCard extends StatelessWidget {
         borderRadius: BorderRadius.circular(16),
         side: BorderSide(
           color: Theme.of(context).colorScheme.primary.withOpacity(0.1),
-          width: 1,
+          width: .1,
         ),
       ),
       child: Container(
@@ -34,7 +34,7 @@ class UsageLimitCard extends StatelessWidget {
             end: Alignment.bottomRight,
             colors: [
               Theme.of(context).colorScheme.surface,
-              Theme.of(context).colorScheme.onSurface,
+              Theme.of(context).colorScheme.surface.withOpacity(.4),
             ],
           ),
         ),

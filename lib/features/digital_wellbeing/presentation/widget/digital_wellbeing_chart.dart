@@ -17,31 +17,17 @@ class DigitalWellbeingSummary extends StatelessWidget {
         borderRadius: BorderRadius.circular(16),
         side: BorderSide(
           color: Theme.of(context).colorScheme.primary.withOpacity(0.1),
-          width: 1,
+          width: .1,
         ),
       ),
       child: Container(
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(16),
-          gradient: LinearGradient(
-            begin: Alignment.topLeft,
-            end: Alignment.bottomRight,
-            colors: [
-              Theme.of(context).colorScheme.surface,
-              Theme.of(context).colorScheme.onSurface.withOpacity(0.05),
-            ],
-          ),
+
         ),
         child: Stack(
           children: [
-            Positioned.fill(
-              child: CustomPaint(
-                painter: PatternPainter(
-                  color:
-                      Theme.of(context).colorScheme.primary.withOpacity(0.05),
-                ),
-              ),
-            ),
+
             Padding(
               padding: const EdgeInsets.all(16.0),
               child: Column(
@@ -179,26 +165,4 @@ class DigitalWellbeingSummary extends StatelessWidget {
     );
     return mostUsedApp.appName;
   }
-}
-
-class PatternPainter extends CustomPainter {
-  final Color color;
-
-  PatternPainter({required this.color});
-
-  @override
-  void paint(Canvas canvas, Size size) {
-    final paint = Paint()
-      ..color = color
-      ..strokeWidth = 1
-      ..style = PaintingStyle.stroke;
-
-    const spacing = 20.0;
-    for (double i = 0; i < size.width + size.height; i += spacing) {
-      canvas.drawLine(Offset(0, i), Offset(i, 0), paint);
-    }
-  }
-
-  @override
-  bool shouldRepaint(covariant CustomPainter oldDelegate) => false;
 }

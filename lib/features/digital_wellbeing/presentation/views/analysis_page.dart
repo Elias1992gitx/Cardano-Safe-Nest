@@ -1,11 +1,10 @@
-
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:safenest/core/common/app/views/loading_view.dart';
 
-
-import 'package:safenest/features/digital_wellbeing/presentation/widget/digital_wellbeing_chart.dart' as digital_wellbeing;
+import 'package:safenest/features/digital_wellbeing/presentation/widget/digital_wellbeing_chart.dart'
+    as digital_wellbeing;
 import 'package:safenest/features/digital_wellbeing/domain/entity/digital_wellbeing.dart';
 import 'package:safenest/features/digital_wellbeing/presentation/bloc/digital_wellbeing_bloc.dart';
 import 'package:safenest/features/digital_wellbeing/presentation/widget/app_usage_chart.dart';
@@ -13,29 +12,52 @@ import 'package:safenest/features/digital_wellbeing/presentation/widget/most_use
 import 'package:safenest/features/digital_wellbeing/presentation/widget/screen_time_trend.dart';
 import 'package:safenest/features/digital_wellbeing/presentation/widget/usage_limit_card.dart';
 
+import 'package:safenest/features/profile/presentation/bloc/parental_info_bloc.dart';
+import 'package:safenest/features/profile/domain/entity/child.dart';
+
+import 'package:safenest/core/extensions/context_extensions.dart';
+
 class DigitalWellbeingAnalysisPage extends StatefulWidget {
   final String? childId;
 
   const DigitalWellbeingAnalysisPage({super.key, this.childId});
 
   @override
-  _DigitalWellbeingAnalysisPageState createState() => _DigitalWellbeingAnalysisPageState();
+  _DigitalWellbeingAnalysisPageState createState() =>
+      _DigitalWellbeingAnalysisPageState();
 }
 
-class _DigitalWellbeingAnalysisPageState extends State<DigitalWellbeingAnalysisPage> {
+class _DigitalWellbeingAnalysisPageState
+    extends State<DigitalWellbeingAnalysisPage> {
+  List<Child> children = [];
+  String? selectedChildId;
+
   @override
   void initState() {
     super.initState();
-    context.read<DigitalWellbeingBloc>().add(const GetCurrentUserDigitalWellbeingEvent());
+    context
+        .read<DigitalWellbeingBloc>()
+        .add(const GetCurrentUserDigitalWellbeingEvent());
+    context.read<ParentalInfoBloc>().add(GetParentalInfoEvent());
   }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: _buildFancyAppBar(context),
-      body: widget.childId == null
-          ? _buildCurrentUserGraphs(context)
-          : _buildChildSpecificGraphs(context),
+    return BlocListener<ParentalInfoBloc, ParentalInfoState>(
+      listener: (context, state) {
+        if (state is ParentalInfoLoaded) {
+          setState(() {
+            children = state.parentalInfo.children;
+          });
+        }
+      },
+      child: Scaffold(
+        appBar: _buildFancyAppBar(context),
+        backgroundColor: context.theme.colorScheme.surface,
+        body: selectedChildId == null
+            ? _buildCurrentUserGraphs(context)
+            : _buildChildSpecificGraphs(context),
+      ),
     );
   }
 
@@ -53,14 +75,19 @@ class _DigitalWellbeingAnalysisPageState extends State<DigitalWellbeingAnalysisP
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  digital_wellbeing.DigitalWellbeingSummary(digitalWellbeing: digitalWellbeing),
+                  digital_wellbeing.DigitalWellbeingSummary(
+                      digitalWellbeing: digitalWellbeing),
                   const SizedBox(height: 24),
-                  AppUsageChart(appUsages: digitalWellbeing.appUsages.map((key, value) => MapEntry(value.appName, value))),
+                  AppUsageChart(
+                      appUsages: digitalWellbeing.appUsages
+                          .map((key, value) => MapEntry(value.appName, value))),
                   // const SizedBox(height: 24),
                   // ScreenTimeTrend(history: digitalWellbeing.history),
 
                   const SizedBox(height: 24),
-                  MostUsedApps(appUsages: digitalWellbeing.appUsages.map((key, value) => MapEntry(value.appName, value))),
+                  MostUsedApps(
+                      appUsages: digitalWellbeing.appUsages
+                          .map((key, value) => MapEntry(value.appName, value))),
                   const SizedBox(height: 24),
                   UsageLimitCard(
                     usageLimits: digitalWellbeing.usageLimits,
@@ -83,40 +110,51 @@ class _DigitalWellbeingAnalysisPageState extends State<DigitalWellbeingAnalysisP
       },
     );
   }
+
   Widget _buildChildDropdown(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
-      decoration: BoxDecoration(
-        color: Colors.white.withOpacity(0.15),
-        borderRadius: BorderRadius.circular(12),
-      ),
-      child: DropdownButtonHideUnderline(
-        child: DropdownButton<String>(
-          value: widget.childId,
-          hint: Text(
-            'Select Child',
-            style: GoogleFonts.plusJakartaSans(
-              color: Colors.white.withOpacity(0.8),
-              fontWeight: FontWeight.w500,
-            ),
-          ),
-          icon: const Icon(Icons.arrow_drop_down, color: Colors.white),
+  return Container(
+    padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
+    decoration: BoxDecoration(
+      color: Colors.white.withOpacity(0.15),
+      borderRadius: BorderRadius.circular(12),
+    ),
+    child: DropdownButtonHideUnderline(
+      child: DropdownButton<String>(
+        value: selectedChildId,
+        hint: Text(
+          'Select Child',
           style: GoogleFonts.plusJakartaSans(
-            color: Colors.white,
+            color: Colors.white.withOpacity(0.8),
             fontWeight: FontWeight.w500,
           ),
-          dropdownColor: Theme.of(context).colorScheme.primary.withOpacity(0.9),
-          items: const [
-            DropdownMenuItem(value: null, child: Text('All Children')),
-            // Add more DropdownMenuItem widgets for each child
-          ],
-          onChanged: (String? newValue) {
-            // Handle child selection
-          },
         ),
+        icon: const Icon(Icons.arrow_drop_down, color: Colors.white),
+        style: GoogleFonts.plusJakartaSans(
+          color: Colors.white,
+          fontWeight: FontWeight.w500,
+        ),
+        dropdownColor: Theme.of(context).colorScheme.primary.withOpacity(0.9),
+        items: [
+          const DropdownMenuItem(value: null, child: Text('All Children')),
+          ...children.map((child) => DropdownMenuItem(
+            value: child.id,
+            child: Text(child.name),
+          )),
+        ],
+        onChanged: (String? newValue) {
+          setState(() {
+            selectedChildId = newValue;
+          });
+          if (newValue != null) {
+            context.read<DigitalWellbeingBloc>().add(GetDigitalWellbeingEvent(newValue));
+          } else {
+            context.read<DigitalWellbeingBloc>().add(const GetCurrentUserDigitalWellbeingEvent());
+          }
+        },
       ),
-    );
-  }
+    ),
+  );
+}
   Widget _buildChildSpecificGraphs(BuildContext context) {
     return BlocBuilder<DigitalWellbeingBloc, DigitalWellbeingState>(
       builder: (context, state) {
@@ -125,7 +163,9 @@ class _DigitalWellbeingAnalysisPageState extends State<DigitalWellbeingAnalysisP
         } else if (state is DigitalWellbeingLoaded) {
           return RefreshIndicator(
             onRefresh: () async {
-              context.read<DigitalWellbeingBloc>().add(GetDigitalWellbeingEvent(widget.childId!));
+              context
+                  .read<DigitalWellbeingBloc>()
+                  .add(GetDigitalWellbeingEvent(widget.childId!));
             },
             child: SingleChildScrollView(
               physics: const AlwaysScrollableScrollPhysics(),
@@ -134,7 +174,8 @@ class _DigitalWellbeingAnalysisPageState extends State<DigitalWellbeingAnalysisP
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    digital_wellbeing.DigitalWellbeingSummary(digitalWellbeing: state.digitalWellbeing),
+                    digital_wellbeing.DigitalWellbeingSummary(
+                        digitalWellbeing: state.digitalWellbeing),
                     const SizedBox(height: 24),
                     AppUsageChart(appUsages: state.digitalWellbeing.appUsages),
                     const SizedBox(height: 24),
@@ -144,17 +185,21 @@ class _DigitalWellbeingAnalysisPageState extends State<DigitalWellbeingAnalysisP
                       usageLimits: state.digitalWellbeing.usageLimits,
                       onSetLimit: (packageName, limit) {
                         context.read<DigitalWellbeingBloc>().add(
-                          SetUsageLimitEvent(widget.childId!, packageName, UsageLimit(
-                            packageName: packageName,
-                            dailyLimit: limit,
-                            isEnabled: true,
-                          )),
-                        );
+                              SetUsageLimitEvent(
+                                  widget.childId!,
+                                  packageName,
+                                  UsageLimit(
+                                    packageName: packageName,
+                                    dailyLimit: limit,
+                                    isEnabled: true,
+                                  )),
+                            );
                       },
                       onRemoveLimit: (packageName) {
                         context.read<DigitalWellbeingBloc>().add(
-                          RemoveUsageLimitEvent(widget.childId!, packageName),
-                        );
+                              RemoveUsageLimitEvent(
+                                  widget.childId!, packageName),
+                            );
                       },
                     ),
                     const SizedBox(height: 24),
@@ -171,6 +216,7 @@ class _DigitalWellbeingAnalysisPageState extends State<DigitalWellbeingAnalysisP
       },
     );
   }
+
   PreferredSizeWidget _buildFancyAppBar(BuildContext context) {
     return PreferredSize(
       preferredSize: const Size.fromHeight(120),
@@ -217,12 +263,4 @@ class _DigitalWellbeingAnalysisPageState extends State<DigitalWellbeingAnalysisP
       ),
     );
   }
-
 }
-
-
-
-
-
-
-

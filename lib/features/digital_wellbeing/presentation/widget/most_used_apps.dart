@@ -20,14 +20,7 @@ class MostUsedApps extends StatelessWidget {
         duration: const Duration(seconds: 3),
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(24),
-          gradient: LinearGradient(
-            begin: Alignment.topLeft,
-            end: Alignment.bottomRight,
-            colors: [
-              Theme.of(context).colorScheme.surface,
-              Theme.of(context).colorScheme.onSurface.withOpacity(0.1),
-            ],
-          ),
+
         ),
         child: CustomPaint(
           painter: FancyBackgroundPainter(),
@@ -193,7 +186,7 @@ class MostUsedApps extends StatelessWidget {
         borderRadius: BorderRadius.circular(12),
         color: isPlaceholder
             ? Colors.grey[100]
-            : Theme.of(context).colorScheme.surface.withOpacity(0.3),
+            : Theme.of(context).colorScheme.surface,
       ),
       child: ListTile(
         leading: leading,
