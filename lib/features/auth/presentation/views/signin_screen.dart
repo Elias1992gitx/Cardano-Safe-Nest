@@ -56,7 +56,7 @@ class _SignInScreenState extends State<SignInScreen> {
             );
           } else if (state is SignedInState) {
             context.userProvider.initUser(state.user as LocalUserModel);
-            context.go('/profile-screen');
+            context.go('/profile-scree');
           } else if (state is SocialSignedInState) {
             context.userProvider.initUser(state.user as LocalUserModel);
             context.go('/profile-screen');

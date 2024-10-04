@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:safenest/features/notification/domain/entity/notification.dart';
+import 'package:safenest/core/extensions/context_extensions.dart';
 
 class NotificationCard extends StatelessWidget {
   final AppNotification notification;
@@ -34,7 +35,7 @@ class NotificationCard extends StatelessWidget {
                 begin: Alignment.topLeft,
                 end: Alignment.bottomRight,
                 colors: [
-                  Colors.white,
+                  context.theme.colorScheme.surface,
                   accentColor.withOpacity(0.02), // Decreased opacity for subtlety
                 ],
               ),

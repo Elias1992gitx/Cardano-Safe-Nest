@@ -1,22 +1,22 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:iconly/iconly.dart';
+import 'package:safenest/core/common/app/providers/language_provider.dart';
+import 'package:safenest/core/localization/app_localization.dart';
 import 'package:safenest/features/profile/presentation/bloc/parental_info_bloc.dart';
 
-class SettingBody extends StatefulWidget {
+class SettingBody extends StatelessWidget {
   final ParentalInfoState parentalInfoState;
 
-  const SettingBody({super.key, required this.parentalInfoState});
+  const SettingBody({Key? key, required this.parentalInfoState})
+      : super(key: key);
 
-  @override
-  _SettingBodyState createState() => _SettingBodyState();
-}
-
-class _SettingBodyState extends State<SettingBody> {
   Widget _buildSettingItem({
+    required BuildContext context,
     required IconData icon,
-    required String title,
+    required String titleKey,
     required VoidCallback onTap,
   }) {
     return Align(
@@ -44,7 +44,7 @@ class _SettingBodyState extends State<SettingBody> {
                     Padding(
                       padding: const EdgeInsets.only(left: 20),
                       child: Text(
-                        title,
+                        AppLocalizations.of(context).translate(titleKey),
                         style: GoogleFonts.montserrat(
                           textStyle: const TextStyle(
                             fontWeight: FontWeight.w500,
@@ -65,61 +65,73 @@ class _SettingBodyState extends State<SettingBody> {
 
   @override
   Widget build(BuildContext context) {
-    return Stack(
-      children: [
-        Align(
-          alignment: AlignmentDirectional.centerStart,
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Padding(
-                padding: const EdgeInsetsDirectional.only(
-                  top: 20,
-                  start: 20,
-                ),
-                child: Text(
-                  'Settings',
-                  style: GoogleFonts.poppins(
-                    textStyle: const TextStyle(
-                      fontWeight: FontWeight.w500,
-                      fontSize: 18,
+    return BlocBuilder<LanguageCubit, Locale>(
+      builder: (context, locale) {
+        return Stack(
+          children: [
+            Align(
+              alignment: AlignmentDirectional.centerStart,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Padding(
+                    padding: const EdgeInsetsDirectional.only(
+                      top: 20,
+                      start: 20,
+                    ),
+                    child: Text(
+                      AppLocalizations.of(context).translate('settings'),
+                      style: GoogleFonts.poppins(
+                        textStyle: const TextStyle(
+                          fontWeight: FontWeight.w500,
+                          fontSize: 18,
+                        ),
+                      ),
                     ),
                   ),
-                ),
+                  _buildSettingItem(
+                    context: context,
+                    icon: IconlyLight.setting,
+                    titleKey: 'account_settings',
+                    onTap: () => context.go('/account-setting'),
+                  ),
+                  _buildSettingItem(
+                    context: context,
+                    icon: IconlyLight.notification,
+                    titleKey: 'notification_settings',
+                    onTap: () => context.go('/notification-setting'),
+                  ),
+                  _buildSettingItem(
+                    context: context,
+                    icon: Icons.language,
+                    titleKey: 'preferred_language',
+                    onTap: () => context.go('/language-selection'),
+                  ),
+                  _buildSettingItem(
+                    context: context,
+                    icon: Icons.dark_mode_outlined,
+                    titleKey: 'appearance_setting',
+                    onTap: () => context.go('/appearance-setting'),
+                  ),
+                  if (parentalInfoState is ParentalInfoLoaded)
+                    _buildSettingItem(
+                      context: context,
+                      icon: IconlyLight.shield_done,
+                      titleKey: 'manage_parental_info',
+                      onTap: () {
+                        final parentalInfo =
+                            (parentalInfoState as ParentalInfoLoaded)
+                                .parentalInfo;
+                        context.go('/profile-screen/edit-parental-info',
+                            extra: parentalInfo);
+                      },
+                    ),
+                ],
               ),
-              _buildSettingItem(
-                icon: IconlyLight.setting,
-                title: 'Account Settings',
-                onTap: () => context.go('/account-setting'),
-              ),
-              _buildSettingItem(
-                icon: IconlyLight.notification,
-                title: 'Notification Settings',
-                onTap: () => context.go('/notification-setting'),
-              ),
-              _buildSettingItem(
-                icon: Icons.language,
-                title: 'Preferred Language',
-                onTap: () => context.go('/language-selection'),
-              ),
-              _buildSettingItem(
-                icon: Icons.dark_mode_outlined,
-                title: 'Appearance Setting',
-                onTap: () => context.go('/appearance-setting'),
-              ),
-              if (widget.parentalInfoState is ParentalInfoLoaded)
-                _buildSettingItem(
-                  icon: IconlyLight.shield_done,
-                  title: 'Manage Parental Info',
-                  onTap: () {
-                    final parentalInfo = (widget.parentalInfoState as ParentalInfoLoaded).parentalInfo;
-                    context.go('/profile-screen/edit-parental-info', extra: parentalInfo);
-                  },
-                ),
-            ],
-          ),
-        ),
-      ],
+            ),
+          ],
+        );
+      },
     );
   }
 }

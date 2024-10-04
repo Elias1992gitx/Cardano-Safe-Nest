@@ -9,6 +9,7 @@ import 'package:safenest/core/common/widgets/custom_form_field.dart';
 import 'package:safenest/core/extensions/context_extensions.dart';
 import 'package:safenest/core/utils/core_utils.dart';
 import 'package:safenest/core/utils/custom_snackbar.dart';
+import 'package:safenest/features/auth/data/models/user_model.dart';
 import 'package:safenest/features/auth/presentation/bloc/auth_bloc.dart';
 
 class SignupWithEmailScreen extends StatefulWidget {
@@ -24,9 +25,6 @@ class _SignupWithEmailScreenState extends State<SignupWithEmailScreen> {
   final passwordController = TextEditingController();
   final fullNameController = TextEditingController();
   final formKey = GlobalKey<FormState>();
-
-  
-
 
   @override
   void dispose() {
@@ -67,9 +65,9 @@ class _SignupWithEmailScreenState extends State<SignupWithEmailScreen> {
               state.message,
               messageTitle,
             );
-          } else if (state is SignedUpState) {
-
-context.go('/');
+          } else if (state is SignedInState) {
+            context.userProvider.initUser(state.user as LocalUserModel);
+            context.go('/');
           }
         },
         builder: (BuildContext context, state) {
@@ -147,12 +145,15 @@ context.go('/');
                               onPressed: () {
                                 if (formKey.currentState!.validate()) {
                                   context.read<AuthBloc>().add(
-                                    SignUpEvent(
-                                      name: fullNameController.value.text,
-                                      email: emailController.value.text.trim(),
-                                      password: passwordController.value.text.trim(),
-                                    ),
-                                  );
+                                        SignUpEvent(
+                                          name: fullNameController.value.text,
+                                          email:
+                                              emailController.value.text.trim(),
+                                          password: passwordController
+                                              .value.text
+                                              .trim(),
+                                        ),
+                                      );
                                 }
                               },
                               showLoadingIndicator: state is AuthLoading,
@@ -172,7 +173,7 @@ context.go('/');
                         ),
                       ),
                       GestureDetector(
-                        onTap: () {},
+                        onTap: () => context.go('/terms-of-service'),
                         child: SlideFadeSwitcher(
                           child: Text(
                             'Terms of Service',

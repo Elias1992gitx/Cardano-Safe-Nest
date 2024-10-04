@@ -12,6 +12,7 @@ import 'package:safenest/core/extensions/context_extensions.dart';
 import 'package:safenest/core/res/media_res.dart';
 import 'package:safenest/core/utils/core_utils.dart';
 import 'package:safenest/core/utils/custom_snackbar.dart';
+import 'package:safenest/features/auth/data/models/user_model.dart';
 import 'package:safenest/features/auth/presentation/bloc/auth_bloc.dart';
 
 class SignupScreen extends StatefulWidget {
@@ -39,7 +40,8 @@ class _SignupScreenState extends State<SignupScreen> {
               state.message,
               messageTitle,
             );
-          } else if (state is SignedUpState) {
+          } else if (state is SignedInState) {
+            context.userProvider.initUser(state.user as LocalUserModel);
             context.go('/');
           }
         },

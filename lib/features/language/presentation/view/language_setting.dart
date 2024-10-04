@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'package:safenest/core/common/app/providers/language_provider.dart';
@@ -25,32 +26,40 @@ class LanguageSelectionPage extends StatelessWidget {
     );
   }
 
-  Widget _buildLanguageTile(BuildContext context, String languageKey, String languageCode) {
-    final languageProvider = Provider.of<LanguageProvider>(context);
-    final isSelected = languageProvider.currentLanguage == languageCode;
+  Widget _buildLanguageTile(
+      BuildContext context, String languageKey, String languageCode) {
+    return BlocBuilder<LanguageCubit, Locale>(
+      builder: (context, currentLocale) {
+        final isSelected = currentLocale.languageCode == languageCode;
 
-    return Card(
-      elevation:0,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(0),
-        
-      ),
-      child: ListTile(
-        leading: const Icon(Icons.language, color: Colors.blueGrey),
-        title: Text(
-          AppLocalizations.of(context)!.translate(languageKey),
-          style: GoogleFonts.montserrat(
-            textStyle: const TextStyle(
-              fontWeight: FontWeight.w500,
-              fontSize: 16,
-            ),
+        return Card(
+          elevation: 0,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(0),
           ),
-        ),
-        trailing: isSelected ? const Icon(Icons.check, color: Colors.green) : null,
-        onTap: () {
-          languageProvider.setLanguage(languageCode);
-        },
-      ),
+          child: ListTile(
+            leading: const Icon(Icons.language, color: Colors.blueGrey),
+            title: Text(
+              AppLocalizations.of(context)!.translate(languageKey),
+              style: GoogleFonts.montserrat(
+                textStyle: const TextStyle(
+                  fontWeight: FontWeight.w500,
+                  fontSize: 16,
+                ),
+              ),
+            ),
+            trailing: isSelected
+                ? const Icon(Icons.check, color: Colors.green)
+                : null,
+            onTap: () {
+              context.read<LanguageCubit>().setLanguage(languageCode);
+              print(
+                  'Current locale: ${context.read<LanguageCubit>().state.languageCode}');
+              Navigator.of(context).pop();
+            },
+          ),
+        );
+      },
     );
   }
 }

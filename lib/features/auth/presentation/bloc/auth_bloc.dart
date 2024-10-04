@@ -40,8 +40,8 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
       emit(const AuthLoading());
     });
 
-    on<SignInEvent>(_signInHandler);
-    on<SignUpEvent>(_signUpHandler);
+    on<SignInEvent>((event, emit) async => await _signInHandler(event, emit));
+    on<SignUpEvent>((event, emit) async => await _signUpHandler(event, emit));
     on<ForgotPasswordEvent>(_forgotPasswordHandler);
     on<UpdateUserEvent>(_updateUserHandler);
     on<LogoutEvent>(_logoutHandler);
@@ -60,44 +60,46 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
   final SignInWithFacebook _signInWithFacebook;
 
   Future<void> _signInHandler(
-      SignInEvent event,
-      Emitter<AuthState> emit,
-      ) async {
+    SignInEvent event,
+    Emitter<AuthState> emit,
+  ) async {
+    emit(const AuthLoading());
     final result = await _signIn(
       SignInParams(email: event.email, password: event.password),
     );
 
-    result.fold(
-          (failure) => emit(AuthError(failure.message)),
-          (user) => emit(SignedInState(user)),
+    await result.fold(
+      (failure) async => emit(AuthError(failure.message)),
+      (user) async => emit(SignedInState(user)),
     );
   }
 
   Future<void> _signInWithGoogleHandler(
-      GoogleSignInEvent event,
-      Emitter<AuthState> emit,
-      ) async {
+    GoogleSignInEvent event,
+    Emitter<AuthState> emit,
+  ) async {
     final result = await _signInWithGoogle();
     result.fold(
-          (failure) => emit(AuthError(failure.message)),
-          (user) => emit(SocialSignedInState(user)),
+      (failure) => emit(AuthError(failure.message)),
+      (user) => emit(SocialSignedInState(user)),
     );
   }
 
   Future<void> _signInWithFacebookHandler(
-      FacebookSignInEvent event,
-      Emitter<AuthState> emit,
-      ) async {
+    FacebookSignInEvent event,
+    Emitter<AuthState> emit,
+  ) async {
     final result = await _signInWithFacebook();
     result.fold(
-          (failure) => emit(AuthError(failure.message)),
-          (user) => emit(SocialSignedInState(user)),
+      (failure) => emit(AuthError(failure.message)),
+      (user) => emit(SocialSignedInState(user)),
     );
   }
 
   Future<void> _signUpHandler(
       SignUpEvent event, Emitter<AuthState> emit) async {
-    final result = await _signUp(
+    emit(AuthLoading());
+    final signUpResult = await _signUp(
       SignUpParams(
         name: event.name,
         email: event.email,
@@ -105,30 +107,38 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
       ),
     );
 
-    result.fold(
-          (failure) => emit(AuthError(failure.message)),
-          (_) => emit(const SignedUpState()),
+    await signUpResult.fold(
+      (failure) async => emit(AuthError(failure.message)),
+      (_) async {
+        final signInResult = await _signIn(
+          SignInParams(email: event.email, password: event.password),
+        );
+        await signInResult.fold(
+          (failure) async => emit(AuthError(failure.message)),
+          (user) async => emit(SignedInState(user)),
+        );
+      },
     );
   }
 
   Future<void> _verifyEmailHandler(
-  VerifyEmailEvent event,
-  Emitter<AuthState> emit,
-) async {
-  final result = await _verifyEmail();
-  result.fold(
-    (failure) => emit(AuthError(failure.message)),
-    (_) async {
-      final signInResult = await _signIn(
-        SignInParams(email: event.email, password: event.password),
-      );
-      signInResult.fold(
-        (signInFailure) => emit(AuthError(signInFailure.message)),
-        (user) => emit(SignedInState(user)),
-      );
-    },
-  );
-}
+    VerifyEmailEvent event,
+    Emitter<AuthState> emit,
+  ) async {
+    final result = await _verifyEmail();
+    result.fold(
+      (failure) => emit(AuthError(failure.message)),
+      (_) async {
+        final signInResult = await _signIn(
+          SignInParams(email: event.email, password: event.password),
+        );
+        signInResult.fold(
+          (signInFailure) => emit(AuthError(signInFailure.message)),
+          (user) => emit(SignedInState(user)),
+        );
+      },
+    );
+  }
 
   Future<void> _forgotPasswordHandler(
       ForgotPasswordEvent event, Emitter<AuthState> emit) async {
@@ -137,8 +147,8 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     );
 
     result.fold(
-          (failure) => emit(AuthError(failure.message)),
-          (_) => emit(const ForgotPasswordSentState()),
+      (failure) => emit(AuthError(failure.message)),
+      (_) => emit(const ForgotPasswordSentState()),
     );
   }
 
@@ -152,8 +162,8 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     );
 
     result.fold(
-          (failure) => emit(AuthError(failure.message)),
-          (_) => emit(const UserUpdated()),
+      (failure) => emit(AuthError(failure.message)),
+      (_) => emit(const UserUpdated()),
     );
   }
 
@@ -162,8 +172,8 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     final result = await _logout();
 
     result.fold(
-          (failure) => emit(AuthError(failure.message)),
-          (_) => emit(const LogoutState()),
+      (failure) => emit(AuthError(failure.message)),
+      (_) => emit(const LogoutState()),
     );
   }
 }

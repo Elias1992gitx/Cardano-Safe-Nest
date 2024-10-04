@@ -15,11 +15,16 @@ class OnBoardingBody extends StatelessWidget {
     return Column(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
-        if(pageContent.image.isNotEmpty)
-          SvgPicture.asset(
-          pageContent.image,
-          height: context.height * .4,
-        ),
+        if (pageContent.image.isNotEmpty)
+          pageContent.image.toLowerCase().endsWith('.svg')
+              ? SvgPicture.asset(
+                  pageContent.image,
+                  height: context.height * .4,
+                )
+              : Image.asset(
+                  pageContent.image,
+                  height: context.height * .37,
+                ),
         SizedBox(
           height: context.height * .03,
         ),
@@ -48,7 +53,6 @@ class OnBoardingBody extends StatelessWidget {
               SizedBox(
                 height: context.height * .05,
               ),
-
               SizedBox(
                 height: context.height * .07,
               ),

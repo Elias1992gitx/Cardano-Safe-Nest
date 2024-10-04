@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:get/get.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -13,7 +14,6 @@ import 'package:safenest/core/utils/constants.dart';
 import 'package:safenest/firebase_options.dart';
 import 'package:provider/provider.dart';
 
-
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
@@ -22,7 +22,12 @@ Future<void> main() async {
   );
 
   await init();
-  runApp(const MyApp());
+  runApp(
+    BlocProvider(
+      create: (context) => LanguageCubit(),
+      child: const MyApp(),
+    ),
+  );
 }
 
 class MyApp extends StatelessWidget {
@@ -35,12 +40,12 @@ class MyApp extends StatelessWidget {
       providers: [
         ChangeNotifierProvider(create: (_) => UserProvider()),
         ChangeNotifierProvider(create: (_) => ParentalInfoProvider()),
-        ChangeNotifierProvider(create: (_) => LanguageProvider()),
       ],
-      child: Consumer<LanguageProvider>(
-        builder: (context, languageProvider, child) {
+      child: BlocBuilder<LanguageCubit, Locale>(
+        builder: (context, locale) {
           return GetMaterialApp.router(
             title: kAppName,
+            locale: locale,
             localizationsDelegates: const [
               AppLocalizations.delegate,
               GlobalMaterialLocalizations.delegate,
@@ -53,7 +58,14 @@ class MyApp extends StatelessWidget {
               Locale('ar', ''),
               Locale('de', ''),
             ],
-            locale: Locale(languageProvider.currentLanguage),
+            localeResolutionCallback: (locale, supportedLocales) {
+              for (var supportedLocale in supportedLocales) {
+                if (supportedLocale.languageCode == locale?.languageCode) {
+                  return supportedLocale;
+                }
+              }
+              return supportedLocales.first;
+            },
             debugShowCheckedModeBanner: false,
             theme: ThemeData(
               useMaterial3: true,

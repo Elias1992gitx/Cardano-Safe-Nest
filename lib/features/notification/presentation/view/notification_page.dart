@@ -116,9 +116,9 @@ class _NotificationScreenState extends State<NotificationScreen>
                             fontSize: 15,
                             fontWeight: FontWeight.w500,
                           ),
-                          labelColor: context.theme.cardColor,
+                          labelColor: Colors.white,
                           unselectedLabelColor:
-                              context.theme.colorScheme.secondary,
+                          context.theme.colorScheme.primaryContainer,
                           backgroundColor: context.theme.primaryColor,
                           borderRadius: 12,
                           labelPadding: const EdgeInsetsDirectional.fromSTEB(

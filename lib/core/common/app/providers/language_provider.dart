@@ -1,27 +1,25 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-class LanguageProvider extends ChangeNotifier {
-  String _currentLanguage = 'en';
-
-  String get currentLanguage => _currentLanguage;
-
-  LanguageProvider() {
-    _loadLanguage();
+class LanguageCubit extends Cubit<Locale> {
+  LanguageCubit() : super(const Locale('en', 'US')) {
+    _loadSavedLanguage();
   }
 
-  Future<void> _loadLanguage() async {
-    final prefs = await SharedPreferences.getInstance();
-    _currentLanguage = prefs.getString('language_code') ?? 'en';
-    notifyListeners();
-  }
+  static const String _languageKey = 'language_code';
 
   Future<void> setLanguage(String languageCode) async {
-    if (_currentLanguage != languageCode) {
-      _currentLanguage = languageCode;
-      final prefs = await SharedPreferences.getInstance();
-      await prefs.setString('language_code', languageCode);
-      notifyListeners();
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setString(_languageKey, languageCode);
+    emit(Locale(languageCode, ''));
+  }
+
+  Future<void> _loadSavedLanguage() async {
+    final prefs = await SharedPreferences.getInstance();
+    final savedLanguage = prefs.getString(_languageKey);
+    if (savedLanguage != null) {
+      emit(Locale(savedLanguage, ''));
     }
   }
 }
