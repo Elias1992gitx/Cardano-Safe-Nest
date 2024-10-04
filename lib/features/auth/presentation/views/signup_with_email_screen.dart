@@ -147,18 +147,16 @@ context.go('/');
                               onPressed: () {
                                 if (formKey.currentState!.validate()) {
                                   context.read<AuthBloc>().add(
-                                        SignUpEvent(
-                                          name: fullNameController.value.text,
-                                          email:
-                                              emailController.value.text.trim(),
-                                          password: passwordController
-                                              .value.text
-                                              .trim(),
-                                        ),
-                                      );
+                                    SignUpEvent(
+                                      name: fullNameController.value.text,
+                                      email: emailController.value.text.trim(),
+                                      password: passwordController.value.text.trim(),
+                                    ),
+                                  );
                                 }
                               },
-                            ),
+                              showLoadingIndicator: state is AuthLoading,
+                            )
                           ],
                         ),
                       ),

@@ -108,7 +108,7 @@ class _SignInScreenState extends State<SignInScreen> {
                                   ),
                                 ),
                                 const SizedBox(height: 40),
-                                _buildSignInForm(context),
+                                _buildSignInForm(context,state),
                               ],
                             ),
                           ),
@@ -145,7 +145,7 @@ class _SignInScreenState extends State<SignInScreen> {
     );
   }
 
-  Widget _buildSignInForm(BuildContext context) {
+  Widget _buildSignInForm(BuildContext context,AuthState state) {
     return Form(
       key: formKey,
       child: Column(
@@ -215,7 +215,7 @@ class _SignInScreenState extends State<SignInScreen> {
               elevation: .05,
               iconPadding: EdgeInsetsDirectional.zero,
               textStyle: GoogleFonts.montserrat(
-                color: context.theme.canvasColor,
+                color: Colors.white,
                 fontSize: 16,
                 fontWeight: FontWeight.w500,
               ),
@@ -227,13 +227,14 @@ class _SignInScreenState extends State<SignInScreen> {
             onPressed: () {
               if (formKey.currentState!.validate()) {
                 context.read<AuthBloc>().add(
-                      SignInEvent(
-                        email: emailController.value.text.trim(),
-                        password: passwordController.value.text.trim(),
-                      ),
-                    );
+                  SignInEvent(
+                    email: emailController.value.text.trim(),
+                    password: passwordController.value.text.trim(),
+                  ),
+                );
               }
             },
+            showLoadingIndicator: state is AuthLoading,
           ),
           const SizedBox(height: 15),
           GestureDetector(
@@ -290,7 +291,6 @@ class _SignInScreenState extends State<SignInScreen> {
         color: context.theme.colorScheme.onSurface,
         elevation: .1,
         textStyle: GoogleFonts.montserrat(
-          color: context.theme.colorScheme.secondary,
           fontSize: 14,
           fontWeight: FontWeight.w500,
         ),

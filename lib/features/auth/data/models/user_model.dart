@@ -1,6 +1,7 @@
 import 'package:safenest/core/enum/user/user_role.dart';
 import 'package:safenest/core/utils/typedef.dart';
 import 'package:safenest/features/auth/domain/entities/user.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 class LocalUserModel extends LocalUser {
   const LocalUserModel({
@@ -30,14 +31,26 @@ class LocalUserModel extends LocalUser {
             .toList() ??
             [],
         isTwoFactorEnabled: map['isTwoFactorEnabled'] as bool? ?? false,
-        updatedAt: map['updatedAt'] != null ? DateTime.parse(map['updatedAt'] as String) : null,
-        createdAt: map['createdAt'] != null ? DateTime.parse(map['createdAt'] as String) : null,
+        updatedAt: map['updatedAt'] is Timestamp
+            ? (map['updatedAt'] as Timestamp).toDate()
+            : map['updatedAt'] != null
+                ? DateTime.parse(map['updatedAt'] as String)
+                : null,
+        createdAt: map['createdAt'] is Timestamp
+            ? (map['createdAt'] as Timestamp).toDate()
+            : map['createdAt'] != null
+                ? DateTime.parse(map['createdAt'] as String)
+                : null,
         phoneNumber: map['phoneNumber'] as String?,
         profilePic: map['profilePic'] as String?,
         address: map['address'] as String?,
         country: map['country'] as String?,
         city: map['city'] as String?,
-        emailVerified: map['emailVerified'] != null ? DateTime.parse(map['emailVerified'] as String) : null,
+        emailVerified: map['emailVerified'] is Timestamp
+            ? (map['emailVerified'] as Timestamp).toDate()
+            : map['emailVerified'] != null
+                ? DateTime.parse(map['emailVerified'] as String)
+                : null,
       );
 
   LocalUserModel copyWith({

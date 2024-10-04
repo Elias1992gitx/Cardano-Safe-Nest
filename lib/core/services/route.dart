@@ -3,6 +3,7 @@ import 'package:provider/provider.dart';
 import 'package:safenest/core/common/app/views/no_connection_view.dart';
 import 'package:safenest/core/extensions/context_extensions.dart';
 import 'package:safenest/core/services/injection_container.dart';
+import 'package:safenest/features/auth/presentation/views/terms_of_service_screen.dart';
 import 'package:safenest/features/dashboard/presentation/views/dashboard.dart';
 import 'package:safenest/features/digital_wellbeing/presentation/bloc/digital_wellbeing_bloc.dart';
 import 'package:safenest/features/language/presentation/bloc/language_bloc.dart';

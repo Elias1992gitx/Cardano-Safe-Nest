@@ -1,3 +1,5 @@
+import 'dart:ui';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -88,83 +90,17 @@ class _SignupScreenState extends State<SignupScreen> {
                                 mainAxisAlignment:
                                     MainAxisAlignment.spaceBetween,
                                 children: [
-                                  FFCustomButton(
-                                    text: 'Google',
-                                    icon: IconButton(
-                                      icon: SvgPicture.asset(
-                                        MediaRes.googleVector,
-                                        width: 30,
-                                      ),
-                                      onPressed: () {
-                                        context.read<AuthBloc>().add(
-                                              const GoogleSignInEvent(),
-                                            );
-                                      },
-                                    ),
-                                    options: FFButtonOptions(
-                                      padding: const EdgeInsets.symmetric(
-                                        horizontal: 8,
-                                        vertical: 4,
-                                      ),
-                                      width: context.width * .4,
-                                      color:
-                                          context.theme.colorScheme.onSurface,
-                                      elevation: .1,
-                                      textStyle: GoogleFonts.montserrat(
-                                        color:
-                                            context.theme.colorScheme.secondary,
-                                        fontSize: 14,
-                                        fontWeight: FontWeight.w500,
-                                      ),
-                                      borderSide: const BorderSide(
-                                        color: Colors.transparent,
-                                      ),
-                                      borderRadius: BorderRadius.circular(10),
-                                    ),
-                                    onPressed: () {
-                                      context.read<AuthBloc>().add(
-                                            const GoogleSignInEvent(),
-                                          );
-                                    },
+                                  _buildSocialButton(
+                                    context,
+                                    'Google',
+                                    MediaRes.googleVector,
+                                    const GoogleSignInEvent(),
                                   ),
-                                  FFCustomButton(
-                                    text: 'Facebook',
-                                    icon: IconButton(
-                                      icon: SvgPicture.asset(
-                                        MediaRes.facebookVector,
-                                        width: 30,
-                                      ),
-                                      onPressed: () {
-                                        context.read<AuthBloc>().add(
-                                              const FacebookSignInEvent(),
-                                            );
-                                      },
-                                    ),
-                                    options: FFButtonOptions(
-                                      padding: const EdgeInsets.symmetric(
-                                        horizontal: 8,
-                                        vertical: 4,
-                                      ),
-                                      width: context.width * .4,
-                                      color:
-                                          context.theme.colorScheme.onSurface,
-                                      elevation: .1,
-                                      textStyle: GoogleFonts.montserrat(
-                                        color:
-                                            context.theme.colorScheme.secondary,
-                                        fontSize: 14,
-                                        fontWeight: FontWeight.w500,
-                                      ),
-                                      borderSide: const BorderSide(
-                                        color: Colors.transparent,
-                                      ),
-                                      borderRadius: BorderRadius.circular(10),
-                                    ),
-                                    onPressed: () {
-                                      context.read<AuthBloc>().add(
-                                            const FacebookSignInEvent(),
-                                          );
-                                    },
+                                  _buildSocialButton(
+                                    context,
+                                    'Facebook',
+                                    MediaRes.facebookVector,
+                                    const FacebookSignInEvent(),
                                   ),
                                 ],
                               ),
@@ -187,7 +123,7 @@ class _SignupScreenState extends State<SignupScreen> {
                                   ),
                                   width: context.width * .9,
                                   color: context.theme.colorScheme.onSurface,
-                                  elevation: .1,
+                                  elevation: .3,
                                   iconPadding: EdgeInsetsDirectional.zero,
                                   textStyle: GoogleFonts.montserrat(
                                     color: context.theme.colorScheme.secondary,
@@ -214,7 +150,7 @@ class _SignupScreenState extends State<SignupScreen> {
                                 ),
                               ),
                               GestureDetector(
-                                onTap: () {},
+                                onTap: () => context.go('/terms-of-service'),
                                 child: SlideFadeSwitcher(
                                   child: Text(
                                     'Terms of Service',
@@ -224,6 +160,7 @@ class _SignupScreenState extends State<SignupScreen> {
                                         fontWeight: FontWeight.w500,
                                         fontSize: 16,
                                         color: context.theme.primaryColor,
+                                        decoration: TextDecoration.underline,
                                       ),
                                     ),
                                   ),
@@ -260,6 +197,46 @@ class _SignupScreenState extends State<SignupScreen> {
           );
         },
       ),
+    );
+  }
+
+  Widget _buildSocialButton(
+      BuildContext context,
+      String text,
+      String iconAsset,
+      AuthEvent event,
+      ) {
+    return FFCustomButton(
+      text: text,
+      icon: IconButton(
+        icon: SvgPicture.asset(
+          iconAsset,
+          width: 30,
+        ),
+        onPressed: () {
+          context.read<AuthBloc>().add(event);
+        },
+      ),
+      options: FFButtonOptions(
+        padding: const EdgeInsets.symmetric(
+          horizontal: 8,
+          vertical: 4,
+        ),
+        width: context.width * .4,
+        color: context.theme.colorScheme.onSurface,
+        elevation: .1,
+        textStyle: GoogleFonts.montserrat(
+          fontSize: 14,
+          fontWeight: FontWeight.w500,
+        ),
+        borderSide: const BorderSide(
+          color: Colors.transparent,
+        ),
+        borderRadius: BorderRadius.circular(10),
+      ),
+      onPressed: () {
+        context.read<AuthBloc>().add(event);
+      },
     );
   }
 }

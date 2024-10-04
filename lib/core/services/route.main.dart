@@ -205,6 +205,15 @@ final GoRouter router = GoRouter(
           },
         ),
         GoRoute(
+          path: 'terms-of-service',
+          pageBuilder: (context, state) {
+            return _pageBuilder(
+              const TermsOfServiceScreen(),
+              state,
+            );
+          },
+        ),
+        GoRoute(
           path: SignInScreen.routeName,
           pageBuilder: (context, state) {
             return _pageBuilder(

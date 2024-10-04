@@ -46,6 +46,7 @@ class FFCustomButton extends StatefulWidget {
     this.iconData,
     this.trailing,
     this.showLoadingIndicator = true,
+    this.child,
   });
 
   final String text;
@@ -55,6 +56,7 @@ class FFCustomButton extends StatefulWidget {
   final Function onPressed;
   final FFButtonOptions options;
   final bool showLoadingIndicator;
+  final Widget? child;
 
   @override
   State<FFCustomButton> createState() => _FFCustomButtonState();

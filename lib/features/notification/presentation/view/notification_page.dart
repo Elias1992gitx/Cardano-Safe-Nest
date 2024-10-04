@@ -2,7 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:safenest/core/common/widgets/custom_tab_bar_button.dart';
 import 'package:safenest/core/extensions/context_extensions.dart';
-import 'package:safenest/core/common/widgets/dashed_paint.dart'; // Import the DashedBorderContainer
+import 'package:safenest/core/common/widgets/dashed_paint.dart';
+import 'package:safenest/features/notification/domain/entity/notification.dart';
+import 'package:safenest/features/notification/presentation/widgets/notification_list.dart'; // Import the DashedBorderContainer
 
 class NotificationScreen extends StatefulWidget {
   const NotificationScreen({super.key});
@@ -17,6 +19,31 @@ class _NotificationScreenState extends State<NotificationScreen>
   TabController? tabBarController;
   int get tabBarCurrentIndex =>
       tabBarController != null ? tabBarController!.index : 0;
+
+  List<AppNotification> tempNotifications = [
+    AppNotification(
+      id: '1',
+      title: 'Daily Summary',
+      description: 'Your child spent 2 hours on educational apps today.',
+      type: AppNotificationType.info,
+      timestamp: DateTime.now().subtract(const Duration(hours: 2)),
+    ),
+    AppNotification(
+      id: '2',
+      title: 'Usage Limit Exceeded',
+      description:
+          'Your child has exceeded the daily usage limit for gaming apps.',
+      type: AppNotificationType.warning,
+      timestamp: DateTime.now().subtract(const Duration(minutes: 30)),
+    ),
+    AppNotification(
+      id: '3',
+      title: 'New Task Assigned',
+      description: 'A new task "Complete Math Homework" has been assigned.',
+      type: AppNotificationType.info,
+      timestamp: DateTime.now().subtract(const Duration(minutes: 5)),
+    ),
+  ];
 
   @override
   void initState() {
@@ -90,13 +117,14 @@ class _NotificationScreenState extends State<NotificationScreen>
                             fontWeight: FontWeight.w500,
                           ),
                           labelColor: context.theme.cardColor,
-                          unselectedLabelColor: context.theme.colorScheme.secondary,
+                          unselectedLabelColor:
+                              context.theme.colorScheme.secondary,
                           backgroundColor: context.theme.primaryColor,
                           borderRadius: 12,
-                          labelPadding:
-                          const EdgeInsetsDirectional.fromSTEB(16, 0, 16, 0),
-                          padding:
-                          const EdgeInsetsDirectional.fromSTEB(16, 4, 16, 0),
+                          labelPadding: const EdgeInsetsDirectional.fromSTEB(
+                              16, 0, 16, 0),
+                          padding: const EdgeInsetsDirectional.fromSTEB(
+                              16, 4, 16, 0),
                           tabs: const [
                             Tab(
                               text: 'Activity',
@@ -112,91 +140,26 @@ class _NotificationScreenState extends State<NotificationScreen>
                         child: TabBarView(
                           controller: tabBarController,
                           children: [
-                            Container(
-                              width: 400,
+                            NotificationList(
+                              notifications: tempNotifications,
+                              onNotificationTap: (notification) {
+                                // Handle notification tap
+                                print(
+                                    'Tapped on notification: ${notification.title}');
+                              },
+                              onNotificationDismiss: (notification) {
+                                // Handle notification dismiss
+                                setState(() {
+                                  tempNotifications.removeWhere(
+                                      (n) => n.id == notification.id);
+                                });
+                                print(
+                                    'Dismissed notification: ${notification.title}');
+                              },
                             ),
                             Container(
-                              child: ListView(
-                                padding: EdgeInsets.zero,
-                                children: [
-                                  Padding(
-                                    padding: const EdgeInsetsDirectional.fromSTEB(
-                                        0, 0, 0, 1),
-                                    child: Container(
-                                      width: 100,
-                                      height: 170,
-                                      decoration: BoxDecoration(
-                                        color: context.theme.cardColor,
-                                        boxShadow: const [
-                                          BoxShadow(
-                                            color: Color(0xFFE0E3E7),
-                                            offset: Offset(0, 1),
-                                          )
-                                        ],
-                                      ),
-                                      child: Padding(
-                                        padding:
-                                        const EdgeInsetsDirectional.fromSTEB(
-                                            4, 0, 0, 0),
-                                        child: Row(
-                                          crossAxisAlignment:
-                                          CrossAxisAlignment.start,
-                                          children: [
-                                            SizedBox(
-                                              width: 24,
-                                              child: Stack(
-                                                alignment:
-                                                AlignmentDirectional.center,
-                                                children: [
-                                                  Align(
-                                                    alignment:
-                                                    const AlignmentDirectional(
-                                                      0,
-                                                      -0.70,
-                                                    ),
-                                                    child: Container(
-                                                      width: 12,
-                                                      height: 12,
-                                                      decoration: BoxDecoration(
-                                                        color: context
-                                                            .theme.primaryColor,
-                                                        shape: BoxShape.circle,
-                                                      ),
-                                                    ),
-                                                  ),
-                                                  Row(
-                                                    mainAxisAlignment:
-                                                    MainAxisAlignment.center,
-                                                    children: [
-                                                      VerticalDivider(
-                                                        thickness: 2,
-                                                        color: context
-                                                            .theme.primaryColor,
-                                                      ),
-                                                    ],
-                                                  ),
-                                                ],
-                                              ),
-                                            ),
-                                            const Expanded(
-                                              child: Padding(
-                                                padding:
-                                                EdgeInsetsDirectional.all(
-                                                  16,
-                                                ),
-                                                child: Column(
-                                                  crossAxisAlignment:
-                                                  CrossAxisAlignment.start,
-                                                  children: [],
-                                                ),
-                                              ),
-                                            ),
-                                          ],
-                                        ),
-                                      ),
-                                    ),
-                                  ),
-                                ],
+                              child: Center(
+                                child: Text('History tab content'),
                               ),
                             ),
                           ],

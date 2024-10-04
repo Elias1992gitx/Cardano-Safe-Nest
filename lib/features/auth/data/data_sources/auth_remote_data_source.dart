@@ -100,27 +100,50 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
       final user = result.user;
 
       if (user != null) {
-        var userData = await _getUserData(user.uid);  
+        var userData = await _getUserData(user.uid);
         print(userData.data());
         if (userData.exists) {
-          final localUser = LocalUserModel.fromMap(userData.data()!);
+          final data = userData.data()!;
+          final localUser = LocalUserModel(
+            uid: data['uid'] as String? ?? '',
+            email: data['email'] as String? ?? '',
+            username: data['username'] as String? ?? '',
+            phoneNumber: data['phoneNumber'] as String?,
+            profilePic: data['profilePic'] as String?,
+            address: data['address'] as String?,
+            country: data['country'] as String?,
+            city: data['city'] as String?,
+            createdAt: (data['createdAt'] as Timestamp?)?.toDate(),
+            updatedAt: (data['updatedAt'] as Timestamp?)?.toDate(),
+            emailVerified: (data['emailVerified'] as Timestamp?)?.toDate(),
+            isTwoFactorEnabled: data['isTwoFactorEnabled'] as bool? ?? false,
+            monitoredApps:
+                (data['monitoredApps'] as List<dynamic>?)?.cast<String>() ?? [],
+          );
           await _cacheUserData(localUser);
           return localUser;
         }
-        await _setUserData(
-          user,
-          email,
-        );
+        // If user data doesn't exist, create a new user document
+        final newUserData = {
+          'uid': user.uid,
+          'email': email,
+          'username': user.displayName ?? email.split('@')[0],
+          'profilePic': user.photoURL ?? 'https://tinyurl.com/ssgi-avatar',
+          'createdAt': FieldValue.serverTimestamp(),
+          'updatedAt': FieldValue.serverTimestamp(),
+          'isTwoFactorEnabled': false,
+          'monitoredApps': [],
+        };
+        await _setUserData(user, email, additionalData: newUserData);
         userData = await _getUserData(user.uid);
         final localUser = LocalUserModel.fromMap(userData.data()!);
         await _cacheUserData(localUser);
         return localUser;
-      } else {
-        throw const ServerException(
-          message: 'Failed to sign in',
-          statusCode: 505,
-        );
       }
+      throw const ServerException(
+        message: 'Failed to sign in',
+        statusCode: 400,
+      );
     } on FirebaseAuthException catch (e) {
       throw ServerException(
         message: e.message ?? 'Error Occurred',
@@ -373,23 +396,28 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
   }
 
   Future<void> _setUserData(
-  User user,
-  String fallbackEmail,
-) async {
-  await _cloudStoreClient.collection('users').doc(user.uid).set(
-        LocalUserModel(
-          email: user.email ?? fallbackEmail,
-          uid: user.uid,
-          username: user.displayName ?? "",
-          phoneNumber: user.phoneNumber,
-          profilePic: user.photoURL,
-          createdAt: DateTime.now(),
-          updatedAt: DateTime.now(),
-          isTwoFactorEnabled: false,
-          monitoredApps: [],
-        ).toMap(),
-      );
-}
+    User user,
+    String fallbackEmail, {
+    Map<String, dynamic>? additionalData,
+  }) async {
+    final userData = LocalUserModel(
+      email: user.email ?? fallbackEmail,
+      uid: user.uid,
+      username: user.displayName ?? "",
+      phoneNumber: user.phoneNumber,
+      profilePic: user.photoURL,
+      createdAt: DateTime.now(),
+      updatedAt: DateTime.now(),
+      isTwoFactorEnabled: false,
+      monitoredApps: [],
+    ).toMap();
+
+    if (additionalData != null) {
+      userData.addAll(additionalData);
+    }
+
+    await _cloudStoreClient.collection('users').doc(user.uid).set(userData);
+  }
 
   @override
   Stream<LocalUserModel> getUserProfileStream(String uid) {
@@ -430,11 +458,13 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
 
   Future<void> _cacheUserData(LocalUserModel user) async {
     final prefs = await SharedPreferences.getInstance();
-    await prefs.setString('userId', user.uid);
-    await prefs.setString('userData', jsonEncode(user.toMap()));
+    final userData = user.toMap();
+
+    // Convert DateTime objects to ISO 8601 strings
+    userData['createdAt'] = userData['createdAt']?.toIso8601String();
+    userData['updatedAt'] = userData['updatedAt']?.toIso8601String();
+    userData['emailVerified'] = userData['emailVerified']?.toIso8601String();
+
+    await prefs.setString('user_data', jsonEncode(userData));
   }
-
-
 }
-
-
