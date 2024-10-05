@@ -68,82 +68,52 @@ class _AddChildFormState extends State<AddChildForm> {
   }
 
   Future<void> _selectLocation() async {
-  Location location = Location();
-  bool serviceEnabled;
-  PermissionStatus permissionGranted;
-  LocationData locationData;
+    Location location = Location();
+    bool serviceEnabled;
+    PermissionStatus permissionGranted;
+    LocationData locationData;
 
-  serviceEnabled = await location.serviceEnabled();
-  if (!serviceEnabled) {
-    serviceEnabled = await location.requestService();
+    serviceEnabled = await location.serviceEnabled();
     if (!serviceEnabled) {
-      return;
+      serviceEnabled = await location.requestService();
+      if (!serviceEnabled) {
+        return;
+      }
     }
-  }
 
-  permissionGranted = await location.hasPermission();
-  if (permissionGranted == PermissionStatus.denied) {
-    permissionGranted = await location.requestPermission();
-    if (permissionGranted != PermissionStatus.granted) {
-      return;
+    permissionGranted = await location.hasPermission();
+    if (permissionGranted == PermissionStatus.denied) {
+      permissionGranted = await location.requestPermission();
+      if (permissionGranted != PermissionStatus.granted) {
+        return;
+      }
     }
-  }
 
-  locationData = await location.getLocation();
+    locationData = await location.getLocation();
 
-  final result = await Navigator.of(context).push<Map<String, dynamic>>(
-    MaterialPageRoute(
-      builder: (context) => LocationSelectorPage(
-        initialLocation: LatLng(locationData.latitude!, locationData.longitude!),
-        onLocationSelected: (LatLng latLng, String placeName) {
-          Navigator.of(context).pop({
-            'latitude': latLng.latitude,
-            'longitude': latLng.longitude,
-            'name': placeName,
-          });
-        },
+    final result = await Navigator.push<Map<String, dynamic>>(
+      context,
+      MaterialPageRoute(
+        builder: (context) => LocationSelectorPage(
+          initialLocation:
+              LatLng(locationData.latitude!, locationData.longitude!),
+          onLocationSelected: (LatLng location, String name) {
+            Navigator.pop(context, {'location': location, 'name': name});
+          },
+        ),
       ),
-    ),
-  );
+    );
 
-  if (result != null) {
-    setState(() {
-      schoolNameController.text = result['name'];
-    });
-  }
-}
-  Future<Map<String, dynamic>?> _searchSchools(
-      Map<String, double?> params) async {
-    final latitude = params['latitude'] ?? 0.0;
-    final longitude = params['longitude'] ?? 0.0;
-
-    // Simulated API call delay
-    await Future.delayed(const Duration(seconds: 2));
-
-    // Simulated school data
-    final schools = [
-      {
-        'name': 'Springfield Elementary School',
-        'latitude': latitude + 0.01,
-        'longitude': longitude - 0.01
-      },
-      {
-        'name': 'Central High School',
-        'latitude': latitude - 0.005,
-        'longitude': longitude + 0.005
-      },
-      {
-        'name': 'Oakwood Academy',
-        'latitude': latitude + 0.008,
-        'longitude': longitude + 0.003
-      },
-    ];
-
-    // In a real scenario, you would display these options to the user and let them choose
-    // For this example, we'll just return the first result
-    return schools.isNotEmpty ? schools.first : null;
+    if (result != null) {
+      setState(() {
+        schoolNameController.text = result['name'];
+        // You might want to store the location as well
+        // _schoolLocation = result['location'];
+      });
+    }
   }
 
+ 
   void _saveChild() {
     if (formKey.currentState!.validate()) {
       final childId = _generateChildId();

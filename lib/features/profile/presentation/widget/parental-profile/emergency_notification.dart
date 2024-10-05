@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:phone_form_field/phone_form_field.dart';
 import 'package:safenest/core/common/widgets/custom_form_field.dart';
+import 'package:safenest/features/auth/data/models/user_model.dart';
 
 class EmergencyContactsAndNotifications extends StatefulWidget {
   final Function(String, String, bool, bool, String) onUpdate;
@@ -9,10 +11,12 @@ class EmergencyContactsAndNotifications extends StatefulWidget {
   final bool initialEmailNotifications;
   final bool initialSmsNotifications;
   final String initialNotificationFrequency;
+  final LocalUserModel currentUser;
 
   const EmergencyContactsAndNotifications({
     super.key,
     required this.onUpdate,
+    required this.currentUser,
     this.initialName,
     this.initialPhone,
     this.initialEmailNotifications = true,
@@ -21,12 +25,14 @@ class EmergencyContactsAndNotifications extends StatefulWidget {
   });
 
   @override
-  _EmergencyContactsAndNotificationsState createState() => _EmergencyContactsAndNotificationsState();
+  _EmergencyContactsAndNotificationsState createState() =>
+      _EmergencyContactsAndNotificationsState();
 }
 
-class _EmergencyContactsAndNotificationsState extends State<EmergencyContactsAndNotifications> {
+class _EmergencyContactsAndNotificationsState
+    extends State<EmergencyContactsAndNotifications> {
   late final TextEditingController emergencyContactNameController;
-  late final TextEditingController emergencyContactPhoneController;
+  late final PhoneController emergencyContactPhoneController;
   late bool emailNotifications;
   late bool smsNotifications;
   late String notificationFrequency;
@@ -34,8 +40,20 @@ class _EmergencyContactsAndNotificationsState extends State<EmergencyContactsAnd
   @override
   void initState() {
     super.initState();
-    emergencyContactNameController = TextEditingController(text: widget.initialName);
-    emergencyContactPhoneController = TextEditingController(text: widget.initialPhone);
+    emergencyContactNameController = TextEditingController(
+      text: widget.initialName ?? widget.currentUser.username,
+    );
+    emergencyContactPhoneController = PhoneController();
+
+    // Set the phone number value after initializing the controller
+    if (widget.initialPhone != null || widget.currentUser.phoneNumber != null) {
+      emergencyContactPhoneController.value = PhoneNumber(
+        isoCode: IsoCode
+            .US, // You might want to set this dynamically based on the user's country
+        nsn: widget.initialPhone ?? widget.currentUser.phoneNumber ?? '',
+      );
+    }
+
     emailNotifications = widget.initialEmailNotifications;
     smsNotifications = widget.initialSmsNotifications;
     notificationFrequency = widget.initialNotificationFrequency;
@@ -49,9 +67,16 @@ class _EmergencyContactsAndNotificationsState extends State<EmergencyContactsAnd
   }
 
   void _updateParent() {
+    final name = emergencyContactNameController.text.isNotEmpty
+        ? emergencyContactNameController.text
+        : widget.currentUser.username;
+    final phone = emergencyContactPhoneController.value?.nsn ??
+        widget.currentUser.phoneNumber ??
+        '';
+
     widget.onUpdate(
-      emergencyContactNameController.text,
-      emergencyContactPhoneController.text,
+      name,
+      phone,
       emailNotifications,
       smsNotifications,
       notificationFrequency,
@@ -97,17 +122,90 @@ class _EmergencyContactsAndNotificationsState extends State<EmergencyContactsAnd
                 CustomTextFormField(
                   controller: emergencyContactNameController,
                   hintText: 'Emergency Contact Name',
-                  validator: (value) => value!.isEmpty ? 'Please enter a name' : null,
+                  validator: (value) =>
+                      value!.isEmpty ? 'Please enter a name' : null,
                   borderRadius: 0,
                   onChange: (_) => _updateParent(),
                 ),
                 const SizedBox(height: 10),
-                CustomTextFormField(
+                PhoneFormField(
                   controller: emergencyContactPhoneController,
-                  hintText: 'Emergency Contact Phone',
-                  validator: (value) => value!.isEmpty ? 'Please enter a phone number' : null,
-                  borderRadius: 0,
-                  onChange: (_) => _updateParent(),
+                  isCountryButtonPersistent: true,
+                  countryButtonStyle: const CountryButtonStyle(
+                    showIsoCode: true,
+                    flagSize: 15,
+                  ),
+                  validator: (value) {
+                    if (value == null || !value.isValid()) {
+                      return 'Please enter a valid phone number';
+                    }
+                    return null;
+                  },
+                  decoration: InputDecoration(
+                    hintText: 'Emergency Contact Phone',
+                    filled: true,
+                    prefixStyle: GoogleFonts.montserrat(
+                      textStyle: TextStyle(
+                        fontWeight: FontWeight.w500,
+                        fontSize: 16,
+                        color: Theme.of(context).textTheme.bodyMedium!.color,
+                      ),
+                    ),
+                    border: const OutlineInputBorder(
+                      borderSide: BorderSide(
+                        width: 0,
+                        color: Colors.transparent,
+                      ),
+                    ),
+                    counterText: '',
+                    labelStyle: GoogleFonts.montserrat(
+                      textStyle: TextStyle(
+                        color: Theme.of(context).colorScheme.secondary,
+                        fontSize: 16,
+                      ),
+                    ),
+                    hintStyle: GoogleFonts.montserrat(
+                      textStyle: TextStyle(
+                        color: Theme.of(context).colorScheme.secondary,
+                        fontSize: 16,
+                      ),
+                    ),
+                    enabledBorder: OutlineInputBorder(
+                      borderSide: const BorderSide(
+                        color: Colors.transparent,
+                        width: 0,
+                      ),
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                    focusedBorder: OutlineInputBorder(
+                      borderSide: const BorderSide(
+                        color: Colors.transparent,
+                        width: 0,
+                      ),
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                    errorBorder: OutlineInputBorder(
+                      borderSide: const BorderSide(
+                        color: Colors.transparent,
+                        width: 0,
+                      ),
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                    focusedErrorBorder: OutlineInputBorder(
+                      borderSide: const BorderSide(
+                        color: Colors.transparent,
+                        width: 2,
+                      ),
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                    fillColor: Theme.of(context)
+                        .colorScheme
+                        .tertiaryContainer
+                        .withOpacity(.5),
+                    contentPadding:
+                        const EdgeInsetsDirectional.fromSTEB(20, 18, 0, 18),
+                  ),
+                  onChanged: (_) => _updateParent(),
                 ),
                 const SizedBox(height: 20),
                 Text(

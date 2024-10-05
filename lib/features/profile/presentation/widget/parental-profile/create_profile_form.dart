@@ -4,6 +4,9 @@ import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:lottie/lottie.dart';
+import 'package:provider/provider.dart';
+import 'package:safenest/features/auth/data/models/user_model.dart';
+import 'package:safenest/core/common/app/providers/user_provider.dart';
 import 'package:safenest/core/common/widgets/custom_button.dart';
 import 'package:safenest/core/common/widgets/pattern_painter.dart';
 import 'package:safenest/core/extensions/context_extensions.dart';
@@ -92,9 +95,7 @@ class _CreateProfileFormBodyState extends State<CreateProfileFormBody> {
     final pin = await Navigator.of(context).push<String>(
       MaterialPageRoute(
         builder: (context) => SetPinPage(
-          onPinSet: (pin) {
-
-          },
+          onPinSet: (pin) {},
         ),
       ),
     );
@@ -136,96 +137,113 @@ class _CreateProfileFormBodyState extends State<CreateProfileFormBody> {
   @override
   Widget build(BuildContext context) {
     return BlocListener<ParentalInfoBloc, ParentalInfoState>(
-        listener: (context, state) {
-          if (state is ParentalInfoSaved) {
-            Navigator.of(context).pop(); // Dismiss the loading dialog
-            showDialog(
-              context: context,
-              builder: (BuildContext context) {
-                return AlertDialog(
-                  backgroundColor: context.theme.canvasColor,
-                  shape: const RoundedRectangleBorder(
-                    borderRadius: BorderRadius.zero,
-                  ),
-                  content: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      Lottie.asset('assets/lottie/success.json', width: 150, height: 150),
-                      const SizedBox(height: 16),
-                      Text(
-                        'Parental information saved successfully!',
-                        style: GoogleFonts.plusJakartaSans(
-                          fontSize: 16,
-                          fontWeight: FontWeight.w500,
-                        ),
+      listener: (context, state) {
+        if (state is ParentalInfoSaved) {
+          Navigator.of(context).pop(); // Dismiss the loading dialog
+          showDialog(
+            context: context,
+            builder: (BuildContext context) {
+              return AlertDialog(
+                backgroundColor: context.theme.canvasColor,
+                shape: const RoundedRectangleBorder(
+                  borderRadius: BorderRadius.zero,
+                ),
+                content: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Lottie.asset('assets/lottie/success.json',
+                        width: 150, height: 150),
+                    const SizedBox(height: 16),
+                    Text(
+                      'Parental information saved successfully!',
+                      style: GoogleFonts.plusJakartaSans(
+                        fontSize: 16,
+                        fontWeight: FontWeight.w500,
                       ),
-                    ],
-                  ),
-                  actions: [
-                    TextButton(
-                      onPressed: () {
-                        context.go("/");
-                      },
-                      child: const Text('OK'),
                     ),
                   ],
-                );
-              },
-            );
-          } else if (state is ParentalInfoError) {
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(content: Text('Error: ${state.message}')),
-            );
-          }
-        },
-        child: Scaffold(
-          body: Column(
-            children: [
-              Padding(
-                padding: const EdgeInsetsDirectional.symmetric(horizontal: 32),
-                child: LinearPercentIndicator(
-                  percent: currentPage / 4,
-                  width: 330,
-                  lineHeight: 12,
-                  animation: true,
-                  animateFromLastPercent: true,
-                  progressColor: context.theme.primaryColor.withOpacity(.9),
-                  backgroundColor: context.theme.primaryColor.withOpacity(.3),
-                  barRadius: const Radius.circular(16),
-                  padding: EdgeInsets.zero,
                 ),
-              ),
-              Expanded(
-                child: Form(
-                  key: formKey,
-                  child: PageView(
-                    controller: _pageController,
-                    physics: const NeverScrollableScrollPhysics(),
-                    children: [
-                      ChildInfo(
-                        onChildAdded: _onChildAdded,
-                        children: _children,
-                      ),
-                      EmergencyContactsAndNotifications(
-                        onUpdate: (name, phone, email, sms, frequency) {
-                          _updateEmergencyContact(name, phone);
-                          _updateNotificationPreferences(email, sms, frequency);
-                        },
-                      ),
-                      HomeAddressLocation(
-                        onLocationSelected: (LatLng location, String address) {
-                          _updateHomeLocation(location, address);
-                        },
-                      ),
-                      buildSwipableCard(context),
-                    ],
+                actions: [
+                  TextButton(
+                    onPressed: () {
+                      context.go("/");
+                    },
+                    child: const Text('OK'),
                   ),
+                ],
+              );
+            },
+          );
+        } else if (state is ParentalInfoError) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text('Error: ${state.message}')),
+          );
+        }
+      },
+      child: Scaffold(
+        body: Column(
+          children: [
+            Padding(
+              padding: const EdgeInsetsDirectional.symmetric(horizontal: 32),
+              child: LinearPercentIndicator(
+                percent: currentPage / 4,
+                width: 330,
+                lineHeight: 12,
+                animation: true,
+                animateFromLastPercent: true,
+                progressColor: context.theme.primaryColor.withOpacity(.9),
+                backgroundColor: context.theme.primaryColor.withOpacity(.3),
+                barRadius: const Radius.circular(16),
+                padding: EdgeInsets.zero,
+              ),
+            ),
+            Expanded(
+              child: Form(
+                key: formKey,
+                child: PageView(
+                  controller: _pageController,
+                  physics: const NeverScrollableScrollPhysics(),
+                  children: [
+                    ChildInfo(
+                      onChildAdded: _onChildAdded,
+                      children: _children,
+                    ),
+                    Consumer<UserProvider>(
+                      builder: (context, userProvider, _) {
+                        final currentUser = userProvider.user!;
+                        return EmergencyContactsAndNotifications(
+                          onUpdate: (name, phone, email, sms, frequency) {
+                            setState(() {
+                              emergencyContactName = name;
+                              emergencyContactPhone = phone;
+                              emailNotifications = email;
+                              smsNotifications = sms;
+                              notificationFrequency = frequency;
+                            });
+                          },
+                          currentUser: currentUser,
+                          initialName: emergencyContactName,
+                          initialPhone: emergencyContactPhone,
+                          initialEmailNotifications: emailNotifications,
+                          initialSmsNotifications: smsNotifications,
+                          initialNotificationFrequency: notificationFrequency,
+                        );
+                      },
+                    ),
+                    HomeAddressLocation(
+                      onLocationSelected: (LatLng location, String address) {
+                        _updateHomeLocation(location, address);
+                      },
+                    ),
+                    buildSwipableCard(context),
+                  ],
                 ),
               ),
-              buildNavigationControls(context),
-            ],
-          ),
+            ),
+            buildNavigationControls(context),
+          ],
         ),
+      ),
     );
   }
 
@@ -268,7 +286,7 @@ class _CreateProfileFormBodyState extends State<CreateProfileFormBody> {
           Align(
             alignment: const Alignment(0, .15),
             child: Padding(
-              padding: const EdgeInsetsDirectional.only(top:20),
+              padding: const EdgeInsetsDirectional.only(top: 20),
               child: FFCustomButton(
                 text: 'Discard',
                 options: FFButtonOptions(
@@ -289,7 +307,63 @@ class _CreateProfileFormBodyState extends State<CreateProfileFormBody> {
                   ),
                   borderRadius: BorderRadius.circular(0),
                 ),
-                onPressed: () {},
+                onPressed: () {
+                  showDialog(
+                    context: context,
+                    builder: (BuildContext context) {
+                      return AlertDialog(
+                        backgroundColor: context.theme.cardColor,
+                        shape: const RoundedRectangleBorder(
+                          borderRadius: BorderRadius.zero,
+                        ),
+                        title: Text(
+                          'Discard Changes',
+                          style: GoogleFonts.montserrat(
+                            fontSize: 20,
+                            fontWeight: FontWeight.w600,
+                            color: context.theme.primaryColor,
+                          ),
+                        ),
+                        content: Text(
+                          'Are you sure you want to discard all changes?',
+                          style: GoogleFonts.plusJakartaSans(
+                            fontSize: 16,
+                           
+                          ),
+                        ),
+                        actions: [
+                          TextButton(
+                            onPressed: () {
+                              Navigator.of(context).pop(); // Close the dialog
+                            },
+                            child: Text(
+                              'Cancel',
+                              style: GoogleFonts.plusJakartaSans(
+                                fontSize: 16,
+                                color: context.theme.primaryColor,
+                              ),
+                            ),
+                          ),
+                          TextButton(
+                            onPressed: () {
+                              Navigator.of(context).pop(); // Close the dialog
+                              context
+                                  .go("/"); // Navigate back to the home screen
+                            },
+                            child: Text(
+                              'Discard',
+                              style: GoogleFonts.plusJakartaSans(
+                                fontSize: 16,
+                                color: context.theme.colorScheme.error,
+                                fontWeight: FontWeight.w600,
+                              ),
+                            ),
+                          ),
+                        ],
+                      );
+                    },
+                  );
+                },
               ),
             ),
           ),
@@ -390,7 +464,6 @@ class _CreateProfileFormBodyState extends State<CreateProfileFormBody> {
         style: GoogleFonts.plusJakartaSans(
           textStyle: const TextStyle(
             fontSize: 16,
-
           ),
         ),
       ),

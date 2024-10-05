@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:safenest/core/common/app/views/loading_view.dart';
-
 import 'package:safenest/features/digital_wellbeing/presentation/widget/digital_wellbeing_chart.dart'
     as digital_wellbeing;
 import 'package:safenest/features/digital_wellbeing/domain/entity/digital_wellbeing.dart';
@@ -11,16 +10,15 @@ import 'package:safenest/features/digital_wellbeing/presentation/widget/app_usag
 import 'package:safenest/features/digital_wellbeing/presentation/widget/most_used_apps.dart';
 import 'package:safenest/features/digital_wellbeing/presentation/widget/screen_time_trend.dart';
 import 'package:safenest/features/digital_wellbeing/presentation/widget/usage_limit_card.dart';
-
 import 'package:safenest/features/profile/presentation/bloc/parental_info_bloc.dart';
 import 'package:safenest/features/profile/domain/entity/child.dart';
-
 import 'package:safenest/core/extensions/context_extensions.dart';
 
 class DigitalWellbeingAnalysisPage extends StatefulWidget {
   final String? childId;
 
-  const DigitalWellbeingAnalysisPage({super.key, this.childId});
+  const DigitalWellbeingAnalysisPage({Key? key, this.childId})
+      : super(key: key);
 
   @override
   _DigitalWellbeingAnalysisPageState createState() =>
@@ -35,6 +33,10 @@ class _DigitalWellbeingAnalysisPageState
   @override
   void initState() {
     super.initState();
+    _loadInitialData();
+  }
+
+  void _loadInitialData() {
     context
         .read<DigitalWellbeingBloc>()
         .add(const GetCurrentUserDigitalWellbeingEvent());
@@ -52,13 +54,31 @@ class _DigitalWellbeingAnalysisPageState
         }
       },
       child: Scaffold(
-        appBar: _buildFancyAppBar(context),
-        backgroundColor: context.theme.colorScheme.surface,
-        body: selectedChildId == null
-            ? _buildCurrentUserGraphs(context)
-            : _buildChildSpecificGraphs(context),
+        body: NestedScrollView(
+          headerSliverBuilder: (BuildContext context, bool innerBoxIsScrolled) {
+            return [_buildSliverAppBar(context)];
+          },
+          body: RefreshIndicator(
+            onRefresh: _refreshData,
+            child: selectedChildId == null
+                ? _buildCurrentUserGraphs(context)
+                : _buildChildSpecificGraphs(context),
+          ),
+        ),
       ),
     );
+  }
+
+  Future<void> _refreshData() async {
+    if (selectedChildId != null) {
+      context
+          .read<DigitalWellbeingBloc>()
+          .add(GetDigitalWellbeingEvent(selectedChildId!));
+    } else {
+      context
+          .read<DigitalWellbeingBloc>()
+          .add(const GetCurrentUserDigitalWellbeingEvent());
+    }
   }
 
   Widget _buildCurrentUserGraphs(BuildContext context) {
@@ -67,43 +87,9 @@ class _DigitalWellbeingAnalysisPageState
         if (state is DigitalWellbeingLoading) {
           return const LoadingView();
         } else if (state is DigitalWellbeingLoaded) {
-          final digitalWellbeing = state.digitalWellbeing;
-          return SingleChildScrollView(
-            physics: const AlwaysScrollableScrollPhysics(),
-            child: Padding(
-              padding: const EdgeInsets.all(16.0),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  digital_wellbeing.DigitalWellbeingSummary(
-                      digitalWellbeing: digitalWellbeing),
-                  const SizedBox(height: 24),
-                  AppUsageChart(
-                      appUsages: digitalWellbeing.appUsages
-                          .map((key, value) => MapEntry(value.appName, value))),
-                  // const SizedBox(height: 24),
-                  // ScreenTimeTrend(history: digitalWellbeing.history),
-
-                  const SizedBox(height: 24),
-                  MostUsedApps(
-                      appUsages: digitalWellbeing.appUsages
-                          .map((key, value) => MapEntry(value.appName, value))),
-                  const SizedBox(height: 24),
-                  UsageLimitCard(
-                    usageLimits: digitalWellbeing.usageLimits,
-                    onSetLimit: (packageName, limit) {
-                      // Implement set limit functionality
-                    },
-                    onRemoveLimit: (packageName) {
-                      // Implement remove limit functionality
-                    },
-                  ),
-                ],
-              ),
-            ),
-          );
+          return _buildGraphs(context, state.digitalWellbeing);
         } else if (state is DigitalWellbeingError) {
-          return Center(child: Text('Error: ${state.message}'));
+          return _buildErrorView(context, state.message);
         } else {
           return const Center(child: Text('No data available'));
         }
@@ -111,154 +97,167 @@ class _DigitalWellbeingAnalysisPageState
     );
   }
 
-  Widget _buildChildDropdown(BuildContext context) {
-  return Container(
-    padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
-    decoration: BoxDecoration(
-      color: Colors.white.withOpacity(0.15),
-      borderRadius: BorderRadius.circular(12),
-    ),
-    child: DropdownButtonHideUnderline(
-      child: DropdownButton<String>(
-        value: selectedChildId,
-        hint: Text(
-          'Select Child',
-          style: GoogleFonts.plusJakartaSans(
-            color: Colors.white.withOpacity(0.8),
-            fontWeight: FontWeight.w500,
-          ),
-        ),
-        icon: const Icon(Icons.arrow_drop_down, color: Colors.white),
-        style: GoogleFonts.plusJakartaSans(
-          color: Colors.white,
-          fontWeight: FontWeight.w500,
-        ),
-        dropdownColor: Theme.of(context).colorScheme.primary.withOpacity(0.9),
-        items: [
-          const DropdownMenuItem(value: null, child: Text('All Children')),
-          ...children.map((child) => DropdownMenuItem(
-            value: child.id,
-            child: Text(child.name),
-          )),
-        ],
-        onChanged: (String? newValue) {
-          setState(() {
-            selectedChildId = newValue;
-          });
-          if (newValue != null) {
-            context.read<DigitalWellbeingBloc>().add(GetDigitalWellbeingEvent(newValue));
-          } else {
-            context.read<DigitalWellbeingBloc>().add(const GetCurrentUserDigitalWellbeingEvent());
-          }
-        },
-      ),
-    ),
-  );
-}
   Widget _buildChildSpecificGraphs(BuildContext context) {
     return BlocBuilder<DigitalWellbeingBloc, DigitalWellbeingState>(
       builder: (context, state) {
         if (state is DigitalWellbeingLoading) {
           return const LoadingView();
         } else if (state is DigitalWellbeingLoaded) {
-          return RefreshIndicator(
-            onRefresh: () async {
-              context
-                  .read<DigitalWellbeingBloc>()
-                  .add(GetDigitalWellbeingEvent(widget.childId!));
-            },
-            child: SingleChildScrollView(
-              physics: const AlwaysScrollableScrollPhysics(),
-              child: Padding(
-                padding: const EdgeInsets.all(16.0),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    digital_wellbeing.DigitalWellbeingSummary(
-                        digitalWellbeing: state.digitalWellbeing),
-                    const SizedBox(height: 24),
-                    AppUsageChart(appUsages: state.digitalWellbeing.appUsages),
-                    const SizedBox(height: 24),
-                    ScreenTimeTrend(history: state.digitalWellbeing.history),
-                    const SizedBox(height: 24),
-                    UsageLimitCard(
-                      usageLimits: state.digitalWellbeing.usageLimits,
-                      onSetLimit: (packageName, limit) {
-                        context.read<DigitalWellbeingBloc>().add(
-                              SetUsageLimitEvent(
-                                  widget.childId!,
-                                  packageName,
-                                  UsageLimit(
-                                    packageName: packageName,
-                                    dailyLimit: limit,
-                                    isEnabled: true,
-                                  )),
-                            );
-                      },
-                      onRemoveLimit: (packageName) {
-                        context.read<DigitalWellbeingBloc>().add(
-                              RemoveUsageLimitEvent(
-                                  widget.childId!, packageName),
-                            );
-                      },
-                    ),
-                    const SizedBox(height: 24),
-                    MostUsedApps(appUsages: state.digitalWellbeing.appUsages),
-                  ],
-                ),
-              ),
-            ),
-          );
+          return _buildGraphs(context, state.digitalWellbeing);
         } else if (state is DigitalWellbeingError) {
-          return Container();
+          return _buildErrorView(context, state.message);
         }
         return const SizedBox.shrink();
       },
     );
   }
 
-  PreferredSizeWidget _buildFancyAppBar(BuildContext context) {
-    return PreferredSize(
-      preferredSize: const Size.fromHeight(120),
-      child: Container(
-        decoration: BoxDecoration(
-          gradient: LinearGradient(
-            begin: Alignment.topLeft,
-            end: Alignment.bottomRight,
-            colors: [
-              Theme.of(context).colorScheme.primary,
-              Theme.of(context).colorScheme.secondary,
-            ],
-          ),
-          boxShadow: [
-            BoxShadow(
-              color: Colors.black.withOpacity(0.1),
-              blurRadius: 8,
-              offset: const Offset(0, 2),
+  Widget _buildGraphs(BuildContext context, DigitalWellbeing digitalWellbeing) {
+    return SingleChildScrollView(
+      physics: const AlwaysScrollableScrollPhysics(),
+      child: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            digital_wellbeing.DigitalWellbeingSummary(
+                digitalWellbeing: digitalWellbeing),
+            const SizedBox(height: 24),
+            AppUsageChart(appUsages: digitalWellbeing.appUsages),
+            const SizedBox(height: 24),
+            UsageLimitCard(
+              appUsages: digitalWellbeing.appUsages,
+              usageLimits: digitalWellbeing.usageLimits,
+              onSetLimit: _handleSetLimit,
+              onRemoveLimit: _handleRemoveLimit,
             ),
+            const SizedBox(height: 24),
+            MostUsedApps(appUsages: digitalWellbeing.appUsages),
           ],
         ),
-        child: SafeArea(
-          child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-            child: Row(
-              mainAxisSize: MainAxisSize.min,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Text(
-                  'Digital Wellbeing',
-                  style: GoogleFonts.plusJakartaSans(
-                    fontSize: 22,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.white,
-                  ),
-                ),
-                const SizedBox(height: 4),
-                _buildChildDropdown(context),
+      ),
+    );
+  }
+
+  void _handleSetLimit(String packageName, Duration limit) {
+    if (selectedChildId != null) {
+      context.read<DigitalWellbeingBloc>().add(
+            SetUsageLimitEvent(
+              selectedChildId!,
+              packageName,
+              UsageLimit(
+                packageName: packageName,
+                dailyLimit: limit,
+                isEnabled: true,
+              ),
+            ),
+          );
+    }
+  }
+
+  void _handleRemoveLimit(String packageName) {
+    if (selectedChildId != null) {
+      context.read<DigitalWellbeingBloc>().add(
+            RemoveUsageLimitEvent(selectedChildId!, packageName),
+          );
+    }
+  }
+
+  Widget _buildErrorView(BuildContext context, String message) {
+    return Center(
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Text('Error: $message'),
+          ElevatedButton(
+            onPressed: _refreshData,
+            child: const Text('Retry'),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildSliverAppBar(BuildContext context) {
+    return SliverAppBar(
+      expandedHeight: 120,
+      floating: false,
+      pinned: true,
+      flexibleSpace: FlexibleSpaceBar(
+        title: Text(
+          'Digital Wellbeing',
+          style: GoogleFonts.plusJakartaSans(
+            fontSize: 20,
+            fontWeight: FontWeight.w600,
+            color: Colors.white,
+          ),
+        ),
+        background: Container(
+          decoration: BoxDecoration(
+            gradient: LinearGradient(
+              begin: Alignment.topLeft,
+              end: Alignment.bottomRight,
+              colors: [
+                Theme.of(context).colorScheme.primary,
+                Theme.of(context).colorScheme.secondary,
               ],
             ),
           ),
+        ),
+      ),
+      actions: [
+        Padding(
+          padding: const EdgeInsets.only(right: 16.0),
+          child: _buildChildDropdown(context),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildChildDropdown(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
+      decoration: BoxDecoration(
+        color: Colors.white.withOpacity(0.15),
+        borderRadius: BorderRadius.circular(12),
+      ),
+      child: DropdownButtonHideUnderline(
+        child: DropdownButton<String>(
+          value: selectedChildId,
+          hint: Text(
+            'Select Child',
+            style: GoogleFonts.plusJakartaSans(
+              color: Colors.white.withOpacity(0.8),
+              fontWeight: FontWeight.w500,
+            ),
+          ),
+          icon: const Icon(Icons.arrow_drop_down, color: Colors.white),
+          style: GoogleFonts.plusJakartaSans(
+            color: Colors.white,
+            fontWeight: FontWeight.w500,
+          ),
+          dropdownColor: Theme.of(context).colorScheme.primary.withOpacity(0.9),
+          items: [
+            const DropdownMenuItem(value: null, child: Text('All Children')),
+            ...children.map((child) => DropdownMenuItem(
+                  value: child.id,
+                  child: Text(child.name),
+                )),
+          ],
+          onChanged: (String? newValue) {
+            setState(() {
+              selectedChildId = newValue;
+            });
+            if (newValue != null) {
+              context
+                  .read<DigitalWellbeingBloc>()
+                  .add(GetDigitalWellbeingEvent(newValue));
+            } else {
+              context
+                  .read<DigitalWellbeingBloc>()
+                  .add(const GetCurrentUserDigitalWellbeingEvent());
+            }
+          },
         ),
       ),
     );
