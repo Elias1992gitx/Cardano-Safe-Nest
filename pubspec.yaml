@@ -72,6 +72,8 @@ dependencies:
   permission_handler: ^11.0.0
   syncfusion_flutter_charts: ^26.2.13
   url_launcher: ^6.3.0
+  csc_picker: ^0.2.7
+  phone_form_field: ^9.2.8
 
 dev_dependencies:
   flutter_test:

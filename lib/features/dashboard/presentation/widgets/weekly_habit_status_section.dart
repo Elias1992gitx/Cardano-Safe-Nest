@@ -6,10 +6,12 @@ class WeeklyHabitStatusSection extends StatefulWidget {
   const WeeklyHabitStatusSection({Key? key}) : super(key: key);
 
   @override
-  _WeeklyHabitStatusSectionState createState() => _WeeklyHabitStatusSectionState();
+  _WeeklyHabitStatusSectionState createState() =>
+      _WeeklyHabitStatusSectionState();
 }
 
-class _WeeklyHabitStatusSectionState extends State<WeeklyHabitStatusSection> with SingleTickerProviderStateMixin {
+class _WeeklyHabitStatusSectionState extends State<WeeklyHabitStatusSection>
+    with SingleTickerProviderStateMixin {
   late AnimationController _controller;
   late Animation<double> _animation;
 
@@ -86,7 +88,8 @@ class _WeeklyHabitStatusSectionState extends State<WeeklyHabitStatusSection> wit
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: List.generate(
                     7,
-                    (index) => _buildDayIndicator(context, index, index % 3 == 0),
+                    (index) =>
+                        _buildDayIndicator(context, index, index % 3 == 0),
                   ),
                 ),
               ],
@@ -115,15 +118,17 @@ class _WeeklyHabitStatusSectionState extends State<WeeklyHabitStatusSection> wit
           duration: const Duration(milliseconds: 500),
           curve: Curves.easeOutBack,
           builder: (context, value, child) {
+            // Clamp the value to ensure it's within 0.0 and 1.0
+            final clampedValue = value.clamp(0.0, 1.0);
             return Transform.scale(
-              scale: 0.8 + (0.2 * value),
+              scale: 0.8 + (0.2 * clampedValue),
               child: Container(
                 width: 32,
                 height: 32,
                 decoration: BoxDecoration(
                   shape: BoxShape.circle,
                   color: isCompleted
-                      ? Theme.of(context).primaryColor.withOpacity(value)
+                      ? Theme.of(context).primaryColor.withOpacity(clampedValue)
                       : Colors.transparent,
                   border: Border.all(
                     color: Theme.of(context).primaryColor,
@@ -132,9 +137,11 @@ class _WeeklyHabitStatusSectionState extends State<WeeklyHabitStatusSection> wit
                   boxShadow: isCompleted
                       ? [
                           BoxShadow(
-                            color: Theme.of(context).primaryColor.withOpacity(0.3 * value),
-                            blurRadius: 8 * value,
-                            spreadRadius: 2 * value,
+                            color: Theme.of(context)
+                                .primaryColor
+                                .withOpacity(0.3 * clampedValue),
+                            blurRadius: 8 * clampedValue,
+                            spreadRadius: 2 * clampedValue,
                           )
                         ]
                       : null,
@@ -143,7 +150,7 @@ class _WeeklyHabitStatusSectionState extends State<WeeklyHabitStatusSection> wit
                     ? Icon(
                         Icons.check,
                         size: 20,
-                        color: Colors.white.withOpacity(value),
+                        color: Colors.white.withOpacity(clampedValue),
                       )
                     : null,
               ),

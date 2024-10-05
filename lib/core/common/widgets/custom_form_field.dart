@@ -20,6 +20,7 @@ class CustomTextFormField extends StatelessWidget {
     this.textAlign,
     this.style,
     this.autofocus,
+    this.onTap,
     this.onSubmitted,
     this.borderRadius,
     this.validator,
@@ -67,6 +68,7 @@ class CustomTextFormField extends StatelessWidget {
   final String? prefixText;
   final bool? autofocus;
   final int? maxLength;
+  final VoidCallback? onTap;
   final Color? fillColor;
   final List<TextInputFormatter>? inputFormatter;
   final AutovalidateMode? autoValidateMode;
@@ -84,6 +86,7 @@ class CustomTextFormField extends StatelessWidget {
   Widget build(BuildContext context) {
     return TextFormField(
       autofocus: autofocus ?? false,
+      onTap: onTap,
 
       style: style ??
           GoogleFonts.montserrat(

@@ -11,7 +11,6 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 class UserProvider extends ChangeNotifier {
-
   UserProvider() {
     _init();
   }
@@ -21,10 +20,13 @@ class UserProvider extends ChangeNotifier {
   StreamSubscription<User?>? _authStateSubscription;
 
   Future<void> _init() async {
-    _authStateSubscription = FirebaseAuth.instance.authStateChanges().listen((User? user) {
+    await loadUserData();
+    _authStateSubscription =
+        FirebaseAuth.instance.authStateChanges().listen((User? user) {
       if (user == null) {
         _user = null;
-      } else {
+        _clearUserData();
+      } else if (_user == null) {
         loadUserData();
       }
       notifyListeners();
@@ -40,15 +42,33 @@ class UserProvider extends ChangeNotifier {
 
   Future<void> loadUserData() async {
     final prefs = await SharedPreferences.getInstance();
-    final userId = prefs.getString('userId');
-    if (userId != null) {
-      final userDataString = prefs.getString('userData');
-      if (userDataString != null) {
-        final userDataMap = jsonDecode(userDataString) as DataMap;
+    final userDataString = prefs.getString('userData');
+    if (userDataString != null) {
+      try {
+        final userDataMap = jsonDecode(userDataString) as Map<String, dynamic>;
+
+        // Convert ISO 8601 strings back to DateTime objects
+        userDataMap['createdAt'] = userDataMap['createdAt'] != null
+            ? DateTime.parse(userDataMap['createdAt'])
+            : null;
+        userDataMap['updatedAt'] = userDataMap['updatedAt'] != null
+            ? DateTime.parse(userDataMap['updatedAt'])
+            : null;
+        userDataMap['emailVerified'] = userDataMap['emailVerified'] != null
+            ? DateTime.parse(userDataMap['emailVerified'])
+            : null;
+
         final userInfo = LocalUserModel.fromMap(userDataMap);
         initUser(userInfo);
-      } else {
-        final userInfo = await getUserInfo(userId);
+      } catch (e) {
+        print('Error parsing user data: $e');
+        await _clearUserData();
+      }
+    } else {
+      final user = FirebaseAuth.instance.currentUser;
+      if (user != null) {
+        final userInfo = await getUserInfo(user.uid);
+        await _saveUserData(userInfo);
         initUser(userInfo);
       }
     }
@@ -56,7 +76,8 @@ class UserProvider extends ChangeNotifier {
 
   Future<LocalUserModel> getUserInfo(String uid) async {
     try {
-      final userDoc = await FirebaseFirestore.instance.collection('users').doc(uid).get();
+      final userDoc =
+          await FirebaseFirestore.instance.collection('users').doc(uid).get();
       if (userDoc.exists) {
         return LocalUserModel.fromMap(userDoc.data()!);
       } else {
@@ -80,7 +101,10 @@ class UserProvider extends ChangeNotifier {
 
   Future<void> updateUser(LocalUserModel updatedUser) async {
     try {
-      await FirebaseFirestore.instance.collection('users').doc(updatedUser.uid).update(updatedUser.toMap());
+      await FirebaseFirestore.instance
+          .collection('users')
+          .doc(updatedUser.uid)
+          .update(updatedUser.toMap());
       initUser(updatedUser);
     } catch (e) {
       throw const ServerException(
@@ -88,6 +112,25 @@ class UserProvider extends ChangeNotifier {
         statusCode: '500',
       );
     }
+  }
+
+  Future<void> _clearUserData() async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.remove('userData');
+    await prefs.remove('userId');
+  }
+
+  Future<void> _saveUserData(LocalUserModel user) async {
+    final prefs = await SharedPreferences.getInstance();
+    final userData = user.toMap();
+
+    // Convert DateTime objects to ISO 8601 strings
+    userData['createdAt'] = userData['createdAt']?.toIso8601String();
+    userData['updatedAt'] = userData['updatedAt']?.toIso8601String();
+    userData['emailVerified'] = userData['emailVerified']?.toIso8601String();
+
+    await prefs.setString('userData', jsonEncode(userData));
+    await prefs.setString('userId', user.uid);
   }
 
   @override
