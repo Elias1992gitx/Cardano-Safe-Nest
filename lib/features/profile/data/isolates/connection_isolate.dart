@@ -12,6 +12,8 @@ void connectionIsolate(SendPort sendPort) {
       final parentId = message['parentId'] as String;
       final dataSource = message['dataSource'] as ParentalInfoRemoteDataSource;
 
+      sendPort.send({'showDialog': true});
+
       try {
         await dataSource.linkChildToParent(childId, parentId);
         sendPort.send({'success': true});

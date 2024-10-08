@@ -493,12 +493,7 @@ class _AddChildFormState extends State<AddChildForm> {
               CustomTextFormField(
                 textInputType: TextInputType.text,
                 hintText: 'Search for School',
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return 'Please select a school';
-                  }
-                  return null;
-                },
+                
                 controller: schoolNameController,
                 maxLength: 50,
                 borderRadius: 10,

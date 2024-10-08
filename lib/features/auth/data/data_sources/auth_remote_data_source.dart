@@ -449,8 +449,8 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
       // Clear cached user data
       final prefs = await SharedPreferences.getInstance();
       await prefs.remove('user_data');
+      await prefs.remove('parental_info');
       await prefs.setBool(kIsLoggedIn, false);
-      await prefs.setBool(kIsProfileComplete, false);
     } on ServerException {
       rethrow;
     } catch (e, s) {

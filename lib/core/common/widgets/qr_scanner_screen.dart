@@ -4,8 +4,17 @@ import 'package:mobile_scanner/mobile_scanner.dart';
 import 'package:safenest/core/extensions/context_extensions.dart';
 import 'package:lottie/lottie.dart';
 
-class QRScannerScreen extends StatelessWidget {
-  const QRScannerScreen({super.key});
+class QRScannerScreen extends StatefulWidget {
+  final Function(String) onQRCodeScanned;
+
+  const QRScannerScreen({Key? key, required this.onQRCodeScanned}) : super(key: key);
+
+  @override
+  _QRScannerScreenState createState() => _QRScannerScreenState();
+}
+
+class _QRScannerScreenState extends State<QRScannerScreen> {
+  bool _hasScanned = false;
 
   @override
   Widget build(BuildContext context) {
@@ -23,9 +32,18 @@ class QRScannerScreen extends StatelessWidget {
         children: [
           MobileScanner(
             onDetect: (capture) {
+              if (_hasScanned) return;
               final List<Barcode> barcodes = capture.barcodes;
               for (final barcode in barcodes) {
-                Navigator.pop(context, barcode.rawValue);
+                final scannedEmail = barcode.rawValue;
+                if (scannedEmail != null && scannedEmail.contains('@')) {
+                  setState(() {
+                    _hasScanned = true;
+                  });
+                  widget.onQRCodeScanned(scannedEmail);
+                  Navigator.of(context).pop();
+                  break;
+                }
               }
             },
           ),
@@ -36,7 +54,7 @@ class QRScannerScreen extends StatelessWidget {
                 end: Alignment.bottomCenter,
                 colors: [
                   Colors.transparent,
-
+                  Colors.black54,
                 ],
               ),
             ),
@@ -46,7 +64,7 @@ class QRScannerScreen extends StatelessWidget {
               width: 250,
               height: 250,
               decoration: BoxDecoration(
-                border: Border.all(  color: context.theme.cardColor,width: 2),
+                border: Border.all(color: context.theme.cardColor, width: 2),
                 borderRadius: BorderRadius.circular(12),
               ),
             ),

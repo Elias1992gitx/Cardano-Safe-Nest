@@ -51,7 +51,8 @@ class _HomeScreenState extends State<HomeScreen>
       vsync: this,
       duration: const Duration(milliseconds: 500),
     );
-    _fadeAnimation = Tween<double>(begin: 0.0, end: 1.0).animate(_animationController);
+    _fadeAnimation =
+        Tween<double>(begin: 0.0, end: 1.0).animate(_animationController);
     _animationController.forward();
 
     Future.delayed(const Duration(milliseconds: 100), () {
@@ -60,7 +61,6 @@ class _HomeScreenState extends State<HomeScreen>
       });
     });
   }
-
 
   Future<void> _checkAndRequestUsagePermission() async {
     if (Platform.isAndroid) {
@@ -149,8 +149,6 @@ class _HomeScreenState extends State<HomeScreen>
                       padding:
                           const EdgeInsetsDirectional.fromSTEB(10, 40, 10, 10),
                       child: Container(
-
-
                         child: Padding(
                           padding: const EdgeInsets.all(4),
                           child: Column(
@@ -207,22 +205,7 @@ class _HomeScreenState extends State<HomeScreen>
                                         if (state is ParentalInfoLoaded) {
                                           return IconButton(
                                             icon: const Icon(IconlyLight.scan),
-                                            onPressed: () async {
-                                              final result =
-                                                  await Navigator.of(context)
-                                                      .push<String>(
-                                                MaterialPageRoute(
-                                                  builder: (context) =>
-                                                      const QRScannerScreen(),
-                                                ),
-                                              );
-                                              if (result != null) {
-                                                // Handle the scanned result here
-                                                print(
-                                                    'Scanned result: $result');
-                                                // You can add logic to process the scanned data
-                                              }
-                                            },
+                                            onPressed: _openQRScanner,
                                             tooltip: 'Scan Child\'s Phone',
                                             iconSize: 30,
                                             color: context.theme.primaryColor,
@@ -270,7 +253,6 @@ class _HomeScreenState extends State<HomeScreen>
                                   const SizedBox(height: 20),
                                   const TaskStatisticsSection(),
                                   const SizedBox(height: 20),
-
                                   const WeeklyHabitStatusSection(),
                                   const SizedBox(height: 20),
                                 ],
@@ -293,6 +275,22 @@ class _HomeScreenState extends State<HomeScreen>
   void _fetchParentalInfo() {
     context.read<ParentalInfoBloc>().add(GetParentalInfoEvent());
   }
+
+  void _openQRScanner() {
+  Navigator.of(context).push(
+    MaterialPageRoute(
+      builder: (context) => QRScannerScreen(
+        onQRCodeScanned: (String scannedData) {
+          //Navigator.of(context).pop(); // Close the QR scanner screen
+          // Handle the scanned data here
+          print('Scanned QR code: $scannedData');
+          // You can add logic to process the scanned data
+          // For example, show a dialog or update the UI
+        },
+      ),
+    ),
+  );
+}
 
   Widget _buildWelcomeText() {
     return Consumer<UserProvider>(
@@ -354,7 +352,8 @@ class _HomeScreenState extends State<HomeScreen>
                   imageBuilder: (context, imageProvider) {
                     return CustomProfilePic(
                       imageProvider: imageProvider,
-                      onClicked: () => Future.microtask(() => context.go('/profile-screen')),
+                      onClicked: () =>
+                          Future.microtask(() => context.go('/profile-screen')),
                       radius: 45,
                     );
                   },

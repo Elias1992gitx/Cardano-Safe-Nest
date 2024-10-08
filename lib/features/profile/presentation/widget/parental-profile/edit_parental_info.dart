@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:safenest/features/profile/domain/entity/child.dart';
 import 'package:safenest/features/profile/domain/entity/parental_info.dart';
 import 'package:safenest/features/profile/presentation/bloc/parental_info_bloc.dart';
@@ -19,11 +18,18 @@ class EditParentalInfoPage extends StatefulWidget {
   _EditParentalInfoPageState createState() => _EditParentalInfoPageState();
 }
 
-class _EditParentalInfoPageState extends State<EditParentalInfoPage> with SingleTickerProviderStateMixin {
+class _EditParentalInfoPageState extends State<EditParentalInfoPage>
+    with SingleTickerProviderStateMixin {
   late ParentalInfo _parentalInfo;
   final _formKey = GlobalKey<FormState>();
   late AnimationController _animationController;
   late Animation<double> _animation;
+  final List<String> validFrequencies = [
+    'Immediate',
+    'Daily',
+    'Weekly',
+    'Daily Summary'
+  ];
 
   @override
   void initState() {
@@ -48,7 +54,9 @@ class _EditParentalInfoPageState extends State<EditParentalInfoPage> with Single
 
   void _saveParentalInfo() {
     if (_formKey.currentState!.validate()) {
-      context.read<ParentalInfoBloc>().add(UpdateParentalInfoEvent(_parentalInfo));
+      context
+          .read<ParentalInfoBloc>()
+          .add(UpdateParentalInfoEvent(_parentalInfo));
       Navigator.of(context).pop();
     }
   }
@@ -56,81 +64,178 @@ class _EditParentalInfoPageState extends State<EditParentalInfoPage> with Single
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text('Edit Parental Info', style: GoogleFonts.plusJakartaSans()),
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.save),
-            onPressed: _saveParentalInfo,
+      backgroundColor: context.theme.colorScheme.surface,
+      body: CustomScrollView(
+        slivers: [
+          SliverAppBar(
+            expandedHeight: 180.0,
+            floating: false,
+            pinned: true,
+            flexibleSpace: FlexibleSpaceBar(
+              title: Text('Edit Parental Info',
+                  style: GoogleFonts.plusJakartaSans(
+                    fontWeight: FontWeight.bold,
+                    color: Colors.white,
+                  )),
+              background: Container(
+                decoration: BoxDecoration(
+                  gradient: LinearGradient(
+                    begin: Alignment.topLeft,
+                    end: Alignment.bottomRight,
+                    colors: [
+                      context.theme.primaryColor,
+                      context.theme.primaryColor.withOpacity(0.7),
+                      context.theme.primaryColor.withOpacity(0.5),
+                    ],
+                  ),
+                ),
+              ),
+            ),
+            actions: [
+              Padding(
+                padding: const EdgeInsets.only(right: 16.0),
+                child: InkWell(
+                  onTap: _saveParentalInfo,
+                  child: Container(
+                    padding:
+                        const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                    decoration: BoxDecoration(
+                      gradient: LinearGradient(
+                        colors: [
+                          context.theme.primaryColor.withOpacity(0.7),
+                          context.theme.primaryColor,
+                        ],
+                        begin: Alignment.topLeft,
+                        end: Alignment.bottomRight,
+                      ),
+                      borderRadius: BorderRadius.circular(20),
+                      boxShadow: [
+                        BoxShadow(
+                          color: context.theme.primaryColor.withOpacity(0.3),
+                          blurRadius: 8,
+                          offset: const Offset(0, 2),
+                        ),
+                      ],
+                    ),
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        const Icon(Icons.save, color: Colors.white, size: 18),
+                        const SizedBox(width: 8),
+                        Text(
+                          'Save',
+                          style: GoogleFonts.plusJakartaSans(
+                            color: Colors.white,
+                            fontWeight: FontWeight.bold,
+                            fontSize: 16,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              ),
+            ],
           ),
-        ],
-      ),
-      body: FadeTransition(
-        opacity: _animation,
-        child: SingleChildScrollView(
-          child: Padding(
-            padding: const EdgeInsets.all(16.0),
-            child: Form(
-              key: _formKey,
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  _buildSection(
-                    title: 'Children',
-                    content: _buildChildrenList(),
+          SliverToBoxAdapter(
+            child: FadeTransition(
+              opacity: _animation,
+              child: Padding(
+                padding: const EdgeInsets.all(16.0),
+                child: Form(
+                  key: _formKey,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      _buildSection(
+                        title: 'Kids',
+                        content: _buildChildrenList(),
+                        icon: Icons.kitesurfing,
+                      ),
+                      _buildSection(
+                        title: 'Emergency Contact',
+                        content: _buildEmergencyContactForm(),
+                        icon: Icons.emergency,
+                      ),
+                      _buildSection(
+                        title: 'Notifications',
+                        content: _buildNotificationSettings(),
+                        icon: Icons.notifications,
+                      ),
+                      _buildSection(
+                        title: 'Home Address',
+                        content: _buildHomeAddressForm(),
+                        icon: Icons.home,
+                      ),
+                      _buildSection(
+                        title: 'Security',
+                        content: _buildSecuritySettings(),
+                        icon: Icons.security,
+                      ),
+                    ],
                   ),
-                  _buildSection(
-                    title: 'Emergency Contact',
-                    content: _buildEmergencyContactForm(),
-                  ),
-                  _buildSection(
-                    title: 'Notifications',
-                    content: _buildNotificationSettings(),
-                  ),
-                  _buildSection(
-                    title: 'Home Address',
-                    content: _buildHomeAddressForm(),
-                  ),
-                  _buildSection(
-                    title: 'Security',
-                    content: _buildSecuritySettings(),
-                  ),
-                ],
+                ),
               ),
             ),
           ),
-        ),
+        ],
       ),
     );
   }
 
-  Widget _buildSection({required String title, required Widget content}) {
-    return Card(
-      elevation: 0,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(15),
-        side: BorderSide(color: context.theme.dividerColor.withOpacity(0.1)),
-      ),
-      color: context.theme.cardColor.withOpacity(0.5),
-      margin: const EdgeInsets.only(bottom: 16),
-      child: Padding(
-        padding: const EdgeInsets.all(16),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              title,
-              style: GoogleFonts.plusJakartaSans(
-                fontSize: 18,
-                fontWeight: FontWeight.bold,
-                color: context.theme.primaryColor,
-              ),
+  Widget _buildSection({
+    required String title,
+    required Widget content,
+    required IconData icon,
+  }) {
+    return Column(
+      children: [
+        Container(
+          margin: const EdgeInsets.only(bottom: 16),
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(2),
+            gradient: LinearGradient(
+              begin: Alignment.topLeft,
+              end: Alignment.bottomRight,
+              colors: [
+                context.theme.cardColor,
+                context.theme.cardColor.withOpacity(0.8),
+              ],
             ),
-            const SizedBox(height: 16),
-            content,
-          ],
+          ),
+          child: Theme(
+            data: Theme.of(context).copyWith(dividerColor: Colors.transparent),
+            child: ExpansionTile(
+              leading: Container(
+                padding: const EdgeInsets.all(8),
+                decoration: BoxDecoration(
+                  color: context.theme.primaryColor.withOpacity(0.1),
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                child: Icon(icon, color: context.theme.primaryColor, size: 28),
+              ),
+              title: Text(
+                title,
+                style: GoogleFonts.plusJakartaSans(
+                  fontSize: 18,
+                  fontWeight: FontWeight.bold,
+                  color: context.theme.primaryColor,
+                ),
+              ),
+              children: [
+                Padding(
+                  padding: const EdgeInsets.all(16),
+                  child: content,
+                ),
+              ],
+            ),
+          ),
         ),
-      ),
+        Divider(color: context.theme.dividerColor.withOpacity(0.2), height: 1),
+        SizedBox(
+          height: 10,
+        )
+      ],
     );
   }
 
@@ -151,7 +256,7 @@ class _EditParentalInfoPageState extends State<EditParentalInfoPage> with Single
               fontWeight: FontWeight.w500,
             ),
             borderRadius: BorderRadius.circular(25),
-            elevation: 0,
+            elevation: 2,
           ),
         ),
       ],
@@ -159,16 +264,51 @@ class _EditParentalInfoPageState extends State<EditParentalInfoPage> with Single
   }
 
   Widget _buildChildItem(Child child) {
-    return ListTile(
-      leading: CircleAvatar(
-        backgroundColor: context.theme.primaryColor,
-        child: Text(child.name[0], style: const TextStyle(color: Colors.white)),
+    return Container(
+      margin: const EdgeInsets.only(bottom: 12),
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(15),
+        gradient: LinearGradient(
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+          colors: [
+            context.theme.cardColor,
+            context.theme.cardColor.withOpacity(0.8),
+          ],
+        ),
       ),
-      title: Text(child.name, style: GoogleFonts.plusJakartaSans()),
-      subtitle: Text('Age: ${child.age}', style: GoogleFonts.plusJakartaSans()),
-      trailing: IconButton(
-        icon: const Icon(Icons.edit),
-        onPressed: () => _editChild(child),
+      child: ListTile(
+        contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+        leading: CircleAvatar(
+          backgroundColor: context.theme.primaryColor,
+          radius: 25,
+          child: Text(
+            child.name[0],
+            style: GoogleFonts.plusJakartaSans(
+              color: Colors.white,
+              fontSize: 18,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+        ),
+        title: Text(
+          child.name,
+          style: GoogleFonts.plusJakartaSans(
+            fontSize: 16,
+            fontWeight: FontWeight.w600,
+          ),
+        ),
+        subtitle: Text(
+          'Age: ${child.age}',
+          style: GoogleFonts.plusJakartaSans(
+            fontSize: 14,
+            color: context.theme.textTheme.bodyMedium?.color?.withOpacity(0.7),
+          ),
+        ),
+        trailing: IconButton(
+          icon: Icon(Icons.edit, color: context.theme.primaryColor),
+          onPressed: () => _editChild(child),
+        ),
       ),
     );
   }
@@ -197,7 +337,8 @@ class _EditParentalInfoPageState extends State<EditParentalInfoPage> with Single
           labelText: 'Phone',
           textInputType: TextInputType.phone,
           onChange: (value) {
-            _parentalInfo = _parentalInfo.copyWith(emergencyContactPhone: value);
+            _parentalInfo =
+                _parentalInfo.copyWith(emergencyContactPhone: value);
           },
         ),
       ],
@@ -208,7 +349,8 @@ class _EditParentalInfoPageState extends State<EditParentalInfoPage> with Single
     return Column(
       children: [
         SwitchListTile(
-          title: Text('Email Notifications', style: GoogleFonts.plusJakartaSans()),
+          title:
+              Text('Email Notifications', style: GoogleFonts.plusJakartaSans()),
           value: _parentalInfo.emailNotifications,
           onChanged: (value) {
             setState(() {
@@ -217,7 +359,8 @@ class _EditParentalInfoPageState extends State<EditParentalInfoPage> with Single
           },
         ),
         SwitchListTile(
-          title: Text('SMS Notifications', style: GoogleFonts.plusJakartaSans()),
+          title:
+              Text('SMS Notifications', style: GoogleFonts.plusJakartaSans()),
           value: _parentalInfo.smsNotifications,
           onChanged: (value) {
             setState(() {
@@ -227,14 +370,19 @@ class _EditParentalInfoPageState extends State<EditParentalInfoPage> with Single
         ),
         const SizedBox(height: 16),
         DropdownButtonFormField<String>(
-          value: _parentalInfo.notificationFrequency,
-          items: ['Immediate', 'Daily', 'Weekly', 'Daily Summary']
-              .map((freq) => DropdownMenuItem(value: freq, child: Text(freq, style: GoogleFonts.plusJakartaSans())))
+          value: validFrequencies.contains(_parentalInfo.notificationFrequency)
+              ? _parentalInfo.notificationFrequency
+              : validFrequencies.first,
+          items: validFrequencies
+              .map((freq) => DropdownMenuItem(
+                  value: freq,
+                  child: Text(freq, style: GoogleFonts.plusJakartaSans())))
               .toList(),
           onChanged: (value) {
             if (value != null) {
               setState(() {
-                _parentalInfo = _parentalInfo.copyWith(notificationFrequency: value);
+                _parentalInfo =
+                    _parentalInfo.copyWith(notificationFrequency: value);
               });
             }
           },
@@ -242,7 +390,6 @@ class _EditParentalInfoPageState extends State<EditParentalInfoPage> with Single
             labelText: 'Notification Frequency',
             border: OutlineInputBorder(
               borderRadius: BorderRadius.circular(25),
-              borderSide: BorderSide.none,
             ),
             filled: true,
             fillColor: context.theme.cardColor,

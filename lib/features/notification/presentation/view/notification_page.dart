@@ -5,6 +5,9 @@ import 'package:safenest/core/extensions/context_extensions.dart';
 import 'package:safenest/core/common/widgets/dashed_paint.dart';
 import 'package:safenest/features/notification/domain/entity/notification.dart';
 import 'package:safenest/features/notification/presentation/widgets/notification_list.dart'; // Import the DashedBorderContainer
+import 'package:safenest/features/notification/presentation/widgets/add_task_bottom_sheet.dart';
+import 'package:safenest/features/notification/data/model/child_task_model.dart';
+
 
 class NotificationScreen extends StatefulWidget {
   const NotificationScreen({super.key});
@@ -118,7 +121,7 @@ class _NotificationScreenState extends State<NotificationScreen>
                           ),
                           labelColor: Colors.white,
                           unselectedLabelColor:
-                          context.theme.colorScheme.primaryContainer,
+                              context.theme.colorScheme.primaryContainer,
                           backgroundColor: context.theme.primaryColor,
                           borderRadius: 12,
                           labelPadding: const EdgeInsetsDirectional.fromSTEB(
@@ -180,9 +183,7 @@ class _NotificationScreenState extends State<NotificationScreen>
                 dashSpace: 3.0,
                 borderRadius: BorderRadius.circular(50),
                 child: FloatingActionButton(
-                  onPressed: () {
-                    // Add your onPressed code here!
-                  },
+                  onPressed: _showAddTaskBottomSheet,
                   backgroundColor: Colors.transparent,
                   elevation: 0,
                   child: Icon(Icons.task, color: context.theme.primaryColor),
@@ -194,4 +195,21 @@ class _NotificationScreenState extends State<NotificationScreen>
       ),
     );
   }
+
+
+  void _showAddTaskBottomSheet() {
+  showModalBottomSheet(
+    context: context,
+    isScrollControlled: true,
+    backgroundColor: Colors.transparent,
+    builder: (BuildContext context) {
+      return AddTaskBottomSheet(
+        onTaskCreated: (ChildTaskModel task) {
+          // TODO: Handle the created task
+          Navigator.pop(context);
+        },
+      );
+    },
+  );
+}
 }

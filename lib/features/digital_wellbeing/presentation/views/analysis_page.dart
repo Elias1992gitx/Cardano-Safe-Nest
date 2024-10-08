@@ -8,11 +8,12 @@ import 'package:safenest/features/digital_wellbeing/domain/entity/digital_wellbe
 import 'package:safenest/features/digital_wellbeing/presentation/bloc/digital_wellbeing_bloc.dart';
 import 'package:safenest/features/digital_wellbeing/presentation/widget/app_usage_chart.dart';
 import 'package:safenest/features/digital_wellbeing/presentation/widget/most_used_apps.dart';
+
+import 'package:safenest/core/extensions/context_extensions.dart';
 import 'package:safenest/features/digital_wellbeing/presentation/widget/screen_time_trend.dart';
 import 'package:safenest/features/digital_wellbeing/presentation/widget/usage_limit_card.dart';
 import 'package:safenest/features/profile/presentation/bloc/parental_info_bloc.dart';
 import 'package:safenest/features/profile/domain/entity/child.dart';
-import 'package:safenest/core/extensions/context_extensions.dart';
 
 class DigitalWellbeingAnalysisPage extends StatefulWidget {
   final String? childId;
@@ -187,8 +188,8 @@ class _DigitalWellbeingAnalysisPageState
         title: Text(
           'Digital Wellbeing',
           style: GoogleFonts.plusJakartaSans(
-            fontSize: 20,
-            fontWeight: FontWeight.w600,
+            fontSize: 18,
+            fontWeight: FontWeight.w500,
             color: Colors.white,
           ),
         ),
@@ -239,10 +240,12 @@ class _DigitalWellbeingAnalysisPageState
           dropdownColor: Theme.of(context).colorScheme.primary.withOpacity(0.9),
           items: [
             const DropdownMenuItem(value: null, child: Text('All Children')),
-            ...children.map((child) => DropdownMenuItem(
-                  value: child.id,
-                  child: Text(child.name),
-                )),
+            ...children.map(
+              (child) => DropdownMenuItem(
+                value: child.id,
+                child: Text(child.name),
+              ),
+            ),
           ],
           onChanged: (String? newValue) {
             setState(() {
