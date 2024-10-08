@@ -57,4 +57,23 @@ import 'package:safenest/features/digital_wellbeing/domain/usecases/get_digital_
 import 'package:safenest/features/digital_wellbeing/presentation/bloc/digital_wellbeing_bloc.dart';
 import 'package:safenest/features/digital_wellbeing/data/data_source/digital_wellbeing_local_data.dart';
 
+
+// connecting devices
+import 'package:safenest/features/connecting_devices/presentation/bloc/connection_bloc.dart';
+import 'package:safenest/features/connecting_devices/domain/usecases/accept_connection_request_usecase.dart';
+import 'package:safenest/features/connecting_devices/domain/usecases/get_pending_connection_requests_usecase.dart';
+import 'package:safenest/features/connecting_devices/domain/usecases/disconnect_devices_usecase.dart';
+import 'package:safenest/features/connecting_devices/domain/usecases/is_connected_usecase.dart';
+import 'package:safenest/features/connecting_devices/domain/usecases/reject_connection_request_usecase.dart';
+import 'package:safenest/features/connecting_devices/domain/usecases/send_connection_request.dart';
+
+import 'package:safenest/features/connecting_devices/domain/repositories/connection_repository.dart';
+import 'package:safenest/features/connecting_devices/data/datasources/connection_remote_data_source.dart';
+import 'package:safenest/features/connecting_devices/data/repositories/connection_repository_impl.dart';
+
+
+
+
+
+
 part 'injection_container.main.dart';

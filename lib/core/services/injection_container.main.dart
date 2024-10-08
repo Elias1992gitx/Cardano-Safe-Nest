@@ -14,6 +14,7 @@ Future<void> init() async {
   await _onBoardingInit();
   await _languageInit();
   await _authInit();
+  await _connectionInit();
   await _parentalInfoInit();
   await _digitalWellbeingInit();
 
@@ -153,5 +154,29 @@ Future<void> _digitalWellbeingInit() async {
       () => DigitalWellbeingLocalDataSourceImpl(
         sharedPreferences: sl(),
       ),
+    );
+}
+
+Future<void> _connectionInit() async {
+  sl
+    ..registerFactory(
+      () => ConnectionBloc(
+        sendConnectionRequest: sl(),
+        acceptConnectionRequest: sl(),
+        rejectConnectionRequest: sl(),
+        getPendingConnectionRequests: sl(),
+      ),
+    )
+    ..registerLazySingleton(() => SendConnectionRequestUseCase(sl()))
+    ..registerLazySingleton(() => AcceptConnectionRequestUseCase(sl()))
+    ..registerLazySingleton(() => RejectConnectionRequestUseCase(sl()))
+    ..registerLazySingleton(()=> DisconnectDevicesParams(parentEmail: sl(), childEmail: sl()))
+    ..registerLazySingleton(() => GetPendingConnectionRequestsUseCase(sl()))
+    ..registerLazySingleton(()=>IsConnectedParams(parentEmail: sl(), childEmail: sl()))
+    ..registerLazySingleton<ConnectionRepository>(
+      () => ConnectionRepositoryImpl(sl()),
+    )
+    ..registerLazySingleton<ConnectionRemoteDataSource>(
+      () => ConnectionRemoteDataSourceImpl(sl()),
     );
 }

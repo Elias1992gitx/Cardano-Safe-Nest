@@ -3,11 +3,18 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:mobile_scanner/mobile_scanner.dart';
 import 'package:safenest/core/extensions/context_extensions.dart';
 import 'package:lottie/lottie.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:safenest/core/common/app/providers/user_provider.dart';
+
+import 'package:safenest/features/connecting_devices/presentation/bloc/connection_bloc.dart';
+import 'package:safenest/features/connecting_devices/presentation/bloc/connection_event.dart';
+import 'package:safenest/features/connecting_devices/presentation/bloc/connection_state.dart';
 
 class QRScannerScreen extends StatefulWidget {
   final Function(String) onQRCodeScanned;
 
-  const QRScannerScreen({Key? key, required this.onQRCodeScanned}) : super(key: key);
+  const QRScannerScreen({Key? key, required this.onQRCodeScanned})
+      : super(key: key);
 
   @override
   _QRScannerScreenState createState() => _QRScannerScreenState();
@@ -40,7 +47,10 @@ class _QRScannerScreenState extends State<QRScannerScreen> {
                   setState(() {
                     _hasScanned = true;
                   });
-                  widget.onQRCodeScanned(scannedEmail);
+                  context.read<ConnectionBloc>().add(SendConnectionRequest(
+                        parentEmail: context.read<UserProvider>().user!.email!,
+                        childEmail: scannedEmail,
+                      ));
                   Navigator.of(context).pop();
                   break;
                 }
